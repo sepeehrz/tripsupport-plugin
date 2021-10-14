@@ -1,0 +1,283 @@
+<style scoped>
+.ts-dialog-search-wrappper {
+  background: #fff;
+  padding: 40px 20px;
+  width: 100%;
+}
+.ts-dialog-title-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.ts-dialog-close {
+  margin-right: 5px;
+}
+.ts-dialog-title {
+  font-size: 20px;
+}
+.ts-origin {
+  position: relative;
+  width: 100vw;
+}
+.ts-input {
+  height: 48px;
+  border: 1px solid rgba(171, 171, 196, 0.6);
+  padding: 0 10px 0 40px;
+  border-radius: 6px;
+  background: #ffffff;
+  outline: none;
+  margin: 20px auto 0;
+  color: #66678f;
+  font-size: 14px;
+  font-weight: 500;
+  width: 90vw;
+}
+.ts-input::placeholder {
+  color: #66678f;
+  font-size: 14px;
+  font-weight: 500;
+}
+.ts-airplane-icon {
+  position: absolute;
+  left: 16px;
+  bottom: 10px;
+}
+.ts-dropdown-wrapper {
+  width: 90vw;
+  padding: 20px 10px;
+}
+.ts-dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.ts-dropdown-item svg {
+  fill: #ababc4;
+  margin-right: 5px;
+}
+.ts-dropdown-item:not(:last-child) {
+  padding-bottom: 20px;
+}
+.ts-name {
+  font-weight: 400;
+  color: #ababc4;
+  font-size: 12px;
+}
+.active .ts-name {
+  color: #0c0d25;
+}
+.active svg {
+  fill: #007aff;
+}
+.ts-svg svg {
+  fill: #ababc4;
+}
+.ts-menu {
+  top: 70px;
+}
+</style>
+
+<template>
+  <v-dialog v-model="dialog" fullscreen hide-overlay scrollable>
+    <div class="ts-dialog-search-wrappper">
+      <div class="ts-dialog-title-wrapper">
+        <div class="ts-dialog-close">
+          <v-icon @click="close">mdi-close</v-icon>
+        </div>
+        <div class="ts-dialog-title">
+          {{ title }}
+        </div>
+      </div>
+      <slot>
+        <div class="ts-origin">
+          <input
+            @keyup="search"
+            v-bind:value="display"
+            v-on:input="
+              (display = $event.target.value),
+                (itemSearch = $event.target.value)
+            "
+            type="text"
+            class="ts-input"
+            :placeholder="`${title}`"
+            v-click-outside="onClickOutside"
+            @click="showOriginMenu = true"
+          />
+          <div class="ts-airplane-icon">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              v-if="mode == 'hotel'"
+            >
+              <path
+                d="M2.4735 5.04564C2.4735 4.71369 2.75618 4.31535 3.10954 4.31535C3.4629 4.31535 4.947 5.04564 5.58304 5.04564H6.21908C6.85512 5.04564 8.40989 4.31535 8.69258 4.31535C8.97527 4.31535 9.32862 4.6473 9.32862 5.04564C9.32862 5.44398 8.69258 6.50622 8.69258 7.23651H11.1661C11.1661 6.50622 10.53 5.44398 10.53 5.04564C10.53 4.6473 10.8127 4.31535 11.1661 4.31535C11.5194 4.31535 13.0035 5.04564 13.6396 5.04564H14.2756C14.9117 5.04564 16.4664 4.31535 16.7491 4.31535C17.0318 4.31535 17.3852 4.6473 17.3852 5.04564C17.3852 5.44398 16.7491 6.50622 16.7491 7.23651H18.5866V0.73029C18.5866 0.33195 18.3039 0 17.9505 0H1.83746C1.4841 0 1.27208 0.33195 1.27208 0.73029V7.23651H3.10954C3.10954 6.50622 2.4735 5.44398 2.4735 5.04564Z"
+                fill="#66678F"
+              />
+              <path
+                d="M19.1519 10.1577H0.636042C0.282686 10.1577 0 10.4896 0 10.888V12.3485C0 12.7469 0.282686 13.0788 0.636042 13.0788V15.2697C0.636042 15.668 0.918728 16 1.27208 16H2.54417C2.89753 16 3.18021 15.668 3.18021 15.2697V14.5394H16.8198V15.2697C16.8198 15.668 17.1025 16 17.4558 16H18.7279C19.0813 16 19.364 15.668 19.364 15.2697V13.0788C19.7173 13.0788 20 12.7469 20 12.3485V10.888C20 10.2905 19.5053 10.1577 19.1519 10.1577Z"
+                fill="#66678F"
+              />
+            </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              v-else
+            >
+              <path
+                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
+                fill="#66678F"
+              />
+            </svg>
+          </div>
+          <MenuDialog :showMenu="showMenu">
+            <template #data>
+              <div class="ts-dropdown-wrapper" v-if="items.length">
+                <div
+                  class="ts-dropdown-item"
+                  v-for="(item, index) in items"
+                  :key="index"
+                  @click="getOrigin(item)"
+                  :class="{ active: itemSearch == item }"
+                >
+                  <div>
+                    <span>
+                      <svg
+                        width="20"
+                        height="16"
+                        viewBox="0 0 20 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        v-if="mode == 'hotel'"
+                      >
+                        <path
+                          d="M2.4735 5.04564C2.4735 4.71369 2.75618 4.31535 3.10954 4.31535C3.4629 4.31535 4.947 5.04564 5.58304 5.04564H6.21908C6.85512 5.04564 8.40989 4.31535 8.69258 4.31535C8.97527 4.31535 9.32862 4.6473 9.32862 5.04564C9.32862 5.44398 8.69258 6.50622 8.69258 7.23651H11.1661C11.1661 6.50622 10.53 5.44398 10.53 5.04564C10.53 4.6473 10.8127 4.31535 11.1661 4.31535C11.5194 4.31535 13.0035 5.04564 13.6396 5.04564H14.2756C14.9117 5.04564 16.4664 4.31535 16.7491 4.31535C17.0318 4.31535 17.3852 4.6473 17.3852 5.04564C17.3852 5.44398 16.7491 6.50622 16.7491 7.23651H18.5866V0.73029C18.5866 0.33195 18.3039 0 17.9505 0H1.83746C1.4841 0 1.27208 0.33195 1.27208 0.73029V7.23651H3.10954C3.10954 6.50622 2.4735 5.44398 2.4735 5.04564Z"
+                        />
+                        <path
+                          d="M19.1519 10.1577H0.636042C0.282686 10.1577 0 10.4896 0 10.888V12.3485C0 12.7469 0.282686 13.0788 0.636042 13.0788V15.2697C0.636042 15.668 0.918728 16 1.27208 16H2.54417C2.89753 16 3.18021 15.668 3.18021 15.2697V14.5394H16.8198V15.2697C16.8198 15.668 17.1025 16 17.4558 16H18.7279C19.0813 16 19.364 15.668 19.364 15.2697V13.0788C19.7173 13.0788 20 12.7469 20 12.3485V10.888C20 10.2905 19.5053 10.1577 19.1519 10.1577Z"
+                        />
+                      </svg>
+                      <svg
+                        width="12"
+                        height="16"
+                        viewBox="0 0 12 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        v-else
+                      >
+                        <path
+                          d="M7.2 11.781C7.2031 11.6485 7.25113 11.5205 7.33692 11.4161C7.42272 11.3117 7.54167 11.2366 7.676 11.2019C9.06314 10.8176 10.2581 9.96945 11.0414 8.81332C11.8247 7.65718 12.1438 6.27068 11.94 4.90849C11.7362 3.54629 11.0232 2.29987 9.93199 1.39816C8.84079 0.496448 7.44465 0 6 0C4.55535 0 3.15921 0.496448 2.06801 1.39816C0.976813 2.29987 0.26383 3.54629 0.060023 4.90849C-0.143784 6.27068 0.17527 7.65718 0.958581 8.81332C1.74189 9.96945 2.93686 10.8176 4.324 11.2019C4.45833 11.2366 4.57728 11.3117 4.66308 11.4161C4.74887 11.5205 4.7969 11.6485 4.8 11.781V14.8571C4.8 15.1602 4.92643 15.4509 5.15147 15.6652C5.37652 15.8796 5.68174 16 6 16C6.31826 16 6.62348 15.8796 6.84853 15.6652C7.07357 15.4509 7.2 15.1602 7.2 14.8571V11.781Z"
+                        />
+                      </svg>
+                    </span>
+                    <span class="ts-name" v-if="mode == 'flight'">
+                      {{ item.ct }} > {{ item.an }} ({{ item.ac }})
+                    </span>
+                    <span class="ts-name" v-else-if="mode == 'vacation'">
+                      {{ item.name }}
+                    </span>
+                    <span v-else-if="mode == 'hotel'">
+                      {{ item.secondaryName }} , {{ item.name }}
+                    </span>
+                    <span v-else-if="mode == 'hotelFlightDestination'">
+                      {{ item.secondaryName }} , {{ item.name }}
+                    </span>
+                    <span v-else-if="mode == 'hotelFlightOrigin'">
+                      {{ item.cityCode }},{{ item.countryName }},{{ item.name }}
+                    </span>
+                  </div>
+                  <div>
+                    <svg
+                      v-if="itemSearch == item"
+                      width="6"
+                      height="10"
+                      viewBox="0 0 6 10"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0.250695 8.61155C0.101068 8.75343 0.0112855 8.95149 0.000993118 9.16241C-0.00929922 9.37333 0.0607372 9.57992 0.195777 9.73698C0.262494 9.81459 0.343204 9.87769 0.433283 9.92264C0.523361 9.96759 0.621038 9.99351 0.720717 9.99893C0.820395 10.0043 0.920115 9.98915 1.01417 9.9542C1.10821 9.91925 1.19474 9.86525 1.2688 9.79528L5.7493 5.55861C5.82846 5.48355 5.89168 5.39196 5.93486 5.28975C5.97805 5.18755 6.00024 5.07701 6 4.96527C5.99976 4.85354 5.9771 4.7431 5.93348 4.6411C5.88986 4.5391 5.82625 4.44781 5.74677 4.37312L1.30682 0.203585C1.23253 0.133696 1.14577 0.0798388 1.05152 0.0451078C0.957266 0.0103769 0.85738 -0.00454521 0.757596 0.00120068C0.657813 0.00694656 0.560098 0.033247 0.470063 0.0785904C0.380029 0.123933 0.299449 0.187425 0.232952 0.265421C0.0984339 0.423044 0.0291311 0.629972 0.0402159 0.840902C0.0513006 1.05183 0.141869 1.24958 0.292095 1.39084L3.82378 4.70703C3.85904 4.74017 3.88724 4.78069 3.90654 4.82597C3.92585 4.87125 3.93582 4.92027 3.93582 4.96984C3.93582 5.01941 3.92585 5.06843 3.90654 5.11371C3.88724 5.15898 3.85904 5.19951 3.82378 5.23264L0.250695 8.61155Z"
+                        fill="#66678F"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </MenuDialog>
+        </div>
+      </slot>
+    </div>
+  </v-dialog>
+</template>
+
+<script>
+import MenuDialog from './MenuDialog.vue';
+export default {
+  components: {
+    MenuDialog,
+  },
+  props: {
+    openDialog: {
+      default: false,
+    },
+    items: {},
+    title: {},
+    from: {
+      default: false,
+    },
+    mode: {
+      default: 'flight',
+    },
+  },
+  data() {
+    return {
+      dialog: this.openDialog,
+      showMenu: false,
+      itemSearch: null,
+      display: null,
+    };
+  },
+  watch: {
+    openDialog: {
+      handler(val) {
+        this.dialog = val;
+      },
+      immediate: true,
+    },
+  },
+  methods: {
+    onClickOutside() {
+      this.showMenu = false;
+    },
+    search() {
+      this.showMenu = true;
+      this.$emit('getDataSearch', this.itemSearch, this.display);
+    },
+    close() {
+      this.dialog = false;
+      this.$emit('close', this.dialog);
+    },
+    getOrigin(item) {
+      if (this.mode == 'flight') {
+        this.display = item.ac + '-' + item.ct + '-' + item.an;
+      } else if (this.mode == 'vacation' || this.mode == 'hotel') {
+        this.display = item.name;
+      } else if (this.mode == 'hotelFlightOrigin') {
+        this.display = item.cityCode + '-' + item.cityName + '-' + item.name;
+      } else if (this.mode == 'hotelFlightDestination') {
+        this.display = item.name + '-' + item.secondaryName;
+      }
+      this.itemSearch = item;
+      this.dialog = false;
+      this.$emit('getDataSearch', this.itemSearch, this.display);
+    },
+  },
+};
+</script>
