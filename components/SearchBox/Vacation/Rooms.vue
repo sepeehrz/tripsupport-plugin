@@ -222,6 +222,9 @@ export default {
       return;
     }
     let parsedGetLastVacationBooking = JSON.parse(getLastVacationBooking);
+    if (isNaN(parsedGetLastVacationBooking.NumberOfRooms)) {
+      localStorage.clear();
+    }
     this.TsRoomsSelected = parsedGetLastVacationBooking.NumberOfRooms;
     this.$emit('NumberOfRooms', this.TsRoomsSelected);
   },

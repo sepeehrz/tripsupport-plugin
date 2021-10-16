@@ -261,6 +261,13 @@ export default {
       return;
     }
     let parsedGetFlightLastSearch = JSON.parse(getFlightLastSearch);
+    if (
+      isNaN(parsedGetFlightLastSearch.adult) ||
+      isNaN(parsedGetFlightLastSearch.infant) ||
+      isNaN(parsedGetFlightLastSearch.child)
+    ) {
+      localStorage.clear();
+    }
     this.adult = parsedGetFlightLastSearch.adult;
     this.infant = parsedGetFlightLastSearch.infant;
     this.child = parsedGetFlightLastSearch.child;
