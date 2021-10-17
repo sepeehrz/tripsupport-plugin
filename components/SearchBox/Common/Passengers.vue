@@ -256,6 +256,9 @@ export default {
     },
   },
   mounted() {
+    if (isNaN(this.getPassenger)) {
+      localStorage.clear();
+    }
     let getFlightLastSearch = localStorage.getItem('lastFlightRoundTripSearch');
     if (!getFlightLastSearch) {
       return;
