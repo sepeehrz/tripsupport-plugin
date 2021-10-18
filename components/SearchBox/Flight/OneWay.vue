@@ -253,10 +253,7 @@
             v-click-outside="onClickOutside"
             @click="openOrigin"
             @focus="$event.target.select()"
-            @change="clearInput"
-            @keyup.down="onArrowDownOrigin"
-            @keyup.up="onArrowUpOrigin"
-            @keyup.enter="onEnterOrigin"
+            @change="fillInput"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -358,10 +355,7 @@
             v-click-outside="outSideDestinationMenu"
             @click="openDestination"
             @focus="$event.target.select()"
-            @change="clearInput"
-            @keyup.down="onArrowDownDestination"
-            @keyup.up="onArrowUpDestination"
-            @keyup.enter="onEnterDestination"
+            @change="fillInput"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -609,52 +603,26 @@ export default {
     },
   },
   methods: {
-    onArrowDownOrigin() {
-      if (this.arrowCounterOrigin < this.originItems.length) {
-        this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
-        this.activeOrigin = this.arrowCounterOrigin;
+    fillInput() {
+      if (this.originItems.length && this.origin.length) {
+        this.origin = this.originItems[0];
+        this.displayOrigin =
+          this.originItems[0].ac +
+          '-' +
+          this.originItems[0].ct +
+          '-' +
+          this.originItems[0].an;
+        this.showOriginMenu = false;
       }
-    },
-    onArrowUpOrigin() {
-      if (this.arrowCounterOrigin > 0) {
-        this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
-        this.activeOrigin = this.arrowCounterOrigin;
-      }
-    },
-    onEnterOrigin() {
-      let item = this.originItems[this.arrowCounterOrigin];
-      this.origin = item;
-      this.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
-      this.showOriginMenu = false;
-      this.arrowCounterOrigin = -1;
-    },
-    onArrowDownDestination() {
-      if (this.arrowCounterDestination < this.destinationItems.length) {
-        this.arrowCounterDestination = this.arrowCounterDestination + 1;
-        this.activeDestination = this.arrowCounterDestination;
-      }
-    },
-    onArrowUpDestination() {
-      if (this.arrowCounterDestination > 0) {
-        this.arrowCounterDestination = this.arrowCounterDestination - 1;
-        this.activeDestination = this.arrowCounterDestination;
-      }
-    },
-    onEnterDestination() {
-      let item = this.destinationItems[this.arrowCounterDestination];
-      this.destination = item;
-      this.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
-      this.showDestinationMenu = false;
-      this.arrowCounterDestination = -1;
-    },
-    clearInput() {
-      if (!this.origin.ct) {
-        this.origin = null;
-        this.displayOrigin = null;
-      }
-      if (!this.destination.ct) {
-        this.destination = null;
-        this.displayDestination = null;
+      if (this.destinationItems.length && this.destination.length) {
+        this.destination = this.destinationItems[0];
+        this.displayDestination =
+          this.destinationItems[0].ac +
+          '-' +
+          this.destinationItems[0].ct +
+          '-' +
+          this.destinationItems[0].an;
+        this.showDestinationMenu = false;
       }
     },
     clearDate() {
@@ -713,8 +681,8 @@ export default {
       this.destination = item;
       this.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
     },
-    originSearch() {
-      if (this.origin) {
+    originSearch(e) {
+      if (!this.origin.ct) {
         this.axios
           .get(
             `https://search.tripsupport.ca/api/searchairports?searchvalue=${this.origin.trim()}`
@@ -728,9 +696,36 @@ export default {
       } else {
         this.showOriginMenu = true;
       }
+      if (e.key == 'ArrowDown') {
+        if (this.arrowCounterOrigin < this.originItems.length) {
+          this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
+          this.activeOrigin = this.arrowCounterOrigin;
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (this.arrowCounterOrigin > 0) {
+          this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
+          this.activeOrigin = this.arrowCounterOrigin;
+        }
+      } else if (e.key == 'Enter') {
+        if (this.arrowCounterOrigin == 0 && this.originItems[0]) {
+          this.origin = this.originItems[0];
+          this.displayOrigin =
+            this.originItems[0].ac +
+            '-' +
+            this.originItems[0].ct +
+            '-' +
+            this.originItems[0].an;
+        } else if (this.arrowCounterOrigin > 0) {
+          let item = this.originItems[this.arrowCounterOrigin];
+          this.origin = item;
+          this.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
+          this.arrowCounterOrigin = -1;
+        }
+        this.showOriginMenu = false;
+      }
     },
-    destinationSearch() {
-      if (this.destination) {
+    destinationSearch(e) {
+      if (!this.destination.ct) {
         this.axios
           .get(
             `https://search.tripsupport.ca/api/searchairports?searchvalue=${this.destination.trim()}`
@@ -743,6 +738,33 @@ export default {
         this.showDestinationMenu = false;
       } else {
         this.showDestinationMenu = true;
+      }
+      if (e.key == 'ArrowDown') {
+        if (this.arrowCounterDestination < this.destinationItems.length) {
+          this.arrowCounterDestination = this.arrowCounterDestination + 1;
+          this.activeDestination = this.arrowCounterDestination;
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (this.arrowCounterDestination > 0) {
+          this.arrowCounterDestination = this.arrowCounterDestination - 1;
+          this.activeDestination = this.arrowCounterDestination;
+        }
+      } else if (e.key == 'Enter') {
+        if (this.arrowCounterDestination == 0 && this.destinationItems[0]) {
+          this.destination = this.destinationItems[0];
+          this.displayDestination =
+            this.destinationItems[0].ac +
+            '-' +
+            this.destinationItems[0].ct +
+            '-' +
+            this.destinationItems[0].an;
+        } else if (this.arrowCounterDestination > 0) {
+          let item = this.destinationItems[this.arrowCounterDestination];
+          this.destination = item;
+          this.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
+          this.arrowCounterDestination = -1;
+        }
+        this.showDestinationMenu = false;
       }
     },
     save() {

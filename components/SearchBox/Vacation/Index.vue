@@ -330,10 +330,7 @@ input::placeholder {
             v-click-outside="onClickOutsideFrom"
             @click="openOrigin"
             @focus="$event.target.select()"
-            @change="clearInput"
-            @keyup.down="onArrowDownFrom"
-            @keyup.up="onArrowUpFrom"
-            @keyup.enter="onEnterFrom"
+            @change="fillInput"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -436,10 +433,7 @@ input::placeholder {
             v-click-outside="onClickOutsideTo"
             @click="openDestination"
             @focus="$event.target.select()"
-            @change="clearInput"
-            @keyup.down="onArrowDownTo"
-            @keyup.up="onArrowUpTo"
-            @keyup.enter="onEnterTo"
+            @change="fillInput"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -692,13 +686,14 @@ export default {
         this.From = { codes: 'YYZ', name: 'Toronto' };
       }
     });
-    this.previousSelectionTravellers = {
-      adults: this.Adults,
-      children: this.Children,
-      childrenAges: this.ChildrenAges,
-    };
+
     let getLastVacationBooking = localStorage.getItem('lastVacationBooking');
     if (!getLastVacationBooking) {
+      this.previousSelectionTravellers = {
+        adults: 2,
+        children: 0,
+        childrenAges: [],
+      };
       return;
     }
     let parsedGetLastVacationBooking = JSON.parse(getLastVacationBooking);
@@ -757,27 +752,6 @@ export default {
     },
   },
   methods: {
-    onArrowDownFrom() {
-      if (this.arrowCounterFrom < this.FromsItemsDisplay.length) {
-        this.arrowCounterFrom = this.arrowCounterFrom + 1;
-        this.activeFrom = this.arrowCounterFrom;
-        this.fixScrollingOrigin();
-      }
-    },
-    onArrowUpFrom() {
-      if (this.arrowCounterFrom > 0) {
-        this.arrowCounterFrom = this.arrowCounterFrom - 1;
-        this.activeFrom = this.arrowCounterFrom;
-        this.fixScrollingOrigin();
-      }
-    },
-    onEnterFrom() {
-      let item = this.FromsItemsDisplay[this.arrowCounterFrom];
-      this.From = item;
-      this.displayFrom = item.name;
-      this.showFormMenu = false;
-      this.arrowCounterFrom = -1;
-    },
     fixScrollingOrigin() {
       let element = this.$refs.dropdownItemOrigin[this.arrowCounterFrom];
       element.scrollIntoView({
@@ -794,33 +768,16 @@ export default {
         inline: 'start',
       });
     },
-    onArrowDownTo() {
-      if (this.arrowCounterTo < this.toItemsDisplay.length) {
-        this.arrowCounterTo = this.arrowCounterTo + 1;
-        this.activeTo = this.arrowCounterTo;
-        this.fixScrollingDestination();
+    fillInput() {
+      if (this.FromsItemsDisplay.length && this.From.length) {
+        this.From = this.FromsItemsDisplay[0];
+        this.displayFrom = this.FromsItemsDisplay[0].name;
+        this.showFormMenu = false;
       }
-    },
-    onArrowUpTo() {
-      if (this.arrowCounterTo > 0) {
-        this.arrowCounterTo = this.arrowCounterTo - 1;
-        this.activeTo = this.arrowCounterTo;
-        this.fixScrollingDestination();
-      }
-    },
-    onEnterTo() {
-      let item = this.toItemsDisplay[this.arrowCounterTo];
-      this.To = item;
-      this.displayTo = item.name;
-      this.showToMenu = false;
-      this.arrowCounterTo = -1;
-    },
-    clearInput() {
-      if (!this.To.ids) {
-        this.displayTo = null;
-      }
-      if (!this.From.codes) {
-        this.displayFrom = null;
+      if (this.toItemsDisplay.length && this.To.length) {
+        this.To = this.toItemsDisplay[0];
+        this.displayTo = this.toItemsDisplay[0].name;
+        this.showToMenu = false;
       }
     },
     clearDate() {
@@ -876,7 +833,7 @@ export default {
           this.data = response.data.data;
         });
     },
-    searchTo() {
+    searchTo(e) {
       this.querySelections(this.To, this.toItems, (res) => {
         this.toItemsDisplay = res;
       });
@@ -897,8 +854,33 @@ export default {
       } else {
         this.showToMenu = true;
       }
+      if (e.key == 'ArrowDown') {
+        if (this.arrowCounterTo < this.toItemsDisplay.length) {
+          this.arrowCounterTo = this.arrowCounterTo + 1;
+          this.activeTo = this.arrowCounterTo;
+          this.fixScrollingDestination();
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (this.arrowCounterTo > 0) {
+          this.arrowCounterTo = this.arrowCounterTo - 1;
+          this.activeTo = this.arrowCounterTo;
+          this.fixScrollingDestination();
+        }
+      } else if (e.key == 'Enter') {
+        if (this.arrowCounterTo == 0 && this.toItemsDisplay[0]) {
+          this.To = this.toItemsDisplay[0];
+          this.displayTo = toItemsDisplay[0].name;
+        } else if (this.arrowCounterTo > 0) {
+          let item = this.toItemsDisplay[this.arrowCounterTo];
+          this.To = item;
+          this.displayTo = item.name;
+          this.showToMenu = false;
+          this.arrowCounterTo = -1;
+        }
+        this.showToMenu = false;
+      }
     },
-    searchFrom() {
+    searchFrom(e) {
       this.querySelections(this.From, this.FromsItems, (cb) => {
         this.FromsItemsDisplay = cb;
       });
@@ -906,6 +888,31 @@ export default {
         this.showFormMenu = false;
       } else {
         this.showFormMenu = true;
+      }
+      if (e.key == 'ArrowDown') {
+        if (this.arrowCounterFrom < this.FromsItemsDisplay.length) {
+          this.arrowCounterFrom = this.arrowCounterFrom + 1;
+          this.activeFrom = this.arrowCounterFrom;
+          this.fixScrollingOrigin();
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (this.arrowCounterFrom > 0) {
+          this.arrowCounterFrom = this.arrowCounterFrom - 1;
+          this.activeFrom = this.arrowCounterFrom;
+          this.fixScrollingOrigin();
+        }
+      } else if (e.key == 'Enter') {
+        if (this.arrowCounterFrom == 0 && this.FromsItemsDisplay[0]) {
+          this.From = this.FromsItemsDisplay[0];
+          this.displayFrom = this.FromsItemsDisplay[0].name;
+        } else if (this.arrowCounterFrom > 0) {
+          let item = this.FromsItemsDisplay[this.arrowCounterFrom];
+          this.From = item;
+          this.displayFrom = item.name;
+          this.showFormMenu = false;
+          this.arrowCounterFrom = -1;
+        }
+        this.showFormMenu = false;
       }
     },
     querySelections(value, arrayItems, callback) {

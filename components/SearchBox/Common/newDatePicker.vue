@@ -7,10 +7,12 @@
   margin-top: 11px;
   background: #ffffff url(../../../assets/images/svg/calendar-icon.svg)
     no-repeat 1em center / 1em;
-  z-index: 1001;
 }
 ::v-deep .vhd__datepicker__dummy-wrapper {
   border: unset;
+}
+::v-deep .vhd__datepicker {
+  z-index: 1001;
 }
 .ts-label {
   text-align: left;
