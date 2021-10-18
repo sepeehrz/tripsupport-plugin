@@ -216,10 +216,7 @@ input::placeholder {
           :placeholder="`${$t('HOTELS.Destination_To')}`"
           @click="openOrigin"
           @focus="$event.target.select()"
-          @change="clearInput"
-          @keyup.down="onArrowDown"
-          @keyup.up="onArrowUp"
-          @keyup.enter="onEnter"
+          @change="fillInput"
         />
         <div class="ts-airplane-icon">
           <svg
@@ -411,27 +408,6 @@ export default {
     },
   },
   methods: {
-    onArrowDown() {
-      if (this.arrowCounter < this.items.length) {
-        this.arrowCounter = this.arrowCounter + 1;
-        this.activeTo = this.arrowCounter;
-        this.fixScrolling();
-      }
-    },
-    onArrowUp() {
-      if (this.arrowCounter > 0) {
-        this.arrowCounter = this.arrowCounter - 1;
-        this.activeTo = this.arrowCounter;
-        this.fixScrolling();
-      }
-    },
-    onEnter() {
-      let item = this.items[this.arrowCounter];
-      this.To = item;
-      this.displayTo = item.name;
-      this.showToMenu = false;
-      this.arrowCounter = -1;
-    },
     fixScrolling() {
       let element = this.$refs.dropdownItem[this.arrowCounter];
       element.scrollIntoView({
@@ -440,10 +416,11 @@ export default {
         inline: 'start',
       });
     },
-    clearInput() {
-      if (!this.To.id) {
-        this.To = null;
-        this.displayTo = null;
+    fillInput() {
+      if (this.items.length && this.To.length) {
+        this.To = this.items[0];
+        this.displayTo = this.items[0].name;
+        this.showToMenu = false;
       }
     },
     clearDate() {
@@ -467,7 +444,7 @@ export default {
     onClickOutside() {
       this.showToMenu = false;
     },
-    search() {
+    search(e) {
       if (this.To) {
         clearTimeout(this.timeout);
 
@@ -485,6 +462,31 @@ export default {
         this.showToMenu = false;
       } else {
         this.showToMenu = true;
+      }
+      if (e.key == 'ArrowDown') {
+        if (this.arrowCounter < this.items.length) {
+          this.arrowCounter = this.arrowCounter + 1;
+          this.activeTo = this.arrowCounter;
+          this.fixScrolling();
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (this.arrowCounter > 0) {
+          this.arrowCounter = this.arrowCounter - 1;
+          this.activeTo = this.arrowCounter;
+          this.fixScrolling();
+        }
+      } else if (e.key == 'Enter') {
+        if (this.arrowCounter == 0 && this.items[0]) {
+          this.To = this.items[0];
+          this.displayTo = this.items[0].name;
+        } else if (this.arrowCounter > 0) {
+          let item = this.items[this.arrowCounter];
+          this.To = item;
+          this.displayTo = item.name;
+          this.showToMenu = false;
+          this.arrowCounter = -1;
+        }
+        this.showToMenu = false;
       }
     },
     getTo(item) {

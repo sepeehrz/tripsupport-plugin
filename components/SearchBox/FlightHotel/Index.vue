@@ -233,10 +233,7 @@ label {
             @click="openOrigin"
             class="ts-input"
             @focus="$event.target.select()"
-            @change="clearInput"
-            @keyup.down="onArrowDownOrigin"
-            @keyup.up="onArrowUpOrigin"
-            @keyup.enter="onEnterOrigin"
+            @change="fillInput"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -318,10 +315,7 @@ label {
             v-click-outside="outSideDestinationMenu"
             @click="openDestination"
             @focus="$event.target.select()"
-            @change="clearInput"
-            @keyup.down="onArrowDownDestination"
-            @keyup.up="onArrowUpDestination"
-            @keyup.enter="onEnterDestination"
+            @change="fillInput"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -541,49 +535,49 @@ export default {
     },
   },
   methods: {
-    onArrowDownOrigin() {
-      if (this.arrowCounterOrigin < this.originItems.length) {
-        this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
-        this.activeFrom = this.arrowCounterOrigin;
-        this.fixScrollingOrigin();
-      }
-    },
-    onArrowUpOrigin() {
-      if (this.arrowCounterOrigin > 0) {
-        this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
-        this.activeFrom = this.arrowCounterOrigin;
-        this.fixScrollingOrigin();
-      }
-    },
-    onEnterOrigin() {
-      let item = this.originItems[this.arrowCounterOrigin];
-      this.origin = item;
-      this.displayOrigin =
-        item.cityCode + '-' + item.cityName + '-' + item.name;
-      this.showOriginMenu = false;
-      this.arrowCounterOrigin = -1;
-    },
-    onArrowDownDestination() {
-      if (this.arrowCounterDestination < this.destinationItems.length) {
-        this.arrowCounterDestination = this.arrowCounterDestination + 1;
-        this.activeTo = this.arrowCounterDestination;
-        this.fixScrollingDestination();
-      }
-    },
-    onArrowUpDestination() {
-      if (this.arrowCounterDestination > 0) {
-        this.arrowCounterDestination = this.arrowCounterDestination - 1;
-        this.activeTo = this.arrowCounterDestination;
-        this.fixScrollingDestination();
-      }
-    },
-    onEnterDestination() {
-      let item = this.destinationItems[this.arrowCounterDestination];
-      this.destination = item;
-      this.displayDestination = item.name + '-' + item.secondaryName;
-      this.showDestinationMenu = false;
-      this.arrowCounterDestination = -1;
-    },
+    // onArrowDownOrigin() {
+    //   if (this.arrowCounterOrigin < this.originItems.length) {
+    //     this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
+    //     this.activeFrom = this.arrowCounterOrigin;
+    //     this.fixScrollingOrigin();
+    //   }
+    // },
+    // onArrowUpOrigin() {
+    //   if (this.arrowCounterOrigin > 0) {
+    //     this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
+    //     this.activeFrom = this.arrowCounterOrigin;
+    //     this.fixScrollingOrigin();
+    //   }
+    // },
+    // onEnterOrigin() {
+    //   let item = this.originItems[this.arrowCounterOrigin];
+    //   this.origin = item;
+    //   this.displayOrigin =
+    //     item.cityCode + '-' + item.cityName + '-' + item.name;
+    //   this.showOriginMenu = false;
+    //   this.arrowCounterOrigin = -1;
+    // },
+    // onArrowDownDestination() {
+    //   if (this.arrowCounterDestination < this.destinationItems.length) {
+    //     this.arrowCounterDestination = this.arrowCounterDestination + 1;
+    //     this.activeTo = this.arrowCounterDestination;
+    //     this.fixScrollingDestination();
+    //   }
+    // },
+    // onArrowUpDestination() {
+    //   if (this.arrowCounterDestination > 0) {
+    //     this.arrowCounterDestination = this.arrowCounterDestination - 1;
+    //     this.activeTo = this.arrowCounterDestination;
+    //     this.fixScrollingDestination();
+    //   }
+    // },
+    // onEnterDestination() {
+    //   let item = this.destinationItems[this.arrowCounterDestination];
+    //   this.destination = item;
+    //   this.displayDestination = item.name + '-' + item.secondaryName;
+    //   this.showDestinationMenu = false;
+    //   this.arrowCounterDestination = -1;
+    // },
     fixScrollingOrigin() {
       let element = this.$refs.dropdownItemOrigin[this.arrowCounterOrigin];
       element.scrollIntoView({
@@ -602,14 +596,24 @@ export default {
         inline: 'start',
       });
     },
-    clearInput() {
-      if (!this.origin.code) {
-        // this.origin = null;
-        this.displayOrigin = null;
+    fillInput() {
+      if (this.originItems.length && this.origin.length) {
+        this.origin = this.originItems[0];
+        this.displayOrigin =
+          this.originItems[0].cityCode +
+          '-' +
+          this.originItems[0].cityName +
+          '-' +
+          this.originItems[0].name;
+        this.showOriginMenu = false;
       }
-      if (!this.destination.id) {
-        // this.destination = null;
-        this.displayDestination = null;
+      if (this.destinationItems.length && this.destination.length) {
+        this.destination = this.destinationItems[0];
+        this.displayDestination =
+          this.destinationItems[0].name +
+          '-' +
+          this.destinationItems[0].secondaryName;
+        this.showDestinationMenu = false;
       }
     },
     clearDate() {
@@ -650,7 +654,7 @@ export default {
     outSideDestinationMenu() {
       this.showDestinationMenu = false;
     },
-    originSearch() {
+    originSearch(e) {
       if (this.origin) {
         clearTimeout(this.originTimeout);
         this.originTimeout = setTimeout(() => {
@@ -668,8 +672,38 @@ export default {
       } else {
         this.showOriginMenu = true;
       }
+      if (e.key == 'ArrowDown') {
+        if (this.arrowCounterOrigin < this.originItems.length) {
+          this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
+          this.activeOrigin = this.arrowCounterOrigin;
+          this.fixScrollingOrigin();
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (this.arrowCounterOrigin > 0) {
+          this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
+          this.activeOrigin = this.arrowCounterOrigin;
+          this.fixScrollingOrigin();
+        }
+      } else if (e.key == 'Enter') {
+        if (this.arrowCounterOrigin == 0 && this.originItems[0]) {
+          this.origin = this.originItems[0];
+          this.displayOrigin =
+            this.originItems[0].cityCode +
+            '-' +
+            this.originItems[0].cityName +
+            '-' +
+            this.originItems[0].name;
+        } else if (this.arrowCounterOrigin > 0) {
+          let item = this.originItems[this.arrowCounterOrigin];
+          this.origin = item;
+          this.displayOrigin =
+            item.cityCode + '-' + item.cityName + '-' + item.name;
+          this.arrowCounterOrigin = -1;
+        }
+        this.showOriginMenu = false;
+      }
     },
-    destinationSearch() {
+    destinationSearch(e) {
       if (this.destination) {
         clearTimeout(this.destinationTimeout);
         this.destinationTimeout = setTimeout(() => {
@@ -686,6 +720,33 @@ export default {
         this.showDestinationMenu = false;
       } else {
         this.showDestinationMenu = true;
+      }
+      if (e.key == 'ArrowDown') {
+        if (this.arrowCounterDestination < this.destinationItems.length) {
+          this.arrowCounterDestination = this.arrowCounterDestination + 1;
+          this.activeDestination = this.arrowCounterDestination;
+          this.fixScrollingDestination();
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (this.arrowCounterDestination > 0) {
+          this.arrowCounterDestination = this.arrowCounterDestination - 1;
+          this.activeDestination = this.arrowCounterDestination;
+          this.fixScrollingDestination();
+        }
+      } else if (e.key == 'Enter') {
+        if (this.arrowCounterDestination == 0 && this.destinationItems[0]) {
+          this.destination = this.destinationItems[0];
+          this.displayDestination =
+            this.destinationItems[0].name +
+            '-' +
+            this.destinationItems[0].secondaryName;
+        } else if (this.arrowCounterDestination > 0) {
+          let item = this.destinationItems[this.arrowCounterDestination];
+          this.destination = item;
+          this.displayDestination = item.name + '-' + item.secondaryName;
+          this.arrowCounterDestination = -1;
+        }
+        this.showDestinationMenu = false;
       }
     },
     numberOfTravellers(val) {
