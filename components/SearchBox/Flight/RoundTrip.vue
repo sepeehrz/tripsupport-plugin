@@ -246,6 +246,7 @@
         <div class="ts-origin">
           <label class="ts-label">{{ $t('Departing_From') }}</label>
           <input
+            ref="originInput"
             @keyup="originSearch"
             v-bind:value="displayOrigin"
             v-on:input="
@@ -348,6 +349,7 @@
         <div class="ts-destination">
           <label class="ts-label">{{ $t('Going_To') }}</label>
           <input
+            ref="destinationInput"
             @keyup="destinationSearch"
             v-bind:value="displayDestination"
             v-on:input="
@@ -658,6 +660,14 @@ export default {
     outSideDestinationMenu() {
       this.showDestinationMenu = false;
     },
+    focusNext(elem) {
+      const currentIndex = Array.from(elem.form.elements).indexOf(elem);
+      elem.form.elements
+        .item(
+          currentIndex < elem.form.elements.length - 1 ? currentIndex + 1 : 0
+        )
+        .focus();
+    },
     originSearch(e) {
       if (!this.origin.ct) {
         this.axios
@@ -699,6 +709,7 @@ export default {
           this.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
           this.arrowCounterOrigin = -1;
         }
+        this.$refs.destinationInput.focus();
         this.showOriginMenu = false;
       }
     },

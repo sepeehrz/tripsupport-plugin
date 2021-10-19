@@ -423,6 +423,7 @@ input::placeholder {
             </div>
           </div> -->
           <input
+            ref="ToInput"
             @keyup="searchTo"
             v-bind:value="displayTo"
             v-on:input="
@@ -912,6 +913,7 @@ export default {
           this.showFormMenu = false;
           this.arrowCounterFrom = -1;
         }
+        this.$refs.ToInput.focus();
         this.showFormMenu = false;
       }
     },

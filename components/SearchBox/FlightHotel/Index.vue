@@ -303,6 +303,7 @@ label {
         <div class="ts-destination">
           <label for="">{{ $t('Going_To') }}</label>
           <input
+            ref="destinationInput"
             @keyup="destinationSearch"
             v-bind:value="displayDestination"
             v-on:input="
@@ -535,49 +536,6 @@ export default {
     },
   },
   methods: {
-    // onArrowDownOrigin() {
-    //   if (this.arrowCounterOrigin < this.originItems.length) {
-    //     this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
-    //     this.activeFrom = this.arrowCounterOrigin;
-    //     this.fixScrollingOrigin();
-    //   }
-    // },
-    // onArrowUpOrigin() {
-    //   if (this.arrowCounterOrigin > 0) {
-    //     this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
-    //     this.activeFrom = this.arrowCounterOrigin;
-    //     this.fixScrollingOrigin();
-    //   }
-    // },
-    // onEnterOrigin() {
-    //   let item = this.originItems[this.arrowCounterOrigin];
-    //   this.origin = item;
-    //   this.displayOrigin =
-    //     item.cityCode + '-' + item.cityName + '-' + item.name;
-    //   this.showOriginMenu = false;
-    //   this.arrowCounterOrigin = -1;
-    // },
-    // onArrowDownDestination() {
-    //   if (this.arrowCounterDestination < this.destinationItems.length) {
-    //     this.arrowCounterDestination = this.arrowCounterDestination + 1;
-    //     this.activeTo = this.arrowCounterDestination;
-    //     this.fixScrollingDestination();
-    //   }
-    // },
-    // onArrowUpDestination() {
-    //   if (this.arrowCounterDestination > 0) {
-    //     this.arrowCounterDestination = this.arrowCounterDestination - 1;
-    //     this.activeTo = this.arrowCounterDestination;
-    //     this.fixScrollingDestination();
-    //   }
-    // },
-    // onEnterDestination() {
-    //   let item = this.destinationItems[this.arrowCounterDestination];
-    //   this.destination = item;
-    //   this.displayDestination = item.name + '-' + item.secondaryName;
-    //   this.showDestinationMenu = false;
-    //   this.arrowCounterDestination = -1;
-    // },
     fixScrollingOrigin() {
       let element = this.$refs.dropdownItemOrigin[this.arrowCounterOrigin];
       element.scrollIntoView({
@@ -700,6 +658,7 @@ export default {
             item.cityCode + '-' + item.cityName + '-' + item.name;
           this.arrowCounterOrigin = -1;
         }
+        this.$refs.destinationInput.focus();
         this.showOriginMenu = false;
       }
     },

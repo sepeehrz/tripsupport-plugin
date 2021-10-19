@@ -343,6 +343,7 @@
         <div class="ts-destination">
           <label class="ts-label">{{ $t('Going_To') }}</label>
           <input
+            ref="destinationInput"
             @keyup="destinationSearch"
             v-bind:value="displayDestination"
             v-on:input="
@@ -721,6 +722,7 @@ export default {
           this.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
           this.arrowCounterOrigin = -1;
         }
+        this.$refs.destinationInput.focus();
         this.showOriginMenu = false;
       }
     },
