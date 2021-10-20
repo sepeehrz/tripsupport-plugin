@@ -843,7 +843,7 @@ export default {
       });
       let url = location.href;
       url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/flight/oneway;tripType=oneway;destination=${this.destination.ac};origin=${this.origin.ac};IsFlexiSearch=${this.IsFlexiSearch};ns=${this.ns};departDate=${this.departDate};returnDate=;adult=${this.adult};child=${this.child};infant=${this.infant};class=${this.class};multiOrigin=${this.origin.ac}-${this.origin.ct}-${this.origin.an};multiDestination=${this.destination.ac}-${this.destination.ct}-${this.destination.an};multidate=`;
+      let href = `https://secure.tripsupport${url}/flight/oneway;tripType=oneway;destination=${this.destination.ac};origin=${this.origin.ac};IsFlexiSearch=${this.IsFlexiSearch};ns=${this.ns};departDate=${this.departDate};returnDate=;adult=${this.adult};child=${this.child};infant=${this.infant};class=${this.class};multiOrigin=;multiDestination=;multidate=`;
       window.open(href, '_self');
     },
     getRangeDate(e) {
