@@ -58,11 +58,13 @@ import OneWay from './OneWay.vue';
 import MultiCity from './MultiCity.vue';
 import Passengers from './../Common/Passengers.vue';
 import AirfareType from './../Common/AirfareType.vue';
+import newMultiCity from './NewMultiCity.vue';
 export default {
   components: {
     FlightNav,
     Passengers,
     AirfareType,
+    newMultiCity,
   },
   data() {
     return {
@@ -80,7 +82,7 @@ export default {
           return OneWay;
           break;
         case 'MultiCity':
-          return MultiCity;
+          return newMultiCity;
           break;
       }
     },
