@@ -683,34 +683,35 @@ export default {
       } else {
         this.showOriginMenu = true;
       }
-
-      if (e.key == 'ArrowDown') {
-        if (this.arrowCounterOrigin < this.originItems.length) {
-          this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
-          this.activeOrigin = this.arrowCounterOrigin;
+      if (!this.isMobile) {
+        if (e.key == 'ArrowDown') {
+          if (this.arrowCounterOrigin < this.originItems.length) {
+            this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
+            this.activeOrigin = this.arrowCounterOrigin;
+          }
+        } else if (e.key == 'ArrowUp') {
+          if (this.arrowCounterOrigin > 0) {
+            this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
+            this.activeOrigin = this.arrowCounterOrigin;
+          }
+        } else if (e.key == 'Enter') {
+          if (this.arrowCounterOrigin == 0 && this.originItems[0]) {
+            this.origin = this.originItems[0];
+            this.displayOrigin =
+              this.originItems[0].ac +
+              '-' +
+              this.originItems[0].ct +
+              '-' +
+              this.originItems[0].an;
+          } else if (this.arrowCounterOrigin > 0) {
+            let item = this.originItems[this.arrowCounterOrigin];
+            this.origin = item;
+            this.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
+            this.arrowCounterOrigin = -1;
+          }
+          this.$refs.destinationInput.focus();
+          this.showOriginMenu = false;
         }
-      } else if (e.key == 'ArrowUp') {
-        if (this.arrowCounterOrigin > 0) {
-          this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
-          this.activeOrigin = this.arrowCounterOrigin;
-        }
-      } else if (e.key == 'Enter') {
-        if (this.arrowCounterOrigin == 0 && this.originItems[0]) {
-          this.origin = this.originItems[0];
-          this.displayOrigin =
-            this.originItems[0].ac +
-            '-' +
-            this.originItems[0].ct +
-            '-' +
-            this.originItems[0].an;
-        } else if (this.arrowCounterOrigin > 0) {
-          let item = this.originItems[this.arrowCounterOrigin];
-          this.origin = item;
-          this.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
-          this.arrowCounterOrigin = -1;
-        }
-        this.$refs.destinationInput.focus();
-        this.showOriginMenu = false;
       }
     },
     destinationSearch(e) {
@@ -728,32 +729,34 @@ export default {
       } else {
         this.showDestinationMenu = true;
       }
-      if (e.key == 'ArrowDown') {
-        if (this.arrowCounterDestination < this.destinationItems.length) {
-          this.arrowCounterDestination = this.arrowCounterDestination + 1;
-          this.activeDestination = this.arrowCounterDestination;
+      if (!this.isMobile) {
+        if (e.key == 'ArrowDown') {
+          if (this.arrowCounterDestination < this.destinationItems.length) {
+            this.arrowCounterDestination = this.arrowCounterDestination + 1;
+            this.activeDestination = this.arrowCounterDestination;
+          }
+        } else if (e.key == 'ArrowUp') {
+          if (this.arrowCounterDestination > 0) {
+            this.arrowCounterDestination = this.arrowCounterDestination - 1;
+            this.activeDestination = this.arrowCounterDestination;
+          }
+        } else if (e.key == 'Enter') {
+          if (this.arrowCounterDestination == 0 && this.destinationItems[0]) {
+            this.destination = this.destinationItems[0];
+            this.displayDestination =
+              this.destinationItems[0].ac +
+              '-' +
+              this.destinationItems[0].ct +
+              '-' +
+              this.destinationItems[0].an;
+          } else if (this.arrowCounterDestination > 0) {
+            let item = this.destinationItems[this.arrowCounterDestination];
+            this.destination = item;
+            this.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
+            this.arrowCounterDestination = -1;
+          }
+          this.showDestinationMenu = false;
         }
-      } else if (e.key == 'ArrowUp') {
-        if (this.arrowCounterDestination > 0) {
-          this.arrowCounterDestination = this.arrowCounterDestination - 1;
-          this.activeDestination = this.arrowCounterDestination;
-        }
-      } else if (e.key == 'Enter') {
-        if (this.arrowCounterDestination == 0 && this.destinationItems[0]) {
-          this.destination = this.destinationItems[0];
-          this.displayDestination =
-            this.destinationItems[0].ac +
-            '-' +
-            this.destinationItems[0].ct +
-            '-' +
-            this.destinationItems[0].an;
-        } else if (this.arrowCounterDestination > 0) {
-          let item = this.destinationItems[this.arrowCounterDestination];
-          this.destination = item;
-          this.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
-          this.arrowCounterDestination = -1;
-        }
-        this.showDestinationMenu = false;
       }
     },
     changeFormat(val) {
