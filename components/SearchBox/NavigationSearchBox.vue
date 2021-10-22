@@ -50,11 +50,14 @@ li svg {
   li {
     display: flex;
     flex-direction: column;
-    padding: 16px 10px 12px;
+    padding: 16px 7px 12px;
     background: #fff;
     color: #66678f;
     white-space: nowrap;
     border-bottom: 2px solid rgba(171, 171, 196, 0.2);
+  }
+  li span {
+    font-size: 14px;
   }
   li svg {
     fill: #ababc4;
@@ -67,6 +70,22 @@ li svg {
     border-bottom: 2px solid #ed1b2e;
     color: #0c0d25;
     border-radius: 0;
+  }
+}
+@media only screen and (max-width: 375px) {
+  li {
+    padding: 16px 5px 12px;
+  }
+  li span {
+    font-size: 13px;
+  }
+}
+@media only screen and (max-width: 320px) {
+  li {
+    padding: 16px 6px 12px;
+  }
+  li span {
+    font-size: 10px;
   }
 }
 </style>

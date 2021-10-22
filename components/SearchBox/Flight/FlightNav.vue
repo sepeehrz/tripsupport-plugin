@@ -31,6 +31,12 @@ li:hover {
     margin-bottom: 20px;
   }
 }
+@media only screen and (max-width: 320px) {
+  li {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
 </style>
 
 <template>

@@ -207,7 +207,7 @@
               class="ts-dropdown-item"
               v-for="(item, index) in items"
               :key="index"
-              @click="getOrigin(item)"
+              @click="selectItem(item)"
               :class="{
                 active: itemSearch == item,
               }"
@@ -351,10 +351,18 @@ export default {
       this.$emit('getDataSearch', this.itemSearch, this.display);
     },
     close() {
+      this.fillInputOnClose();
       this.dialog = false;
       this.$emit('close', this.dialog);
     },
-    getOrigin(item) {
+    fillInputOnClose() {
+      if (this.items.length && this.itemSearch.length) {
+        this.itemSearch = this.items[0];
+        this.displayItemSearch(this.itemSearch);
+        this.$emit('getDataSearch', this.itemSearch, this.display);
+      }
+    },
+    displayItemSearch(item) {
       if (this.mode == 'flight') {
         this.display = item.ac + '-' + item.ct + '-' + item.an;
       } else if (
@@ -368,6 +376,9 @@ export default {
       } else if (this.mode == 'hotelFlightDestination') {
         this.display = item.name + '-' + item.secondaryName;
       }
+    },
+    selectItem(item) {
+      this.displayItemSearch(item);
       this.itemSearch = item;
       this.dialog = false;
       this.$emit('getDataSearch', this.itemSearch, this.display);
