@@ -258,7 +258,10 @@ export default {
     },
     search() {
       this.showMenu = true;
-      this.$emit('getDataSearch', this.itemSearch, this.display);
+      this.$emit('getDataSearch', {
+        searchItem: this.itemSearch,
+        display: this.display,
+      });
     },
     close() {
       this.dialog = false;
@@ -276,7 +279,10 @@ export default {
       }
       this.itemSearch = item;
       this.dialog = false;
-      this.$emit('getDataSearch', this.itemSearch, this.display);
+      this.$emit('getDataSearch', {
+        searchItem: this.itemSearch,
+        display: this.display,
+      });
     },
   },
 };

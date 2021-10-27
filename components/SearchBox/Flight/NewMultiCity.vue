@@ -1,16 +1,30 @@
 <style scoped>
+.ts-menu {
+  top: 82px;
+}
 .ts-fields-wrapper {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 .ts-block-wrapper {
   display: flex;
-  flex: 0 0 50%;
+  flex: 0 0 49%;
   margin-bottom: 10px;
+  position: relative;
+}
+.ts-remove-icon {
+  cursor: pointer;
+  position: absolute;
+  right: -22px;
+  bottom: 10px;
 }
 .ts-input-wrapper {
   position: relative;
   flex: 0 0 35%;
+}
+.ts-date-picker {
+  flex: 0 0 25%;
 }
 .ts-label {
   font-size: 12px;
@@ -49,6 +63,7 @@
 }
 .ts-dropdown-wrapper {
   padding: 10px 0;
+  width: 352px;
 }
 .ts-dropdown-item {
   display: flex;
@@ -69,7 +84,6 @@
 .ts-dropdown-item:hover .ts-dropdown-city-name span svg {
   fill: #007aff;
 }
-
 .ts-dropdown-city-name {
   font-size: 16px;
   font-weight: 500;
@@ -104,9 +118,6 @@
 
 .ts-svg svg {
   fill: #ababc4;
-}
-.ts-date-picker {
-  flex: 0 0 25%;
 }
 .ts-action-wrapper {
   display: flex;
@@ -189,6 +200,58 @@
   left: 5px;
   top: 1px;
 }
+@media only screen and (max-width: 600px) {
+  .ts-block-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 0 0 100%;
+  }
+  .ts-input-wrapper {
+    position: relative;
+    flex: 0 0 100%;
+    margin-top: 10px;
+  }
+  .ts-date-picker {
+    flex: 0 0 100%;
+    margin-top: 10px;
+  }
+  .ts-input {
+    width: 100%;
+  }
+  .ts-action-wrapper {
+    display: block;
+    padding-top: 18px;
+    padding-bottom: 22px;
+  }
+  .ts-checkbox-wrapper {
+    display: block;
+  }
+  .ts-checkbox-wrapper > div {
+    margin-bottom: 20px;
+  }
+  .ts-button {
+    display: block;
+    margin-top: 26px;
+  }
+  .ts-add-more {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .ts-remove-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+  }
+  .ts-flight-number {
+    color: #66678f;
+  }
+  .ts-remove {
+    color: #ed1b2e;
+  }
+}
 </style>
 
 <template>
@@ -198,13 +261,22 @@
       v-for="(trip, index) in tripsSearchData"
       :key="index"
     >
+      <div class="ts-remove-wrapper" v-if="isMobile">
+        <div class="ts-flight-number">Flight {{ index + 1 }}</div>
+        <div class="ts-remove" v-if="index > 1" @click="remove(index)">
+          remove
+        </div>
+      </div>
+      <div class="ts-remove-icon" v-if="!isMobile && index > 1">
+        <v-icon @click="remove(index)">mdi-close</v-icon>
+      </div>
       <div class="ts-input-wrapper">
         <label class="ts-label">{{ $t('Departing_From') }}</label>
         <input
           type="text"
           class="ts-input"
           :placeholder="`${$t('Departing_From')}`"
-          @keyup="searchOrigin($event.target.value, trip)"
+          @keyup="searchOrigin($event.target.value, trip, $event)"
           v-bind:value="trip.displayOrigin"
           v-on:input="
             (trip.displayOrigin = $event.target.value),
@@ -216,6 +288,8 @@
             }
           "
           @click="openOrigin(trip)"
+          @focus="$event.target.select()"
+          @change="fillInput(trip)"
         />
         <div class="ts-airplane-icon">
           <svg
@@ -241,6 +315,10 @@
                 class="ts-dropdown-item"
                 v-for="(item, index) in trip.originItems"
                 :key="index"
+                :class="{
+                  active:
+                    trip.origin == item || index == trip.arrowCounterOrigin,
+                }"
                 @click="getOrigin(item, trip)"
               >
                 <div>
@@ -272,13 +350,20 @@
           </template>
         </DropdownDialog>
       </div>
-      <div v class="ts-input-wrapper">
-        <label class="ts-label">{{ $t('Departing_From') }}</label>
+      <SearchDialog
+        :openDialog="trip.openOriginMobile"
+        :items="trip.originItems"
+        :title="$t('Departing_From')"
+        @getDataSearch="getMobileDataOriginSearch($event, trip)"
+        @close="trip.openOriginMobile = $event"
+      />
+      <div class="ts-input-wrapper">
+        <label class="ts-label">{{ $t('Going_To') }}</label>
         <input
           type="text"
           class="ts-input"
-          :placeholder="`${$t('Departing_From')}`"
-          @keyup="searchDestination($event.target.value, trip)"
+          :placeholder="`${$t('Going_To')}`"
+          @keyup="searchDestination($event.target.value, trip, $event)"
           v-bind:value="trip.displayDestination"
           v-on:input="
             (trip.displayDestination = $event.target.value),
@@ -290,6 +375,8 @@
             }
           "
           @click="openDestination(trip)"
+          @focus="$event.target.select()"
+          @change="fillInput(trip)"
         />
         <div class="ts-airplane-icon">
           <svg
@@ -315,6 +402,11 @@
                 class="ts-dropdown-item"
                 v-for="(item, index) in trip.DestinationItems"
                 :key="index"
+                :class="{
+                  active:
+                    trip.destination == item ||
+                    index == trip.arrowCounterDestination,
+                }"
                 @click="getDestination(item, trip)"
               >
                 <div>
@@ -346,10 +438,18 @@
           </template>
         </DropdownDialog>
       </div>
+      <SearchDialog
+        :openDialog="trip.openDestinationMobile"
+        :items="trip.DestinationItems"
+        :title="$t('Going_To')"
+        @getDataSearch="getMobileDataDestinationSearch($event, trip)"
+        @close="trip.openDestinationMobile = $event"
+      />
       <div class="ts-date-picker">
         <NewDatePicker
           @RangeSelectedDate="getRangeDate($event, trip)"
           @clearDate="clearDate(trip)"
+          :lastDate="trip.lastDate"
           :singleDatePicker="true"
           title="Departure"
         />
@@ -416,6 +516,7 @@
         </div>
       </div>
     </div>
+    <Toast v-model="showDialog" :toast="toast" />
   </div>
 </template>
 <script>
@@ -423,9 +524,15 @@ import moment from 'moment';
 export default {
   data() {
     return {
+      name: 'flight',
       tripsSearchData: [],
       IsFlexiSearch: false,
       ns: false,
+      showDialog: false,
+      toast: {
+        toastText: '',
+        color: 'red',
+      },
     };
   },
   created() {
@@ -436,9 +543,14 @@ export default {
       displayDestination: null,
       openOriginDialog: false,
       openDestinationDialog: false,
-      departure: null,
+      openOriginMobile: false,
+      openDestinationMobile: false,
+      departureDate: null,
+      lastDate: null,
       originItems: [],
       DestinationItems: [],
+      arrowCounterOrigin: 0,
+      arrowCounterDestination: 0,
     });
     this.tripsSearchData.push({
       origin: null,
@@ -447,15 +559,106 @@ export default {
       displayDestination: null,
       openOriginDialog: false,
       openDestinationDialog: false,
-      departure: null,
+      openOriginMobile: false,
+      openDestinationMobile: false,
+      departureDate: null,
+      lastDate: null,
       originItems: [],
       DestinationItems: [],
+      arrowCounterOrigin: 0,
+      arrowCounterDestination: 0,
     });
   },
+  mounted() {
+    let getLastSearch = localStorage.getItem('lastFlightMultipleSearch');
+    if (!getLastSearch) {
+      this.getUserLocation();
+      return;
+    }
+    let parsedGetLastSearch = JSON.parse(getLastSearch);
+    this.tripsSearchData = parsedGetLastSearch;
+  },
   computed: {
-    disabledButton() {},
+    disabledButton() {
+      let adult = this.$store.state.adult;
+      if (
+        this.validation('origin') ||
+        this.validation('destination') ||
+        this.validation('date') ||
+        adult == 0
+      ) {
+        return true;
+      }
+    },
+    isMobile() {
+      if (window.innerWidth <= 600) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   methods: {
+    fillInput(trip) {
+      if (trip.originItems.length && trip.origin.length) {
+        trip.origin = trip.originItems[0];
+        trip.displayOrigin =
+          trip.originItems[0].ac +
+          '-' +
+          trip.originItems[0].ct +
+          '-' +
+          trip.originItems[0].an;
+        trip.openOriginDialog = false;
+      }
+      if (trip.DestinationItems.length && trip.destination.length) {
+        trip.destination = trip.DestinationItems[0];
+        trip.displayDestination =
+          trip.DestinationItems[0].ac +
+          '-' +
+          trip.DestinationItems[0].ct +
+          '-' +
+          trip.DestinationItems[0].an;
+        trip.openDestinationDialog = false;
+      }
+    },
+    async getUserLocation() {
+      let { data } = await this.axios.get(
+        `https://tripsupport.ca/wp-json/trip-support-endpoints/v1/user/geolocation`
+      );
+      let { data: res } = await this.axios.get(
+        `https://search.tripsupport.ca/api/searchairports?searchvalue=${data.data.city.toLowerCase()}`
+      );
+      if (res.length) {
+        let locationSearch = res[0];
+        this.$cookie.set(
+          'userLocation',
+          JSON.stringify({
+            ct: locationSearch.ct,
+            ac: locationSearch.ac,
+          })
+        );
+        this.tripsSearchData[0].origin = locationSearch;
+        this.tripsSearchData[0].displayOrigin =
+          locationSearch.ac + '-' + locationSearch.ct + '-' + locationSearch.an;
+      } else {
+        this.$cookie.set(
+          'userLocation',
+          JSON.stringify({
+            ct: 'Toronto',
+            ac: 'YTO',
+          })
+        );
+        this.tripsSearchData[0].origin = {
+          ac: 'YTO',
+          an: 'Toronto All airports',
+          cc: 'CA',
+          cn: 'CA',
+          ct: 'Toronto',
+        };
+        this.tripsSearchData[0].displayOrigin =
+          'YTO' + '-' + 'Toronto' + '-' + 'Toronto All airports';
+      }
+    },
     addNewTrips() {
       this.tripsSearchData.push({
         origin: null,
@@ -464,20 +667,103 @@ export default {
         displayDestination: null,
         openOriginDialog: false,
         openDestinationDialog: false,
-        departure: null,
+        openOriginMobile: false,
+        openDestinationMobile: false,
+        departureDate: null,
+        lastDate: null,
         originItems: [],
         DestinationItems: [],
+        arrowCounterOrigin: 0,
+        arrowCounterDestination: 0,
       });
     },
-    searchOrigin(key, trip) {
+    getMobileDataOriginSearch(item, trip) {
+      trip.origin = item.searchItem;
+      trip.displayOrigin = item.display;
+      if (!item.searchItem.ct) {
+        this.searchRequest(item.searchItem, (cb) => {
+          trip.originItems = cb;
+        });
+      }
+    },
+    getMobileDataDestinationSearch(item, trip) {
+      trip.destination = item.searchItem;
+      trip.displayDestination = item.display;
+      if (!item.searchItem.ct) {
+        this.searchRequest(item.searchItem, (cb) => {
+          trip.DestinationItems = cb;
+        });
+      }
+    },
+    searchOrigin(key, trip, e) {
       this.searchRequest(key, (cb) => {
         trip.originItems = cb;
       });
+      if (this.isMobile) {
+        trip.openOriginDialog = false;
+      } else {
+        trip.openOriginDialog = true;
+      }
+      if (e.key == 'ArrowDown') {
+        if (trip.arrowCounterOrigin < trip.originItems.length) {
+          trip.arrowCounterOrigin = trip.arrowCounterOrigin + 1;
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (trip.arrowCounterOrigin > 0) {
+          trip.arrowCounterOrigin = trip.arrowCounterOrigin - 1;
+        }
+      } else if (e.key == 'Enter') {
+        if (trip.arrowCounterOrigin == 0 && trip.originItems[0]) {
+          trip.origin = trip.originItems[0];
+          trip.displayOrigin =
+            trip.originItems[0].ac +
+            '-' +
+            trip.originItems[0].ct +
+            '-' +
+            trip.originItems[0].an;
+        } else if (trip.arrowCounterOrigin > 0) {
+          let item = trip.originItems[trip.arrowCounterOrigin];
+          trip.origin = item;
+          trip.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
+          trip.arrowCounterOrigin = -1;
+        }
+        trip.openOriginDialog = false;
+      }
     },
-    searchDestination(key, trip) {
+    searchDestination(key, trip, e) {
       this.searchRequest(key, (cb) => {
         trip.DestinationItems = cb;
       });
+      if (this.isMobile) {
+        trip.openDestinationDialog = false;
+      } else {
+        trip.openDestinationDialog = true;
+      }
+      if (e.key == 'ArrowDown') {
+        if (trip.arrowCounterDestination < trip.DestinationItems.length) {
+          trip.arrowCounterDestination = trip.arrowCounterDestination + 1;
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (trip.arrowCounterDestination > 0) {
+          trip.arrowCounterDestination = trip.arrowCounterDestination - 1;
+        }
+      } else if (e.key == 'Enter') {
+        if (trip.arrowCounterDestination == 0 && trip.DestinationItems[0]) {
+          trip.destination = trip.DestinationItems[0];
+          trip.displayDestination =
+            trip.DestinationItems[0].ac +
+            '-' +
+            trip.DestinationItems[0].ct +
+            '-' +
+            trip.DestinationItems[0].an;
+        } else if (trip.arrowCounterDestination > 0) {
+          let item = trip.DestinationItems[trip.arrowCounterDestination];
+          trip.destination = item;
+          trip.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
+          trip.arrowCounterDestination = -1;
+        }
+        trip.openDestinationDialog = false;
+      }
     },
     searchRequest(value, callback) {
       if (value) {
@@ -501,29 +787,192 @@ export default {
       trip.openDestinationDialog = false;
     },
     openOrigin(item) {
-      item.openOriginDialog = true;
+      if (this.isMobile) {
+        item.openOriginDialog = false;
+        item.openOriginMobile = !item.openOriginMobile;
+      } else {
+        item.openOriginDialog = true;
+      }
     },
     openDestination(item) {
-      item.openDestinationDialog = true;
+      if (this.isMobile) {
+        item.openDestinationDialog = false;
+        item.openDestinationMobile = !item.openDestinationMobile;
+      } else {
+        item.openDestinationDialog = true;
+      }
     },
     getRangeDate(date, trip) {
-      trip.departure = this.changeFormat(date.startDate);
+      trip.lastDate = date;
+      trip.departureDate = this.changeFormat(date.startDate);
     },
     clearDate(item) {
-      item.departure = null;
+      item.departureDate = null;
     },
     changeFormat(val) {
       return moment(val).format('D MMM YYYY');
     },
-    save() {
-      console.log(this.tripsSearchData);
+    remove(index) {
+      this.tripsSearchData.splice(index, 1);
     },
-    // last date not implement
-    // validation not implement
-    // save not implement
-    // fix query lisbon not implement
-    // fix width dropdown not implement
-    // keyup and keydown not implement
+    getMultipleData(items) {
+      let result = [];
+      for (let item of items) {
+        let splitCharacter = item.ac + '-' + item.ct + '-' + item.an;
+        result.push(splitCharacter);
+      }
+      return result;
+    },
+    generateQuery() {
+      let airfaireType = this.$store.state.airfaireType;
+      let adult = this.$store.state.adult;
+      let infant = this.$store.state.infant;
+      let child = this.$store.state.child;
+      let url = location.href;
+      url = url.substring(url.indexOf('.')).split('/')[0];
+      let getOrigin = this.tripsSearchData.map((items) => {
+        return items.origin;
+      });
+      let getDestination = this.tripsSearchData.map((items) => {
+        return items.destination;
+      });
+      let getDepartureDate = this.tripsSearchData.map((items) => {
+        return items.departureDate;
+      });
+      let urlQuery = `https://secure.tripsupport${url}/flight/multicity;tripType=multicity;`;
+      let FirstDestination = `destination=${getDestination[0].ac}-${getDestination[0].ct}-${getDestination[0].an};`;
+      let FirstOrigin = `origin=${getOrigin[0].ac}-${getOrigin[0].ct}-${getOrigin[0].an};`;
+      let FirstDepartDate = `departDate=${getDepartureDate[0]};`;
+      let multiOrigin = `multiOrigin=${this.getMultipleData(getOrigin)};`;
+      let multiDestination = `multiDestination=${this.getMultipleData(
+        getDestination
+      )};`;
+      let multidate = `multidate=${getDepartureDate}`;
+      let QueryAdult = `adult=${adult};`;
+      let QueryChild = `child=${child};`;
+      let QueryInfant = `infant=${infant};`;
+      let QueryAirfaireType = `class=${airfaireType};`;
+      let IsFlexiSearch = `IsFlexiSearch=${this.IsFlexiSearch};`;
+      let ns = `ns=${this.ns};`;
+
+      let href = `${urlQuery}${FirstOrigin}${FirstDestination}${IsFlexiSearch}${ns}${FirstDepartDate}returnDate=;${QueryAdult}${QueryChild}${QueryInfant}${QueryAirfaireType}${multiOrigin}${multiDestination}${multidate}`;
+      href = href.replace(/\(/g, '%28').replace(/\)/g, '%29');
+      window.open(href, '_self');
+    },
+    validation(mode) {
+      let isValid;
+      let data;
+      if (mode == 'origin') {
+        data = this.tripsSearchData.map((items) => {
+          if (items.origin) {
+            return items.origin.ct;
+          }
+        });
+      } else if (mode == 'destination') {
+        data = this.tripsSearchData.map((items) => {
+          if (items.destination) {
+            return items.destination.ct;
+          }
+        });
+      } else if (mode == 'date') {
+        data = this.tripsSearchData.map((items) => {
+          if (items.departureDate) {
+            return items.departureDate;
+          }
+        });
+      }
+
+      for (let items in data) {
+        if (data[items] === undefined || data[items] === null) {
+          isValid = true;
+        } else {
+          isValid = false;
+        }
+      }
+      return isValid;
+    },
+    setLocalStorage() {
+      let LocalData = this.tripsSearchData.map((item) => {
+        return {
+          origin: item.origin,
+          displayOrigin: item.displayOrigin,
+          destination: item.destination,
+          displayDestination: item.displayDestination,
+          openOriginDialog: false,
+          openDestinationDialog: false,
+          openOriginMobile: false,
+          openDestinationMobile: false,
+          lastDate: item.lastDate,
+          originItems: [],
+          DestinationItems: [],
+          arrowCounterOrigin: 0,
+          arrowCounterDestination: 0,
+        };
+      });
+      localStorage.setItem(
+        'lastFlightMultipleSearch',
+        JSON.stringify(LocalData)
+      );
+    },
+    validationFields() {
+      if (this.validation('origin')) {
+        this.showDialog = true;
+        this.toast = {
+          color: '#cb3839',
+          toastText: 'Please Enter Departing From ',
+        };
+        this.$gtag.event('Validation', {
+          event_category: 'Flight Multi City',
+          event_label: 'User entered an invalid Departing From',
+        });
+        return;
+      }
+      if (this.validation('destination')) {
+        this.showDialog = true;
+        this.toast = {
+          color: '#cb3839',
+          toastText: 'Please Enter Departing Going To ',
+        };
+        this.$gtag.event('Validation', {
+          event_category: 'Flight Multi City',
+          event_label: 'User entered an invalid Going To',
+        });
+        return;
+      }
+      if (this.validation('date')) {
+        this.showDialog = true;
+        this.toast = {
+          color: '#cb3839',
+          toastText: 'Please Enter departure date',
+        };
+        this.$gtag.event('Validation', {
+          event_category: 'Flight Multi City',
+          event_label: 'User entered an invalid Departure',
+        });
+        return;
+      }
+      if (this.$store.state.adultt == 0) {
+        this.showDialog = true;
+        this.toast = {
+          color: '#cb3839',
+          toastText: 'AdultCount should not be zero',
+        };
+        this.$gtag.event('Validation', {
+          event_category: 'Flight Multi City',
+          event_label: 'User entered an invalid Traveller',
+        });
+        return;
+      }
+      this.$gtag.event('Search', {
+        event_category: 'Flight Multi City',
+        event_label: 'User submit new search',
+      });
+      this.generateQuery();
+    },
+    save() {
+      this.validationFields();
+      this.setLocalStorage();
+    },
   },
 };
 </script>
