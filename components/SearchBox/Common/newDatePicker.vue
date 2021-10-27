@@ -148,15 +148,18 @@ export default {
   watch: {
     lastDate: {
       handler: function(val) {
-        this.dateRange = val;
-        if (!this.singleDatePicker) {
-          this.startingDateValue = new Date(val.startDate);
-          this.endingDateValue = new Date(val.endDate);
-        } else {
-          this.startingDateValue = new Date(val.startDate);
+        if (val) {
+          this.dateRange = val;
+          if (!this.singleDatePicker) {
+            this.startingDateValue = new Date(val.startDate);
+            this.endingDateValue = new Date(val.endDate);
+          } else {
+            this.startingDateValue = new Date(val.startDate);
+          }
         }
       },
       deep: true,
+      immediate: true,
     },
     startDate: {
       handler: function(val) {

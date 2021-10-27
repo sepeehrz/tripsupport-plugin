@@ -348,7 +348,10 @@ export default {
     },
     search() {
       this.showMenu = true;
-      this.$emit('getDataSearch', this.itemSearch, this.display);
+      this.$emit('getDataSearch', {
+        searchItem: this.itemSearch,
+        display: this.display,
+      });
     },
     close() {
       this.fillInputOnClose();
@@ -381,7 +384,10 @@ export default {
       this.displayItemSearch(item);
       this.itemSearch = item;
       this.dialog = false;
-      this.$emit('getDataSearch', this.itemSearch, this.display);
+      this.$emit('getDataSearch', {
+        searchItem: this.itemSearch,
+        display: this.display,
+      });
     },
   },
 };
