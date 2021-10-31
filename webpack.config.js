@@ -11,10 +11,10 @@ module.exports = {
       { test: /\.js$/, use: 'babel-loader' },
       { test: /\.vue$/, use: 'vue-loader' },
       { test: /\.css$/, use: ['vue-style-loader', 'css-loader'] },
-      // {
-      //   test: /\.scss$/,
-      //   use: ['vue-style-loader', 'css-loader', 'sass-loader'],
-      // },
+      {
+        test: /\.scss$/,
+        use: ['vue-style-loader', 'css-loader', 'sass-loader'],
+      },
       {
         test: /\.(png|jpg|gif|svg)$/i,
         use: [

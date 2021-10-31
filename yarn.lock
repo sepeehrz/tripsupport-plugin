@@ -6212,15 +6212,6 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
 
-vue-hotel-datepicker@^4.4.3:
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/vue-hotel-datepicker/-/vue-hotel-datepicker-4.4.3.tgz#b7ab67bdc60e4237f3a69065f82a38cc5f81a087"
-  integrity sha512-FKkEIij47ESwmAIZJ8lo/sR8esbH3VhUqqs2NiC/w65uKv2SSf60/wCAjVVolw5CAC44Y2yPcNQuWelnCMC1Zw==
-  dependencies:
-    fecha "^4.2.1"
-    lodash.throttle "^4.1.1"
-    vue "^2.6.14"
-
 vue-i18n@^8.23.0:
   version "8.24.2"
   resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.24.2.tgz#4bfba15a89c0697220b55f787bbcb05a461d5482"
@@ -6269,11 +6260,6 @@ vue@^2.6.10, vue@^2.6.12:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
   integrity sha512-uhmLFETqPPNyuLLbsKz6ioJ4q7AZHzD8ZVFNATNyICSZouqP2Sz0rotWQC8UNBF6VGSCs5abnKJoStA6JbCbfg==
-
-vue@^2.6.14:
-  version "2.6.14"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.14.tgz#e51aa5250250d569a3fbad3a8a5a687d6036e235"
-  integrity sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ==
 
 vuetify@^2.4.9:
   version "2.4.9"

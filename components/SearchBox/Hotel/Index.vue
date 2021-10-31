@@ -295,6 +295,10 @@ input::placeholder {
           :lastDate="lastDate"
           @dateValidation="dateValidation = $event"
           :haveValidation="true"
+          :placeHolder="{
+            origin: 'Departure Date',
+            destination: 'Return Date',
+          }"
         />
       </div>
     </div>
@@ -436,9 +440,9 @@ export default {
         this.showToMenu = true;
       }
     },
-    getDataOriginSearch(origin, displayOrigin) {
-      this.To = origin;
-      this.displayTo = displayOrigin;
+    getDataOriginSearch(items) {
+      this.To = items.searchItem;
+      this.displayTo = items.display;
       this.search();
     },
     onClickOutside() {
@@ -463,30 +467,32 @@ export default {
       } else {
         this.showToMenu = true;
       }
-      if (e.key == 'ArrowDown') {
-        if (this.arrowCounter < this.items.length) {
-          this.arrowCounter = this.arrowCounter + 1;
-          this.activeTo = this.arrowCounter;
-          this.fixScrolling();
-        }
-      } else if (e.key == 'ArrowUp') {
-        if (this.arrowCounter > 0) {
-          this.arrowCounter = this.arrowCounter - 1;
-          this.activeTo = this.arrowCounter;
-          this.fixScrolling();
-        }
-      } else if (e.key == 'Enter') {
-        if (this.arrowCounter == 0 && this.items[0]) {
-          this.To = this.items[0];
-          this.displayTo = this.items[0].name;
-        } else if (this.arrowCounter > 0) {
-          let item = this.items[this.arrowCounter];
-          this.To = item;
-          this.displayTo = item.name;
+      if (!this.isMobile) {
+        if (e.key == 'ArrowDown') {
+          if (this.arrowCounter < this.items.length) {
+            this.arrowCounter = this.arrowCounter + 1;
+            this.activeTo = this.arrowCounter;
+            this.fixScrolling();
+          }
+        } else if (e.key == 'ArrowUp') {
+          if (this.arrowCounter > 0) {
+            this.arrowCounter = this.arrowCounter - 1;
+            this.activeTo = this.arrowCounter;
+            this.fixScrolling();
+          }
+        } else if (e.key == 'Enter') {
+          if (this.arrowCounter == 0 && this.items[0]) {
+            this.To = this.items[0];
+            this.displayTo = this.items[0].name;
+          } else if (this.arrowCounter > 0) {
+            let item = this.items[this.arrowCounter];
+            this.To = item;
+            this.displayTo = item.name;
+            this.showToMenu = false;
+            this.arrowCounter = -1;
+          }
           this.showToMenu = false;
-          this.arrowCounter = -1;
         }
-        this.showToMenu = false;
       }
     },
     getTo(item) {

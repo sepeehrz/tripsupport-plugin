@@ -5,6 +5,7 @@ section {
 .ts-menu {
   top: 24px;
   max-height: unset;
+  overflow: unset;
 }
 .ts-passengers-activation {
   display: flex;
@@ -47,9 +48,52 @@ section {
   font-size: 14px;
   font-weight: 400;
 }
+/* .ts-counter-child {
+  margin-bottom: 15px;
+} */
+.ts-select-wrapper {
+  width: 200px;
+  padding: 5px 0;
+}
+.ts-select-item {
+  vertical-align: middle;
+  padding: 10px 5px;
+  cursor: pointer;
+}
+.ts-svg svg {
+  fill: #ababc4;
+  margin-right: 8px;
+}
+.active {
+  background: rgba(0, 122, 255, 0.02);
+  color: #0c0d25;
+}
+.active .ts-svg svg {
+  fill: #007aff;
+}
 .ts-counter-buttons-wrapper {
   display: flex;
   align-items: center;
+  position: relative;
+}
+.ts-counter-buttons-wrapper .ts-menu {
+  top: 43px;
+  right: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 300px;
+}
+.ts-counter-input {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 110px;
+  height: 40px;
+  padding-left: 15px;
+  cursor: pointer;
+}
+.ts-counter-input:focus,
+.ts-counter-input:hover {
+  outline: 2px solid #045ab6;
 }
 .ts-counter {
   padding: 0 20px;
@@ -245,29 +289,45 @@ section {
                   </div>
                 </div>
                 <div class="ts-counter-buttons-wrapper">
-                  <button
-                    @click="
-                      child.age--;
-                      emitDate();
+                  <input
+                    :value="child.displayAge"
+                    readonly
+                    class="ts-counter-input"
+                    @click="openSelectModal(child)"
+                    v-click-outside="
+                      () => {
+                        child.openAgeMenu = false;
+                      }
                     "
-                    class="ts-counter-buttons"
-                    :disabled="child.age == 0"
-                  >
-                    -
-                  </button>
-                  <div class="ts-counter">
-                    <b>{{ child.age }}</b>
-                  </div>
-                  <button
-                    @click="
-                      child.age++;
-                      emitDate();
-                    "
-                    class="ts-counter-buttons"
-                    :disabled="child.age >= 11"
-                  >
-                    +
-                  </button>
+                  />
+                  <MenuDialog :showMenu="child.openAgeMenu">
+                    <template #data>
+                      <div class="ts-select-wrapper">
+                        <div
+                          class="ts-select-item"
+                          v-for="(childItem, ind) in selectItems"
+                          :key="ind"
+                          @click="getChildItem(childItem, child, ind)"
+                          :class="{ active: child.displayAge == childItem }"
+                        >
+                          <span class="ts-svg">
+                            <svg
+                              fill="none"
+                              height="18"
+                              viewBox="0 0 20 18"
+                              width="20"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M16.6109 12.9433C18.1982 13.5218 20 14.1828 20 16.8408V17.5715C20 17.6851 19.9561 17.7941 19.878 17.8745C19.7999 17.9548 19.6939 18 19.5834 18H16.4485C16.4188 18.0001 16.3894 17.9937 16.3623 17.9811C16.3352 17.9686 16.311 17.9503 16.2914 17.9273C16.2718 17.9044 16.2571 17.8774 16.2485 17.8482C16.2398 17.819 16.2374 17.7882 16.2412 17.7579C16.2495 17.6968 16.2537 17.6336 16.2537 17.5715V16.2859C16.2537 12.3412 13.6156 11.0631 11.5878 10.2917C11.5617 10.2817 11.5379 10.2664 11.5176 10.2467C11.4974 10.227 11.4813 10.2033 11.4701 10.1771C11.3826 9.9724 11.3105 9.76109 11.2545 9.54503C11.2464 9.51315 11.2454 9.47979 11.2517 9.44749C11.2581 9.41518 11.2715 9.38478 11.2909 9.35862C12.24 8.03266 12.7352 6.42056 12.6991 4.77439C12.7001 4.73409 12.7122 4.69491 12.734 4.66137C12.7557 4.62783 12.7862 4.60127 12.822 4.58476C13.2452 4.3894 13.7037 4.28792 14.1676 4.28693C14.598 4.27404 15.0262 4.35502 15.424 4.52455C15.8217 4.69407 16.1801 4.9483 16.4756 5.27051C16.771 5.59273 16.9968 5.97562 17.1381 6.39402C17.2793 6.81242 17.3329 7.25684 17.2952 7.69805C17.3539 8.36765 17.2756 9.04247 17.0654 9.67906C16.8552 10.3156 16.5176 10.8999 16.0746 11.3942C15.9658 11.7551 15.9493 12.1389 16.0267 12.5083C16.0391 12.6058 16.0789 12.6974 16.1412 12.7719L16.6099 12.9433H16.6109ZM15.0008 16.2859V17.5715C15.0008 17.628 14.9899 17.684 14.9688 17.7362C14.9476 17.7884 14.9167 17.8358 14.8777 17.8756C14.8386 17.9155 14.7923 17.9469 14.7414 17.9683C14.6905 17.9896 14.636 18.0004 14.5811 18H0.416602C0.306112 18 0.200148 17.9548 0.12202 17.8745C0.043892 17.7941 0 17.6851 0 17.5715V16.2901C0 12.8962 2.30277 12.0584 4.33266 11.3192C4.54512 11.242 4.75759 11.1638 4.96797 11.0835C5.02317 11.0599 5.10545 10.9603 5.16898 10.7406C5.30927 10.1872 5.28497 9.60312 5.0992 9.064C4.31287 8.1748 3.54007 7.06811 3.54007 4.3255C3.49239 3.76646 3.56025 3.20338 3.73917 2.67324C3.9181 2.14309 4.20405 1.6579 4.57824 1.24952C4.95243 0.841139 5.40638 0.518822 5.91028 0.303745C6.41418 0.0886674 6.95662 -0.0143036 7.50195 0.00159726C8.0471 -0.0142715 8.58934 0.0886478 9.09309 0.303598C9.59683 0.518548 10.0507 0.840667 10.4248 1.24881C10.799 1.65695 11.085 2.14188 11.264 2.67176C11.4431 3.20164 11.5112 3.76449 11.4638 4.32335C11.4638 7.06811 10.691 8.17158 9.90158 9.06722C9.71828 9.60502 9.69436 10.1867 9.83284 10.7385C9.89637 10.9603 9.97865 11.0599 10.0349 11.0813L10.6504 11.3095C12.6907 12.0562 15.0008 12.9026 15.0008 16.2859Z"
+                              ></path>
+                            </svg>
+                          </span>
+                          {{ childItem }}
+                        </div>
+                      </div>
+                    </template>
+                  </MenuDialog>
                 </div>
               </div>
             </div>
@@ -297,6 +357,26 @@ export default {
       travellers: [],
       numberOfRooms: 1,
       travellersMenu: false,
+      selectItems: [
+        '<1',
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+      ],
     };
   },
   watch: {
@@ -369,6 +449,15 @@ export default {
     this.$emit('numberOfTravellers', this.travellers);
   },
   methods: {
+    openSelectModal(item) {
+      item.openAgeMenu = true;
+    },
+    getChildItem(selected, items, ind) {
+      items.age = ind;
+      items.displayAge = selected;
+      items.openAgeMenu = false;
+      this.emitDate();
+    },
     outSideTravellersMenu() {
       this.travellersMenu = false;
     },
@@ -379,7 +468,11 @@ export default {
       value.childrenAges = [];
       let child = 1;
       while (child <= value.children) {
-        value.childrenAges.push({ age: 0 });
+        value.childrenAges.push({
+          age: 0,
+          openAgeMenu: false,
+          displayAge: 1,
+        });
         child++;
       }
     },

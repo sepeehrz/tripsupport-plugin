@@ -533,6 +533,9 @@ input::placeholder {
             :singleDatePicker="true"
             :lastDate="lastDate"
             title="Departure"
+            :placeHolder="{
+              origin: 'Departure Date',
+            }"
           />
         </div>
         <div class="ts-duration">
@@ -632,61 +635,65 @@ export default {
     };
   },
   async mounted() {
-    let { data } = await this.axios.get(
-      `https://tripsupport.ca/wp-json/trip-support-endpoints/v1/user/geolocation`
-    );
+    try {
+      let { data } = await this.axios.get(
+        `https://tripsupport.ca/wp-json/trip-support-endpoints/v1/user/geolocation`
+      );
 
-    await this.axios
-      .get(`https://vacationapi.tripsupport.ca/api/Resource/GetDepartures`)
-      .then((response) => {
-        this.FromsItems = response.data.data;
-        this.FromsItemsDisplay = response.data.data;
-      });
+      await this.axios
+        .get(`https://vacationapi.tripsupport.ca/api/Resource/GetDepartures`)
+        .then((response) => {
+          this.FromsItems = response.data.data;
+          this.FromsItemsDisplay = response.data.data;
+        });
 
-    await this.axios
-      .get(
-        `https://vacationapi.tripsupport.ca/api/Resource/GetDestinations?codes=${
-          this.From.codes ? this.From.codes : 'YYZ'
-        }`
-      )
-      .then((response) => {
-        this.toItems = response.data.data;
-        this.toItemsDisplay = response.data.data;
-      });
-    await this.axios
-      .get(
-        `https://vacationapi.tripsupport.ca/api/Resource/GetHierarchicalDestinations?code=${
-          this.From.codes ? this.From.codes : 'YYZ'
-        }`
-      )
-      .then((response) => {
-        this.data = response.data.data;
-      });
+      await this.axios
+        .get(
+          `https://vacationapi.tripsupport.ca/api/Resource/GetDestinations?codes=${
+            this.From.codes ? this.From.codes : 'YYZ'
+          }`
+        )
+        .then((response) => {
+          this.toItems = response.data.data;
+          this.toItemsDisplay = response.data.data;
+        });
+      await this.axios
+        .get(
+          `https://vacationapi.tripsupport.ca/api/Resource/GetHierarchicalDestinations?code=${
+            this.From.codes ? this.From.codes : 'YYZ'
+          }`
+        )
+        .then((response) => {
+          this.data = response.data.data;
+        });
 
-    let userLocation = data.data.city.toLowerCase();
-    this.querySelections(userLocation, this.FromsItems, (cb) => {
-      if (cb.length) {
-        this.$cookie.set(
-          'userLocation',
-          JSON.stringify({
-            ct: cb[0].name,
-            ac: cb[0].codes,
-          })
-        );
-        this.displayFrom = cb[0].name;
-        this.From = cb[0];
-      } else {
-        this.$cookie.set(
-          'userLocation',
-          JSON.stringify({
-            ct: 'Toronto',
-            ac: 'YYZ',
-          })
-        );
-        this.displayFrom = 'Toronto';
-        this.From = { codes: 'YYZ', name: 'Toronto' };
-      }
-    });
+      let userLocation = data.data.city.toLowerCase();
+      this.querySelections(userLocation, this.FromsItems, (cb) => {
+        if (cb.length) {
+          this.$cookie.set(
+            'userLocation',
+            JSON.stringify({
+              ct: cb[0].name,
+              ac: cb[0].codes,
+            })
+          );
+          this.displayFrom = cb[0].name;
+          this.From = cb[0];
+        } else {
+          this.$cookie.set(
+            'userLocation',
+            JSON.stringify({
+              ct: 'Toronto',
+              ac: 'YYZ',
+            })
+          );
+          this.displayFrom = 'Toronto';
+          this.From = { codes: 'YYZ', name: 'Toronto' };
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
 
     let getLastVacationBooking = localStorage.getItem('lastVacationBooking');
     if (!getLastVacationBooking) {
@@ -802,17 +809,17 @@ export default {
         this.showToMenu = true;
       }
     },
-    getDataOriginSearch(origin, displayOrigin) {
-      this.From = origin;
-      this.displayFrom = displayOrigin;
+    getDataOriginSearch(items) {
+      this.From = items.searchItem;
+      this.displayFrom = items.display;
       this.querySelections(this.From, this.FromsItems, (cb) => {
         this.FromsItemsDisplay = cb;
       });
       this.changeDestination();
     },
-    getDataDestinationSearch(destination, displayDestination) {
-      this.To = destination;
-      this.displayTo = displayDestination;
+    getDataDestinationSearch(items) {
+      this.To = items.searchItem;
+      this.displayTo = items.display;
       this.querySelections(this.To, this.toItems, (res) => {
         this.toItemsDisplay = res;
       });

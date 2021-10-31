@@ -207,9 +207,9 @@
               class="ts-dropdown-item"
               v-for="(item, index) in items"
               :key="index"
-              @click="selectItem(item)"
+              @click="selectItem(item, index)"
               :class="{
-                active: itemSearch == item,
+                active: itemSearch == item || index == activeItem,
               }"
             >
               <div>
@@ -296,12 +296,18 @@
                     {{ item.secondaryName }}
                   </span>
                   <span v-else-if="mode == 'hotelFlightOrigin'">
-                    {{ item.countryCode }},{{ item.name }}
+                    {{ item.name }}
                   </span>
                 </div>
               </div>
               <div class="ts-dropdown-airport" v-if="mode == 'flight'">
                 {{ item.cc }}
+              </div>
+              <div
+                class="ts-dropdown-airport"
+                v-else-if="mode == 'hotelFlightOrigin'"
+              >
+                {{ item.countryCode }}
               </div>
             </div>
           </div>
@@ -332,6 +338,7 @@ export default {
       showMenu: false,
       itemSearch: null,
       display: null,
+      activeItem: 0,
     };
   },
   watch: {
@@ -362,7 +369,10 @@ export default {
       if (this.items.length && this.itemSearch.length) {
         this.itemSearch = this.items[0];
         this.displayItemSearch(this.itemSearch);
-        this.$emit('getDataSearch', this.itemSearch, this.display);
+        this.$emit('getDataSearch', {
+          searchItem: this.itemSearch,
+          display: this.display,
+        });
       }
     },
     displayItemSearch(item) {
@@ -380,7 +390,8 @@ export default {
         this.display = item.name + '-' + item.secondaryName;
       }
     },
-    selectItem(item) {
+    selectItem(item, index) {
+      this.activeItem = index;
       this.displayItemSearch(item);
       this.itemSearch = item;
       this.dialog = false;

@@ -258,6 +258,10 @@ input::placeholder {
           :lastDate="lastDate"
           @dateValidation="dateValidation = $event"
           :haveValidation="true"
+          :placeHolder="{
+            origin: 'From',
+            destination: 'To',
+          }"
         />
       </div>
     </div>
@@ -397,9 +401,9 @@ export default {
         this.showToMenu = true;
       }
     },
-    getDataOriginSearch(origin, displayOrigin) {
-      this.To = origin;
-      this.displayTo = displayOrigin;
+    getDataOriginSearch(items) {
+      this.To = items.searchItem;
+      this.displayTo = items.display;
       this.search();
     },
     onClickOutside() {

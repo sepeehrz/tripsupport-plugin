@@ -440,6 +440,10 @@
           :lastDate="lastDate"
           :singleDatePicker="true"
           title="Departure"
+          :placeHolder="{
+            origin: 'Departure Date',
+            destination: 'and Return Date',
+          }"
         />
       </div>
     </div>
@@ -525,42 +529,49 @@ export default {
     };
   },
   async mounted() {
-    let { data } = await this.axios.get(
-      `https://tripsupport.ca/wp-json/trip-support-endpoints/v1/user/geolocation`
-    );
-    let { data: res } = await this.axios.get(
-      `https://search.tripsupport.ca/api/searchairports?searchvalue=${data.data.city.toLowerCase()}`
-    );
-    if (res.length) {
-      let locationSearch = res[0];
-      this.$cookie.set(
-        'userLocation',
-        JSON.stringify({
-          ct: locationSearch.ct,
-          ac: locationSearch.ac,
-        })
+    try {
+      let { data } = await this.axios.get(
+        `https://tripsupport.ca/wp-json/trip-support-endpoints/v1/user/geolocation`
       );
-      this.origin = locationSearch;
-      this.displayOrigin =
-        locationSearch.ac + '-' + locationSearch.ct + '-' + locationSearch.an;
-    } else {
-      this.$cookie.set(
-        'userLocation',
-        JSON.stringify({
-          ct: 'Toronto',
+      let { data: res } = await this.axios.get(
+        `https://search.tripsupport.ca/api/searchairports?searchvalue=${data.data.city.toLowerCase()}`
+      );
+      if (res.length) {
+        let locationSearch = res[0];
+        this.$cookie.set(
+          'userLocation',
+          JSON.stringify({
+            ct: locationSearch.ct,
+            ac: locationSearch.ac,
+            cc: locationSearch.cc,
+          })
+        );
+        this.origin = locationSearch;
+        this.displayOrigin =
+          locationSearch.ac + '-' + locationSearch.ct + '-' + locationSearch.an;
+      } else {
+        this.$cookie.set(
+          'userLocation',
+          JSON.stringify({
+            ct: 'Toronto',
+            ac: 'YTO',
+            cc: 'CA',
+          })
+        );
+        this.origin = {
           ac: 'YTO',
-        })
-      );
-      this.origin = {
-        ac: 'YTO',
-        an: 'Toronto All airports',
-        cc: 'CA',
-        cn: 'CA',
-        ct: 'Toronto',
-      };
-      this.displayOrigin =
-        'YTO' + '-' + 'Toronto' + '-' + 'Toronto All airports';
+          an: 'Toronto All airports',
+          cc: 'CA',
+          cn: 'CA',
+          ct: 'Toronto',
+        };
+        this.displayOrigin =
+          'YTO' + '-' + 'Toronto' + '-' + 'Toronto All airports';
+      }
+    } catch (e) {
+      console.log(e);
     }
+
     let getLastSearch = localStorage.getItem('lastFlightOneWaySearch');
     if (!getLastSearch) {
       return;
@@ -658,14 +669,14 @@ export default {
       this.destination = origin;
       this.displayDestination = displayOrigin;
     },
-    getDataOriginSearch(origin, displayOrigin) {
-      this.origin = origin;
-      this.displayOrigin = displayOrigin;
+    getDataOriginSearch(items) {
+      this.origin = items.searchItem;
+      this.displayOrigin = items.display;
       this.originSearch();
     },
-    getDataDestinationSearch(destination, displayDestination) {
-      this.destination = destination;
-      this.displayDestination = displayDestination;
+    getDataDestinationSearch(items) {
+      this.destination = items.searchItem;
+      this.displayDestination = items.display;
       this.destinationSearch();
     },
     onClickOutside() {

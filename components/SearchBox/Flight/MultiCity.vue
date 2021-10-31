@@ -2,46 +2,30 @@
 .ts-menu {
   top: 82px;
 }
-.ts-field-wrapper {
+.ts-fields-wrapper {
   display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
-.ts-field-item-wrapper {
+.ts-block-wrapper {
   display: flex;
-  align-items: center;
+  flex: 0 0 49%;
+  margin-bottom: 10px;
   position: relative;
 }
-.ts-remove-position {
+.ts-remove-icon {
   cursor: pointer;
   position: absolute;
-  right: -25px;
+  right: -5px;
   bottom: 10px;
 }
-.ts-remove-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 10px;
-}
-.ts-flight-number {
-  color: #66678f;
-}
-.ts-remove {
-  color: #ed1b2e;
-}
-.ts-field-item .ts-input {
-  width: 180px;
-}
-.ts-line {
-  height: 70px;
-  width: 1px;
-  background: rgba(171, 171, 196, 0.6);
-  margin: 0 30px;
-}
-.ts-field-item {
+.ts-input-wrapper {
   position: relative;
+  flex: 0 0 35%;
+  padding-right: 16px;
+}
+.ts-date-picker {
+  flex: 0 0 25%;
 }
 .ts-label {
   font-size: 12px;
@@ -53,13 +37,12 @@
 .ts-input {
   height: 48px;
   border: 1px solid rgba(171, 171, 196, 0.6);
-  padding: 0 10px;
+  padding: 0 10px 0 36px;
   border-radius: 6px;
   background: #ffffff;
   outline: none;
   margin-right: 16px;
   margin-top: 16px;
-  padding-left: 32px;
   color: #66678f;
   font-size: 14px;
   font-weight: 500;
@@ -78,12 +61,71 @@
   left: 9px;
   bottom: 13px;
 }
+.ts-dropdown-wrapper {
+  padding: 10px 0;
+  width: 352px;
+}
+.ts-dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 8px;
+}
+.ts-dropdown-item:not(:last-child) {
+  margin-bottom: 10px;
+}
+.ts-dropdown-item:hover {
+  background: rgba(0, 122, 255, 0.02);
+}
+.ts-dropdown-item:hover .ts-dropdown-city-name {
+  color: #0c0d25;
+}
+.ts-dropdown-item:hover .ts-dropdown-city-name span svg {
+  fill: #007aff;
+}
+.ts-dropdown-city-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #ababc4;
+  display: flex;
+  align-items: center;
+}
+.ts-dropdown-city-name span svg {
+  fill: #ababc4;
+  margin-right: 5px;
+  margin-bottom: -5px;
+}
+.ts-dropdown-ariport-name {
+  font-size: 12px;
+  color: #ababc4;
+  margin-left: 30px;
+  margin-top: 5px;
+}
+.ts-dropdown-airport {
+  font-size: 12px;
+  color: #666;
+}
+.active {
+  background: rgba(0, 122, 255, 0.02);
+}
+.active .ts-dropdown-city-name {
+  color: #0c0d25;
+}
+.active .ts-dropdown-city-name span svg {
+  fill: #007aff;
+}
+
+.ts-svg svg {
+  fill: #ababc4;
+}
 .ts-action-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 37px;
   padding-bottom: 32px;
+  width: 100%;
 }
 .ts-button {
   display: flex;
@@ -158,83 +200,24 @@
   left: 5px;
   top: 1px;
 }
-.ts-dropdown-wrapper {
-  padding: 10px 0;
-  width: 356px;
-}
-.ts-dropdown-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  padding: 0 8px;
-  margin-bottom: 10px;
-}
-.ts-dropdown-item:hover {
-  background: rgba(0, 122, 255, 0.02);
-}
-.ts-dropdown-item:hover .ts-dropdown-city-name {
-  color: #0c0d25;
-}
-.ts-dropdown-item:hover .ts-dropdown-city-name span svg {
-  fill: #007aff;
-}
-
-.ts-dropdown-city-name {
-  font-size: 16px;
-  font-weight: 500;
-  color: #ababc4;
-  display: flex;
-  align-items: center;
-}
-.ts-dropdown-city-name span svg {
-  fill: #ababc4;
-  margin-right: 5px;
-  margin-bottom: -5px;
-}
-.ts-dropdown-ariport-name {
-  font-size: 12px;
-  color: #ababc4;
-  margin-left: 30px;
-  margin-top: 5px;
-}
-.ts-dropdown-airport {
-  font-size: 12px;
-  color: #666;
-}
-.active {
-  background: rgba(0, 122, 255, 0.02);
-}
-.active .ts-dropdown-city-name {
-  color: #0c0d25;
-}
-.active .ts-dropdown-city-name span svg {
-  fill: #007aff;
-}
-
-::v-deep .reportrange-text {
-  margin-top: 7px;
-}
-@media only screen and (max-width: 768px) {
-  .ts-origin .ts-input {
-    margin-top: 0;
+@media only screen and (max-width: 600px) {
+  .ts-block-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 0 0 100%;
   }
-  .ts-field-item-wrapper {
-    display: block;
-  }
-  .ts-field-wrapper {
-    display: block;
+  .ts-input-wrapper {
     position: relative;
-    margin-bottom: 0;
+    flex: 0 0 100%;
+    margin-top: 10px;
+    padding-right: 0;
   }
-  .ts-line {
-    display: none;
+  .ts-date-picker {
+    flex: 0 0 100%;
+    margin-top: 10px;
   }
-  .ts-field-item .ts-input {
+  .ts-input {
     width: 100%;
-  }
-  ::v-deep .reportrange-text {
-    margin-top: 12px;
   }
   .ts-action-wrapper {
     display: block;
@@ -247,12 +230,6 @@
   .ts-checkbox-wrapper > div {
     margin-bottom: 20px;
   }
-  .ts-label {
-    display: none;
-  }
-  .ts-dropdown-wrapper {
-    width: 100%;
-  }
   .ts-button {
     display: block;
     margin-top: 26px;
@@ -262,727 +239,224 @@
     justify-content: center;
     margin-bottom: 10px;
   }
-}
-@media (min-width: 800px) and (max-width: 1900px) {
-  .ts-field-item .ts-input {
-    width: 95%;
+  .ts-remove-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+  }
+  .ts-flight-number {
+    color: #66678f;
+  }
+  .ts-remove {
+    color: #ed1b2e;
   }
 }
 </style>
 
 <template>
-  <section>
-    <div class="ts-field-wrapper">
+  <div class="ts-fields-wrapper">
+    <div
+      class="ts-block-wrapper"
+      v-for="(trip, index) in tripsSearchData"
+      :key="index"
+    >
       <div class="ts-remove-wrapper" v-if="isMobile">
-        <div class="ts-flight-number">Flight 1</div>
-      </div>
-      <div class="ts-field-item-wrapper" v-if="counter >= 0">
-        <div class="ts-field-item ts-origin">
-          <label class="ts-label">{{ $t('Departing_From') }}</label>
-          <input
-            @keyup="originSearchFirst"
-            v-bind:value="displayOriginFirst"
-            v-on:input="
-              (displayOriginFirst = $event.target.value),
-                (originFirst = $event.target.value)
-            "
-            type="text"
-            class="ts-input"
-            :placeholder="`${$t('Departing_From')}`"
-            v-click-outside="onClickOutsideOriginFirst"
-            @click="openOriginFirst"
-            @focus="$event.target.select()"
-          />
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-          <MenuDialog
-            :showMenu="showOriginMenuFirst"
-            v-if="originItemsFirst.length"
-          >
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in originItemsFirst"
-                  :key="index"
-                  @click="getOriginFirst(item)"
-                  :class="{ active: originFirst == item }"
-                >
-                  <div>
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.ct }}({{ item.ac }})
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.an }}
-                    </div>
-                  </div>
-                  <div class="ts-dropdown-airport">
-                    {{ item.cc }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </MenuDialog>
-        </div>
-        <SearchDialog
-          :openDialog="openOriginDialogFirst"
-          :items="originItemsFirst"
-          :from="true"
-          :title="$t('Departing_From')"
-          @getDataSearch="getDataOriginSearchFirst"
-          @close="openOriginDialogFirst = $event"
-        />
-        <div class="ts-field-item">
-          <label class="ts-label">{{ $t('Going_To') }}</label>
-          <input
-            @keyup="destinationSearchFirst"
-            v-bind:value="displayDestinationFirst"
-            v-on:input="
-              (displayDestinationFirst = $event.target.value),
-                (destinationFirst = $event.target.value)
-            "
-            type="text"
-            class="ts-input"
-            :placeholder="`${$t('Going_To')}`"
-            v-click-outside="onClickOutsideDestinationFirst"
-            @click="openDestinationFirst"
-            @focus="$event.target.select()"
-          />
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-          <MenuDialog
-            :showMenu="showDestinationMenuFirst"
-            v-if="destinationItemsFirst.length"
-          >
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in destinationItemsFirst"
-                  :key="index"
-                  @click="getdestinationFirst(item)"
-                  :class="{ active: destinationFirst == item }"
-                >
-                  <div>
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.ct }}({{ item.ac }})
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.an }}
-                    </div>
-                  </div>
-                  <div class="ts-dropdown-airport">
-                    {{ item.cc }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </MenuDialog>
-        </div>
-        <SearchDialog
-          :openDialog="openDestinationDialogFirst"
-          :items="destinationItemsFirst"
-          :from="false"
-          :title="$t('Going_To')"
-          @getDataSearch="getDataDestinationFrist"
-          @close="openDestinationDialogFirst = $event"
-        />
-        <div class="ts-field-item">
-          <NewDatePicker
-            @RangeSelectedDate="getRangeDateFirst"
-            @clearDate="clearDate"
-            :lastDate="LastFirstDate"
-            :singleDatePicker="true"
-            title="Departure"
-          />
-        </div>
-      </div>
-      <div class="ts-line"></div>
-      <div class="ts-remove-wrapper" v-if="isMobile">
-        <div class="ts-flight-number">Flight 2</div>
-      </div>
-      <div class="ts-field-item-wrapper" v-if="counter >= 1">
-        <div class="ts-field-item">
-          <label class="ts-label">{{ $t('Departing_From') }}</label>
-
-          <input
-            @keyup="originSearchSecond"
-            v-bind:value="displayOriginSecond"
-            v-on:input="
-              (displayOriginSecond = $event.target.value),
-                (originSecond = $event.target.value)
-            "
-            type="text"
-            class="ts-input"
-            :placeholder="`${$t('Departing_From')}`"
-            v-click-outside="onClickOutsideOriginSecond"
-            @click="openOriginSecond"
-            @focus="$event.target.select()"
-          />
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-          <MenuDialog
-            :showMenu="showOriginMenuSecond"
-            v-if="originItemsSecond.length"
-          >
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in originItemsSecond"
-                  :key="index"
-                  @click="getOriginSecond(item)"
-                  :class="{ active: originSecond == item }"
-                >
-                  <div>
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.ct }}({{ item.ac }})
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.an }}
-                    </div>
-                  </div>
-                  <div class="ts-dropdown-airport">
-                    {{ item.cc }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </MenuDialog>
-        </div>
-        <SearchDialog
-          :openDialog="openOriginDialogSecond"
-          :items="originItemsSecond"
-          :from="false"
-          :title="$t('Departing_From')"
-          @getDataSearch="getDataOriginSearchSecond"
-          @close="openOriginDialogSecond = $event"
-        />
-        <div class="ts-field-item">
-          <label class="ts-label">{{ $t('Going_To') }}</label>
-          <input
-            @keyup="destinationSearchSecond"
-            v-bind:value="displayDestinationSecond"
-            v-on:input="
-              (displayDestinationSecond = $event.target.value),
-                (destinationSecond = $event.target.value)
-            "
-            type="text"
-            class="ts-input"
-            :placeholder="`${$t('Going_To')}`"
-            v-click-outside="onClickOutsideDestinationSecond"
-            @click="openDestinationSecond"
-            @focus="$event.target.select()"
-          />
-
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-          <MenuDialog
-            :showMenu="showDestinationMenuSecond"
-            v-if="destinationItemsSecond.length"
-          >
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in destinationItemsSecond"
-                  :key="index"
-                  @click="getdestinationSecond(item)"
-                  :class="{ active: destinationSecond == item }"
-                >
-                  <div>
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.ct }}({{ item.ac }})
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.an }}
-                    </div>
-                  </div>
-                  <div class="ts-dropdown-airport">
-                    {{ item.cc }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </MenuDialog>
-        </div>
-        <SearchDialog
-          :openDialog="openDestinationDialogSecond"
-          :items="destinationItemsSecond"
-          :from="false"
-          :title="$t('Going_To')"
-          @getDataSearch="getDataDestinationSecond"
-          @close="openDestinationDialogSecond = $event"
-        />
-        <div class="ts-field-item">
-          <NewDatePicker
-            @RangeSelectedDate="getRangeDateSecond"
-            :singleDatePicker="true"
-            :startDate="departureFirst"
-            title="Departure"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="ts-remove-wrapper" v-if="isMobile">
-      <div class="ts-flight-number" v-if="counter >= 2">Flight 3</div>
-      <div class="ts-remove" v-if="counter >= 2" @click="counter--">
-        remove
-      </div>
-    </div>
-    <div class="ts-field-wrapper">
-      <div class="ts-field-item-wrapper" v-if="counter >= 2">
-        <div class="ts-field-item">
-          <label class="ts-label">{{ $t('Departing_From') }}</label>
-          <input
-            @keyup="originSearchThird"
-            v-bind:value="displayOriginThird"
-            v-on:input="
-              (displayOriginThird = $event.target.value),
-                (originThird = $event.target.value)
-            "
-            type="text"
-            class="ts-input"
-            :placeholder="`${$t('Departing_From')}`"
-            v-click-outside="onClickOutsideOriginThird"
-            @click="openOriginThird"
-            @focus="$event.target.select()"
-          />
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-
-          <MenuDialog
-            :showMenu="showOriginMenuThird"
-            v-if="originItemsThird.length"
-          >
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in originItemsThird"
-                  :key="index"
-                  @click="getOriginThird(item)"
-                  :class="{ active: originThird == item }"
-                >
-                  <div>
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.ct }}({{ item.ac }})
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.an }}
-                    </div>
-                  </div>
-                  <div class="ts-dropdown-airport">
-                    {{ item.cc }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </MenuDialog>
-        </div>
-        <SearchDialog
-          :openDialog="openOriginDialogThird"
-          :items="originItemsThird"
-          :from="false"
-          :title="$t('Departing_From')"
-          @getDataSearch="getDataOriginSearchThird"
-          @close="openOriginDialogThird = $event"
-        />
-        <div class="ts-field-item">
-          <label class="ts-label">{{ $t('Going_To') }}</label>
-          <input
-            @keyup="destinationSearchThird"
-            v-bind:value="displayDestinationThird"
-            v-on:input="
-              (displayDestinationThird = $event.target.value),
-                (destinationThird = $event.target.value)
-            "
-            type="text"
-            class="ts-input"
-            :placeholder="`${$t('Going_To')}`"
-            v-click-outside="onClickOutsideDestinationThird"
-            @click="openDestinationThird"
-            @focus="$event.target.select()"
-          />
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-          <MenuDialog
-            :showMenu="showDestinationMenuThird"
-            v-if="destinationItemsThird.length"
-          >
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in destinationItemsThird"
-                  :key="index"
-                  @click="getdestinationThird(item)"
-                  :class="{ active: destinationThird == item }"
-                >
-                  <div>
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.ct }}({{ item.ac }})
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.an }}
-                    </div>
-                  </div>
-                  <div class="ts-dropdown-airport">
-                    {{ item.cc }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </MenuDialog>
-        </div>
-        <SearchDialog
-          :openDialog="openDestinationDialogThird"
-          :items="destinationItemsThird"
-          :from="false"
-          :title="$t('Going_To')"
-          @getDataSearch="getDataDestinationThird"
-          @close="openDestinationDialogThird = $event"
-        />
-        <div class="ts-field-item">
-          <NewDatePicker
-            @RangeSelectedDate="getRangeDateThird"
-            :singleDatePicker="true"
-            title="Departure"
-          />
-        </div>
-        <div class="ts-remove-position" v-if="!isMobile" @click="counter--">
-          <v-icon>mdi-close</v-icon>
-        </div>
-      </div>
-      <div class="ts-remove-wrapper" v-if="isMobile">
-        <div class="ts-flight-number" v-if="counter >= 3">Flight 4</div>
-        <div class="ts-remove" v-if="counter >= 3" @click="counter--">
+        <div class="ts-flight-number">Flight {{ index + 1 }}</div>
+        <div class="ts-remove" v-if="index > 1" @click="remove(index)">
           remove
         </div>
       </div>
-      <div class="ts-line" v-if="counter >= 3"></div>
-      <div class="ts-field-item-wrapper" v-if="counter >= 3">
-        <div class="ts-field-item">
-          <label class="ts-label">{{ $t('Departing_From') }}</label>
-          <input
-            @keyup="originSearchFourth"
-            v-bind:value="displayOriginFourth"
-            v-on:input="
-              (displayOriginFourth = $event.target.value),
-                (originFourth = $event.target.value)
-            "
-            type="text"
-            class="ts-input"
-            :placeholder="`${$t('Departing_From')}`"
-            v-click-outside="onClickOutsideOriginFourth"
-            @click="openOriginFourth"
-            @focus="$event.target.select()"
-          />
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-          <MenuDialog
-            :showMenu="showOriginMenuFourth"
-            v-if="originItemsFourth.length"
+      <div class="ts-remove-icon" v-if="!isMobile && index > 1">
+        <v-icon @click="remove(index)">mdi-close</v-icon>
+      </div>
+      <div class="ts-input-wrapper">
+        <label class="ts-label">{{ $t('Departing_From') }}</label>
+        <input
+          type="text"
+          class="ts-input"
+          :placeholder="`${$t('Departing_From')}`"
+          @keyup="searchOrigin($event.target.value, trip, $event)"
+          v-bind:value="trip.displayOrigin"
+          v-on:input="
+            (trip.displayOrigin = $event.target.value),
+              (trip.origin = $event.target.value)
+          "
+          v-click-outside="
+            () => {
+              trip.openOriginDialog = false;
+            }
+          "
+          @click="openOrigin(trip)"
+          @focus="$event.target.select()"
+          @change="fillInput(trip)"
+        />
+        <div class="ts-airplane-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
           >
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in originItemsFourth"
-                  :key="index"
-                  @click="getOriginFourth(item)"
-                  :class="{ active: getOriginFourth == item }"
-                >
-                  <div>
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.ct }}({{ item.ac }})
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.an }}
-                    </div>
+            <path
+              d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
+              fill="#66678F"
+            />
+          </svg>
+        </div>
+        <DropdownDialog
+          :showMenu="trip.openOriginDialog"
+          v-if="trip.originItems.length"
+        >
+          <template #data>
+            <div class="ts-dropdown-wrapper">
+              <div
+                class="ts-dropdown-item"
+                v-for="(item, index) in trip.originItems"
+                :key="index"
+                :class="{
+                  active:
+                    trip.origin == item || index == trip.arrowCounterOrigin,
+                }"
+                @click="getOrigin(item, trip)"
+              >
+                <div>
+                  <div class="ts-dropdown-city-name">
+                    <span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 18 18"
+                        fill="none"
+                      >
+                        <path
+                          d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
+                        />
+                      </svg>
+                    </span>
+                    {{ item.ct }}({{ item.ac }})
                   </div>
-                  <div class="ts-dropdown-airport">
-                    {{ item.cc }}
+                  <div class="ts-dropdown-ariport-name">
+                    {{ item.an }}
                   </div>
                 </div>
-              </div>
-            </template>
-          </MenuDialog>
-        </div>
-        <SearchDialog
-          :openDialog="openOriginDialogFourth"
-          :items="originItemsFourth"
-          :from="false"
-          :title="$t('Departing_From')"
-          @getDataSearch="getDataOriginSearchFourth"
-          @close="openOriginDialogFourth = $event"
-        />
-        <div class="ts-field-item">
-          <label class="ts-label">{{ $t('Going_To') }}</label>
-          <input
-            @keyup="destinationSearchFourth"
-            v-bind:value="displayDestinationFourth"
-            v-on:input="
-              (displayDestinationFourth = $event.target.value),
-                (destinationFourth = $event.target.value)
-            "
-            type="text"
-            class="ts-input"
-            :placeholder="`${$t('Going_To')}`"
-            v-click-outside="onClickOutsideDestinationFourth"
-            @click="openDestinationFourth"
-            @focus="$event.target.select()"
-          />
-
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-          <MenuDialog
-            :showMenu="showDestinationMenuFourth"
-            v-if="destinationItemsFourth.length"
-          >
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in destinationItemsFourth"
-                  :key="index"
-                  @click="getdestinationFourth(item)"
-                  :class="{ active: destinationFourth == item }"
-                >
-                  <div>
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.ct }}({{ item.ac }})
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.an }}
-                    </div>
-                  </div>
-                  <div class="ts-dropdown-airport">
-                    {{ item.cc }}
-                  </div>
+                <div class="ts-dropdown-airport">
+                  {{ item.cc }}
                 </div>
               </div>
-            </template>
-          </MenuDialog>
-        </div>
-        <SearchDialog
-          :openDialog="openDestinationDialogFourth"
-          :items="destinationItemsFourth"
-          :from="false"
-          :title="$t('Going_To')"
-          @getDataSearch="getDataDestinationFourth"
-          @close="openDestinationDialogFourth = $event"
+            </div>
+          </template>
+        </DropdownDialog>
+      </div>
+      <SearchDialog
+        :openDialog="trip.openOriginMobile"
+        :items="trip.originItems"
+        :title="$t('Departing_From')"
+        @getDataSearch="getMobileDataOriginSearch($event, trip)"
+        @close="trip.openOriginMobile = $event"
+      />
+      <div class="ts-input-wrapper">
+        <label class="ts-label">{{ $t('Going_To') }}</label>
+        <input
+          type="text"
+          class="ts-input"
+          :placeholder="`${$t('Going_To')}`"
+          @keyup="searchDestination($event.target.value, trip, $event)"
+          v-bind:value="trip.displayDestination"
+          v-on:input="
+            (trip.displayDestination = $event.target.value),
+              (trip.destination = $event.target.value)
+          "
+          v-click-outside="
+            () => {
+              trip.openDestinationDialog = false;
+            }
+          "
+          @click="openDestination(trip)"
+          @focus="$event.target.select()"
+          @change="fillInput(trip)"
         />
-        <div class="ts-field-item">
-          <NewDatePicker
-            @RangeSelectedDate="getRangeDateFourth"
-            :singleDatePicker="true"
-            title="Departure"
-          />
+        <div class="ts-airplane-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+          >
+            <path
+              d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
+              fill="#66678F"
+            />
+          </svg>
         </div>
-        <div class="ts-remove-position" v-if="!isMobile" @click="counter--">
-          <v-icon>mdi-close</v-icon>
-        </div>
+        <DropdownDialog
+          :showMenu="trip.openDestinationDialog"
+          v-if="trip.DestinationItems.length"
+        >
+          <template #data>
+            <div class="ts-dropdown-wrapper">
+              <div
+                class="ts-dropdown-item"
+                v-for="(item, index) in trip.DestinationItems"
+                :key="index"
+                :class="{
+                  active:
+                    trip.destination == item ||
+                    index == trip.arrowCounterDestination,
+                }"
+                @click="getDestination(item, trip)"
+              >
+                <div>
+                  <div class="ts-dropdown-city-name">
+                    <span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 18 18"
+                        fill="none"
+                      >
+                        <path
+                          d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
+                        />
+                      </svg>
+                    </span>
+                    {{ item.ct }}({{ item.ac }})
+                  </div>
+                  <div class="ts-dropdown-ariport-name">
+                    {{ item.an }}
+                  </div>
+                </div>
+                <div class="ts-dropdown-airport">
+                  {{ item.cc }}
+                </div>
+              </div>
+            </div>
+          </template>
+        </DropdownDialog>
+      </div>
+      <SearchDialog
+        :openDialog="trip.openDestinationMobile"
+        :items="trip.DestinationItems"
+        :title="$t('Going_To')"
+        @getDataSearch="getMobileDataDestinationSearch($event, trip)"
+        @close="trip.openDestinationMobile = $event"
+      />
+      <div class="ts-date-picker">
+        <NewDatePicker
+          @RangeSelectedDate="getRangeDate($event, trip)"
+          @clearDate="clearDate(trip)"
+          :lastDate="trip.lastDate"
+          :singleDatePicker="true"
+          title="Departure"
+          :placeHolder="{
+            origin: 'Departure Date',
+          }"
+        />
       </div>
     </div>
     <div class="ts-action-wrapper">
@@ -1004,8 +478,8 @@
         <div>
           <button
             class="ts-add-more"
-            @click="counter++"
-            :disabled="counter >= 5"
+            :disabled="tripsSearchData.length == 4"
+            @click="addNewTrips"
           >
             <svg
               height="18px"
@@ -1051,328 +525,253 @@
       </div>
     </div>
     <Toast v-model="showDialog" :toast="toast" />
-  </section>
+  </div>
 </template>
-
 <script>
-import SearchButton from './../Common/SearchButton.vue';
-import Travellers from './../Common/Passengers.vue';
-import AirfareType from './../Common/AirfareType.vue';
-import Toast from './../Common/Toast.vue';
 import moment from 'moment';
-import MenuDialog from '../Common/MenuDialog.vue';
-import DatePicker from './../Common/DatePicker.vue';
-import SearchDialog from '../Common/SearchDialog.vue';
-import DatePickerMobile from '../Common/DatePickerMobile.vue';
-
 export default {
-  components: {
-    SearchButton,
-    Travellers,
-    AirfareType,
-    Toast,
-    MenuDialog,
-    DatePicker,
-    SearchDialog,
-    DatePickerMobile,
-  },
   data() {
     return {
       name: 'flight',
+      tripsSearchData: [],
+      IsFlexiSearch: false,
+      ns: false,
+      showDialog: false,
       toast: {
         toastText: '',
         color: 'red',
       },
-
-      openOriginDialogFirst: false,
-      openOriginDialogSecond: false,
-      openOriginDialogThird: false,
-      openOriginDialogFourth: false,
-
-      openDestinationDialogFirst: false,
-      openDestinationDialogSecond: false,
-      openDestinationDialogThird: false,
-      openDestinationDialogFourth: false,
-
-      showOriginMenuFirst: false,
-      showOriginMenuSecond: false,
-      showOriginMenuThird: false,
-      showOriginMenuFourth: false,
-      showDestinationMenuFirst: false,
-      showDestinationMenuSecond: false,
-      showDestinationMenuThird: false,
-      showDestinationMenuFourth: false,
-      originFirst: null,
-      originSecond: null,
-      originThird: null,
-      originFourth: null,
-      displayOriginFirst: null,
-      displayOriginSecond: null,
-      displayOriginThird: null,
-      displayOriginFourth: null,
-      originItemsFirst: [],
-      originItemsSecond: [],
-      originItemsThird: [],
-      originItemsFourth: [],
-
-      destinationFirst: null,
-      destinationSecond: null,
-      destinationThird: null,
-      destinationFourth: null,
-
-      displayDestinationFirst: null,
-      displayDestinationSecond: null,
-      displayDestinationThird: null,
-      displayDestinationFourth: null,
-
-      destinationItemsFirst: [],
-      destinationItemsSecond: [],
-      destinationItemsThird: [],
-      destinationItemsFourth: [],
-
-      departureFirst: null,
-      departureSecond: null,
-      departureThird: null,
-      departureFourth: null,
-
-      LastFirstDate: null,
-
-      IsFlexiSearch: false,
-      ns: false,
-      counter: 1,
-      showDialog: false,
-      adult: 1,
-      infant: 0,
-      child: 0,
-      class: this.$store.commit('getAirType', `${this.$t('Economy')}`),
     };
   },
-  async mounted() {
-    let { data } = await this.axios.get(
-      `https://tripsupport.ca/wp-json/trip-support-endpoints/v1/user/geolocation`
-    );
-    let { data: res } = await this.axios.get(
-      `https://search.tripsupport.ca/api/searchairports?searchvalue=${data.data.city.toLowerCase()}`
-    );
-    if (res.length) {
-      let locationSearch = res[0];
-      this.$cookie.set(
-        'userLocation',
-        JSON.stringify({
-          ct: locationSearch.ct,
-          ac: locationSearch.ac,
-        })
-      );
-      this.originFirst = locationSearch;
-      this.displayOriginFirst =
-        locationSearch.ac + '-' + locationSearch.ct + '-' + locationSearch.an;
-    } else {
-      this.$cookie.set(
-        'userLocation',
-        JSON.stringify({
-          ct: 'Toronto',
-          ac: 'YTO',
-        })
-      );
-      this.originFirst = {
-        ac: 'YTO',
-        an: 'Toronto All airports',
-        cc: 'CA',
-        cn: 'CA',
-        ct: 'Toronto',
-      };
-      this.displayOriginFirst =
-        'YTO' + '-' + 'Toronto' + '-' + 'Toronto All airports';
-    }
+  created() {
+    this.tripsSearchData.push({
+      origin: null,
+      displayOrigin: null,
+      destination: null,
+      displayDestination: null,
+      openOriginDialog: false,
+      openDestinationDialog: false,
+      openOriginMobile: false,
+      openDestinationMobile: false,
+      departureDate: null,
+      lastDate: null,
+      originItems: [],
+      DestinationItems: [],
+      arrowCounterOrigin: 0,
+      arrowCounterDestination: 0,
+    });
+    this.tripsSearchData.push({
+      origin: null,
+      displayOrigin: null,
+      destination: null,
+      displayDestination: null,
+      openOriginDialog: false,
+      openDestinationDialog: false,
+      openOriginMobile: false,
+      openDestinationMobile: false,
+      departureDate: null,
+      lastDate: null,
+      originItems: [],
+      DestinationItems: [],
+      arrowCounterOrigin: 0,
+      arrowCounterDestination: 0,
+    });
+  },
+  mounted() {
     let getLastSearch = localStorage.getItem('lastFlightMultipleSearch');
     if (!getLastSearch) {
+      this.getUserLocation();
       return;
     }
     let parsedGetLastSearch = JSON.parse(getLastSearch);
     if (parsedGetLastSearch.date) {
-      this.LastFirstDate = parsedGetLastSearch.date;
-      this.departureFirst = this.changeFormat(
-        parsedGetLastSearch.date.startDate
-      );
+      localStorage.clear();
     }
+    this.tripsSearchData = parsedGetLastSearch;
   },
   computed: {
-    isMobile() {
-      if (window.innerWidth <= 600) {
-        return true;
-      } else {
-        return false;
-      }
-    },
     disabledButton() {
       let adult = this.$store.state.adult;
       if (
-        !this.originFirst ||
-        !this.originFirst.ct ||
-        !this.destinationFirst ||
-        !this.destinationFirst.ct ||
-        !this.departureFirst ||
+        this.validation('origin') ||
+        this.validation('destination') ||
+        this.validation('date') ||
         adult == 0
       ) {
         return true;
       }
     },
+    isMobile() {
+      return window.innerWidth <= 600;
+    },
   },
   methods: {
-    clearDate() {
-      this.departureFirst = null;
-    },
-    openOriginFirst() {
-      if (window.innerWidth <= 600)
-        this.openOriginDialogFirst = !this.openOriginDialogFirst;
-      if (window.innerWidth <= 600) {
-        this.showOriginMenuFirst = false;
-      } else {
-        this.showOriginMenuFirst = true;
+    fillInput(trip) {
+      if (trip.originItems.length && trip.origin.length) {
+        trip.origin = trip.originItems[0];
+        trip.displayOrigin =
+          trip.originItems[0].ac +
+          '-' +
+          trip.originItems[0].ct +
+          '-' +
+          trip.originItems[0].an;
+        trip.openOriginDialog = false;
+      }
+      if (trip.DestinationItems.length && trip.destination.length) {
+        trip.destination = trip.DestinationItems[0];
+        trip.displayDestination =
+          trip.DestinationItems[0].ac +
+          '-' +
+          trip.DestinationItems[0].ct +
+          '-' +
+          trip.DestinationItems[0].an;
+        trip.openDestinationDialog = false;
       }
     },
-    openOriginSecond() {
-      if (window.innerWidth <= 600)
-        this.openOriginDialogSecond = !this.openOriginDialogSecond;
-      if (window.innerWidth <= 600) {
-        this.showOriginMenuSecond = false;
+    async getUserLocation() {
+      let { data } = await this.axios.get(
+        `https://tripsupport.ca/wp-json/trip-support-endpoints/v1/user/geolocation`
+      );
+      let { data: res } = await this.axios.get(
+        `https://search.tripsupport.ca/api/searchairports?searchvalue=${data.data.city.toLowerCase()}`
+      );
+      if (res.length) {
+        let locationSearch = res[0];
+        this.$cookie.set(
+          'userLocation',
+          JSON.stringify({
+            ct: locationSearch.ct,
+            ac: locationSearch.ac,
+            cc: locationSearch.cc,
+          })
+        );
+        this.tripsSearchData[0].origin = locationSearch;
+        this.tripsSearchData[0].displayOrigin =
+          locationSearch.ac + '-' + locationSearch.ct + '-' + locationSearch.an;
       } else {
-        this.showOriginMenuSecond = true;
+        this.$cookie.set(
+          'userLocation',
+          JSON.stringify({
+            ct: 'Toronto',
+            ac: 'YTO',
+            cc: 'CA',
+          })
+        );
+        this.tripsSearchData[0].origin = {
+          ac: 'YTO',
+          an: 'Toronto All airports',
+          cc: 'CA',
+          cn: 'CA',
+          ct: 'Toronto',
+        };
+        this.tripsSearchData[0].displayOrigin =
+          'YTO' + '-' + 'Toronto' + '-' + 'Toronto All airports';
       }
     },
-    openOriginThird() {
-      if (window.innerWidth <= 600)
-        this.openOriginDialogThird = !this.openOriginDialogThird;
-      if (window.innerWidth <= 600) {
-        this.showOriginMenuThird = false;
-      } else {
-        this.showOriginMenuThird = true;
-      }
-    },
-    openOriginFourth() {
-      if (window.innerWidth <= 600)
-        this.openOriginDialogFourth = !this.openOriginDialogFourth;
-      if (window.innerWidth <= 600) {
-        this.showOriginMenuFourth = false;
-      } else {
-        this.showOriginMenuFourth = true;
-      }
-    },
-    openDestinationFirst() {
-      if (window.innerWidth <= 600)
-        this.openDestinationDialogFirst = !this.openDestinationDialogFirst;
-      if (window.innerWidth <= 600) {
-        this.showDestinationMenuFirst = false;
-      } else {
-        this.showDestinationMenuFirst = true;
-      }
-    },
-    openDestinationSecond() {
-      if (window.innerWidth <= 600)
-        this.openDestinationDialogSecond = !this.openDestinationDialogSecond;
-      if (window.innerWidth <= 600) {
-        this.showDestinationMenuSecond = false;
-      } else {
-        this.showDestinationMenuSecond = true;
-      }
-    },
-    openDestinationThird() {
-      if (window.innerWidth <= 600)
-        this.openDestinationDialogThird = !this.openDestinationDialogThird;
-      if (window.innerWidth <= 600) {
-        this.showDestinationMenuThird = false;
-      } else {
-        this.showDestinationMenuThird = true;
-      }
-    },
-    openDestinationFourth() {
-      if (window.innerWidth <= 600)
-        this.openDestinationDialogFourth = !this.openDestinationDialogFourth;
-      if (window.innerWidth <= 600) {
-        this.showDestinationMenuFourth = false;
-      } else {
-        this.showDestinationMenuFourth = true;
-      }
-    },
-
-    originSearchFirst() {
-      this.searchRequest(this.originFirst, (cb) => {
-        this.originItemsFirst = cb;
+    addNewTrips() {
+      this.tripsSearchData.push({
+        origin: null,
+        displayOrigin: null,
+        destination: null,
+        displayDestination: null,
+        openOriginDialog: false,
+        openDestinationDialog: false,
+        openOriginMobile: false,
+        openDestinationMobile: false,
+        departureDate: null,
+        lastDate: null,
+        originItems: [],
+        DestinationItems: [],
+        arrowCounterOrigin: 0,
+        arrowCounterDestination: 0,
       });
-      if (window.innerWidth <= 600) {
-        this.showOriginMenuFirst = false;
-      } else {
-        this.showOriginMenuFirst = true;
+    },
+    getMobileDataOriginSearch(item, trip) {
+      trip.origin = item.searchItem;
+      trip.displayOrigin = item.display;
+      if (!item.searchItem.ct) {
+        this.searchRequest(item.searchItem, (cb) => {
+          trip.originItems = cb;
+        });
       }
     },
-    destinationSearchFirst() {
-      this.searchRequest(this.destinationFirst, (cb) => {
-        this.destinationItemsFirst = cb;
-      });
-      if (window.innerWidth <= 600) {
-        this.showDestinationMenuFirst = false;
-      } else {
-        this.showDestinationMenuFirst = true;
+    getMobileDataDestinationSearch(item, trip) {
+      trip.destination = item.searchItem;
+      trip.displayDestination = item.display;
+      if (!item.searchItem.ct) {
+        this.searchRequest(item.searchItem, (cb) => {
+          trip.DestinationItems = cb;
+        });
       }
     },
-    originSearchSecond() {
-      this.searchRequest(this.originSecond, (cb) => {
-        this.originItemsSecond = cb;
+    searchOrigin(key, trip, e) {
+      this.searchRequest(key, (cb) => {
+        trip.originItems = cb;
       });
-      if (window.innerWidth <= 600) {
-        this.showOriginMenuSecond = false;
+      if (this.isMobile) {
+        trip.openOriginDialog = false;
       } else {
-        this.showOriginMenuSecond = true;
+        trip.openOriginDialog = true;
+      }
+      if (e.key == 'ArrowDown') {
+        if (trip.arrowCounterOrigin < trip.originItems.length) {
+          trip.arrowCounterOrigin = trip.arrowCounterOrigin + 1;
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (trip.arrowCounterOrigin > 0) {
+          trip.arrowCounterOrigin = trip.arrowCounterOrigin - 1;
+        }
+      } else if (e.key == 'Enter') {
+        if (trip.arrowCounterOrigin == 0 && trip.originItems[0]) {
+          trip.origin = trip.originItems[0];
+          trip.displayOrigin =
+            trip.originItems[0].ac +
+            '-' +
+            trip.originItems[0].ct +
+            '-' +
+            trip.originItems[0].an;
+        } else if (trip.arrowCounterOrigin > 0) {
+          let item = trip.originItems[trip.arrowCounterOrigin];
+          trip.origin = item;
+          trip.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
+          trip.arrowCounterOrigin = -1;
+        }
+        trip.openOriginDialog = false;
       }
     },
-    destinationSearchSecond() {
-      this.searchRequest(this.destinationSecond, (cb) => {
-        this.destinationItemsSecond = cb;
+    searchDestination(key, trip, e) {
+      this.searchRequest(key, (cb) => {
+        trip.DestinationItems = cb;
       });
-      if (window.innerWidth <= 600) {
-        this.showDestinationMenuSecond = false;
+      if (this.isMobile) {
+        trip.openDestinationDialog = false;
       } else {
-        this.showDestinationMenuSecond = true;
+        trip.openDestinationDialog = true;
       }
-    },
-    originSearchThird() {
-      this.searchRequest(this.originThird, (cb) => {
-        this.originItemsThird = cb;
-      });
-      if (window.innerWidth <= 600) {
-        this.showOriginMenuThird = false;
-      } else {
-        this.showOriginMenuThird = true;
-      }
-    },
-    destinationSearchThird() {
-      this.searchRequest(this.destinationThird, (cb) => {
-        this.destinationItemsThird = cb;
-      });
-      if (window.innerWidth <= 600) {
-        this.showDestinationMenuThird = false;
-      } else {
-        this.showDestinationMenuThird = true;
-      }
-    },
-    originSearchFourth() {
-      this.searchRequest(this.originFourth, (cb) => {
-        this.originItemsFourth = cb;
-      });
-      if (window.innerWidth <= 600) {
-        this.showOriginMenuFourth = false;
-      } else {
-        this.showOriginMenuFourth = true;
-      }
-    },
-    destinationSearchFourth() {
-      this.searchRequest(this.destinationFourth, (cb) => {
-        this.destinationItemsFourth = cb;
-      });
-      if (window.innerWidth <= 600) {
-        this.showDestinationMenuFourth = false;
-      } else {
-        this.showDestinationMenuFourth = true;
+      if (e.key == 'ArrowDown') {
+        if (trip.arrowCounterDestination < trip.DestinationItems.length) {
+          trip.arrowCounterDestination = trip.arrowCounterDestination + 1;
+        }
+      } else if (e.key == 'ArrowUp') {
+        if (trip.arrowCounterDestination > 0) {
+          trip.arrowCounterDestination = trip.arrowCounterDestination - 1;
+        }
+      } else if (e.key == 'Enter') {
+        if (trip.arrowCounterDestination == 0 && trip.DestinationItems[0]) {
+          trip.destination = trip.DestinationItems[0];
+          trip.displayDestination =
+            trip.DestinationItems[0].ac +
+            '-' +
+            trip.DestinationItems[0].ct +
+            '-' +
+            trip.DestinationItems[0].an;
+        } else if (trip.arrowCounterDestination > 0) {
+          let item = trip.DestinationItems[trip.arrowCounterDestination];
+          trip.destination = item;
+          trip.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
+          trip.arrowCounterDestination = -1;
+        }
+        trip.openDestinationDialog = false;
       }
     },
     searchRequest(value, callback) {
@@ -1386,175 +785,170 @@ export default {
           });
       }
     },
-    getDataOriginSearchFirst(origin, displayOrigin) {
-      this.originFirst = origin;
-      this.displayOriginFirst = displayOrigin;
-      this.searchRequest(this.originFirst, (cb) => {
-        this.originItemsFirst = cb;
-      });
+    getOrigin(item, trip) {
+      trip.origin = item;
+      trip.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
+      trip.openOriginDialog = false;
     },
-    getDataOriginSearchSecond(origin, displayOrigin) {
-      this.originSecond = origin;
-      this.displayOriginSecond = displayOrigin;
-      this.searchRequest(this.originSecond, (cb) => {
-        this.originItemsSecond = cb;
-      });
+    getDestination(item, trip) {
+      trip.destination = item;
+      trip.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
+      trip.openDestinationDialog = false;
     },
-    getDataOriginSearchThird(origin, displayOrigin) {
-      this.originThird = origin;
-      this.displayOriginThird = displayOrigin;
-      this.searchRequest(this.originThird, (cb) => {
-        this.originItemsThird = cb;
-      });
+    openOrigin(item) {
+      if (this.isMobile) {
+        item.openOriginDialog = false;
+        item.openOriginMobile = !item.openOriginMobile;
+      } else {
+        item.openOriginDialog = true;
+      }
     },
-    getDataOriginSearchFourth(origin, displayOrigin) {
-      this.originFourth = origin;
-      this.displayOriginFourth = displayOrigin;
-      this.searchRequest(this.originFourth, (cb) => {
-        this.originItemsFourth = cb;
-      });
+    openDestination(item) {
+      if (this.isMobile) {
+        item.openDestinationDialog = false;
+        item.openDestinationMobile = !item.openDestinationMobile;
+      } else {
+        item.openDestinationDialog = true;
+      }
     },
-
-    getDataDestinationFrist(origin, displayOrigin) {
-      this.destinationFirst = origin;
-      this.displayDestinationFirst = displayOrigin;
-      this.searchRequest(this.destinationFirst, (cb) => {
-        this.destinationItemsFirst = cb;
-      });
+    getRangeDate(date, trip) {
+      trip.lastDate = date;
+      trip.departureDate = this.changeFormat(date.startDate);
     },
-    getDataDestinationSecond(origin, displayOrigin) {
-      this.destinationSecond = origin;
-      this.displayDestinationSecond = displayOrigin;
-      this.searchRequest(this.destinationSecond, (cb) => {
-        this.destinationItemsSecond = cb;
-      });
-    },
-    getDataDestinationThird(origin, displayOrigin) {
-      this.destinationThird = origin;
-      this.displayDestinationThird = displayOrigin;
-      this.searchRequest(this.destinationThird, (cb) => {
-        this.destinationItemsThird = cb;
-      });
-    },
-    getDataDestinationFourth(origin, displayOrigin) {
-      this.destinationFourth = origin;
-      this.displayDestinationFourth = displayOrigin;
-      this.searchRequest(this.destinationFourth, (cb) => {
-        this.destinationItemsFourth = cb;
-      });
-    },
-
-    getOriginFirst(item) {
-      this.originFirst = item;
-      this.displayOriginFirst = item.ac + '-' + item.ct + '-' + item.an;
-    },
-    getOriginSecond(item) {
-      this.originSecond = item;
-      this.displayOriginSecond = item.ac + '-' + item.ct + '-' + item.an;
-    },
-    getOriginThird(item) {
-      this.originThird = item;
-      this.displayOriginThird = item.ac + '-' + item.ct + '-' + item.an;
-    },
-    getOriginFourth(item) {
-      this.originFourth = item;
-      this.displayOriginFourth = item.ac + '-' + item.ct + '-' + item.an;
-    },
-    getdestinationFirst(item) {
-      this.destinationFirst = item;
-      this.displayDestinationFirst = item.ac + '-' + item.ct + '-' + item.an;
-    },
-    getdestinationSecond(item) {
-      this.destinationSecond = item;
-      this.displayDestinationSecond = item.ac + '-' + item.ct + '-' + item.an;
-    },
-    getdestinationThird(item) {
-      this.destinationThird = item;
-      this.displayDestinationThird = item.ac + '-' + item.ct + '-' + item.an;
-    },
-    getdestinationFourth(item) {
-      this.destinationFourth = item;
-      this.displayDestinationFourth = item.ac + '-' + item.ct + '-' + item.an;
-    },
-    onClickOutsideOriginFirst() {
-      this.showOriginMenuFirst = false;
-    },
-    onClickOutsideOriginSecond() {
-      this.showOriginMenuSecond = false;
-    },
-    onClickOutsideOriginThird() {
-      this.showOriginMenuThird = false;
-    },
-    onClickOutsideOriginFourth() {
-      this.showOriginMenuFourth = false;
-    },
-    onClickOutsideDestinationFirst() {
-      this.showDestinationMenuFirst = false;
-    },
-    onClickOutsideDestinationSecond() {
-      this.showDestinationMenuSecond = false;
-    },
-    onClickOutsideDestinationThird() {
-      this.showDestinationMenuThird = false;
-    },
-    onClickOutsideDestinationFourth() {
-      this.showDestinationMenuFourth = false;
-    },
-    getRangeDateFirst(e) {
-      this.LastFirstDate = e;
-      this.departureFirst = this.changeFormat(e.startDate);
-    },
-    getRangeDateSecond(e) {
-      this.departureSecond = this.changeFormat(e.startDate);
-    },
-    getRangeDateThird(e) {
-      this.departureThird = this.changeFormat(e.startDate);
-    },
-    getRangeDateFourth(e) {
-      this.departureFourth = this.changeFormat(e.startDate);
+    clearDate(item) {
+      item.departureDate = null;
     },
     changeFormat(val) {
       return moment(val).format('D MMM YYYY');
     },
-    getTravellers(adult, infant, child) {
-      this.adult = adult;
-      this.infant = infant;
-      this.child = child;
+    remove(index) {
+      this.tripsSearchData.splice(index, 1);
     },
-    getClass(val) {
-      this.class = val;
+    getMultipleData(items) {
+      let result = [];
+      for (let item of items) {
+        let splitCharacter = item.ac + '-' + item.ct + '-' + item.an;
+        result.push(splitCharacter);
+      }
+      return result;
     },
-    save() {
-      this.class = this.$store.state.airfaireType;
-      this.adult = this.$store.state.adult;
-      this.infant = this.$store.state.infant;
-      this.child = this.$store.state.child;
-      if (
-        !this.originFirst ||
-        !this.originFirst.ct ||
-        !this.destinationFirst ||
-        !this.destinationFirst.ct
-      ) {
+    generateQuery() {
+      let airfaireType = this.$store.state.airfaireType;
+      let adult = this.$store.state.adult;
+      let infant = this.$store.state.infant;
+      let child = this.$store.state.child;
+      let url = location.href;
+      url = url.substring(url.indexOf('.')).split('/')[0];
+      let getOrigin = this.tripsSearchData.map((items) => {
+        return items.origin;
+      });
+      let getDestination = this.tripsSearchData.map((items) => {
+        return items.destination;
+      });
+      let getDepartureDate = this.tripsSearchData.map((items) => {
+        return items.departureDate;
+      });
+      let urlQuery = `https://secure.tripsupport${url}/flight/multicity;tripType=multicity;`;
+      let FirstDestination = `destination=${getDestination[0].ac}-${getDestination[0].ct}-${getDestination[0].an};`;
+      let FirstOrigin = `origin=${getOrigin[0].ac}-${getOrigin[0].ct}-${getOrigin[0].an};`;
+      let FirstDepartDate = `departDate=${getDepartureDate[0]};`;
+      let multiOrigin = `multiOrigin=${this.getMultipleData(getOrigin)};`;
+      let multiDestination = `multiDestination=${this.getMultipleData(
+        getDestination
+      )};`;
+      let multidate = `multidate=${getDepartureDate}`;
+      let QueryAdult = `adult=${adult};`;
+      let QueryChild = `child=${child};`;
+      let QueryInfant = `infant=${infant};`;
+      let QueryAirfaireType = `class=${airfaireType};`;
+      let IsFlexiSearch = `IsFlexiSearch=${this.IsFlexiSearch};`;
+      let ns = `ns=${this.ns};`;
+
+      let href = `${urlQuery}${FirstOrigin}${FirstDestination}${IsFlexiSearch}${ns}${FirstDepartDate}returnDate=;${QueryAdult}${QueryChild}${QueryInfant}${QueryAirfaireType}${multiOrigin}${multiDestination}${multidate}`;
+      href = href.replace(/\(/g, '%28').replace(/\)/g, '%29');
+      window.open(href, '_self');
+    },
+    validation(mode) {
+      let isValid;
+      let data;
+      if (mode == 'origin') {
+        data = this.tripsSearchData.map((items) => {
+          if (items.origin) {
+            return items.origin.ct;
+          }
+        });
+      } else if (mode == 'destination') {
+        data = this.tripsSearchData.map((items) => {
+          if (items.destination) {
+            return items.destination.ct;
+          }
+        });
+      } else if (mode == 'date') {
+        data = this.tripsSearchData.map((items) => {
+          if (items.departureDate) {
+            return items.departureDate;
+          }
+        });
+      }
+
+      for (let items in data) {
+        if (data[items] === undefined || data[items] === null) {
+          isValid = true;
+        } else {
+          isValid = false;
+        }
+      }
+      return isValid;
+    },
+    setLocalStorage() {
+      let LocalData = this.tripsSearchData.map((item) => {
+        return {
+          origin: item.origin,
+          displayOrigin: item.displayOrigin,
+          destination: item.destination,
+          displayDestination: item.displayDestination,
+          openOriginDialog: false,
+          openDestinationDialog: false,
+          openOriginMobile: false,
+          openDestinationMobile: false,
+          lastDate: item.lastDate,
+          originItems: [],
+          DestinationItems: [],
+          arrowCounterOrigin: 0,
+          arrowCounterDestination: 0,
+        };
+      });
+      localStorage.setItem(
+        'lastFlightMultipleSearch',
+        JSON.stringify(LocalData)
+      );
+    },
+    validationFields() {
+      if (this.validation('origin')) {
         this.showDialog = true;
         this.toast = {
           color: '#cb3839',
-          toastText: 'Please Enter Departing From and Going To',
+          toastText: 'Please Enter Departing From ',
         };
-        if (!this.originFirst || !this.originFirst.ct) {
-          this.$gtag.event('Validation', {
-            event_category: 'Flight Multi City',
-            event_label: 'User entered an invalid Departing From',
-          });
-        }
-        if (!this.destinationFirst || !this.destinationFirst.ct) {
-          this.$gtag.event('Validation', {
-            event_category: 'Flight Multi City',
-            event_label: 'User entered an invalid Going To',
-          });
-        }
+        this.$gtag.event('Validation', {
+          event_category: 'Flight Multi City',
+          event_label: 'User entered an invalid Departing From',
+        });
         return;
       }
-      if (!this.departureFirst) {
+      if (this.validation('destination')) {
+        this.showDialog = true;
+        this.toast = {
+          color: '#cb3839',
+          toastText: 'Please Enter Departing Going To ',
+        };
+        this.$gtag.event('Validation', {
+          event_category: 'Flight Multi City',
+          event_label: 'User entered an invalid Going To',
+        });
+        return;
+      }
+      if (this.validation('date')) {
         this.showDialog = true;
         this.toast = {
           color: '#cb3839',
@@ -1566,7 +960,7 @@ export default {
         });
         return;
       }
-      if (this.adult == 0) {
+      if (this.$store.state.adultt == 0) {
         this.showDialog = true;
         this.toast = {
           color: '#cb3839',
@@ -1578,55 +972,15 @@ export default {
         });
         return;
       }
-      let searchObject = {
-        date: this.LastFirstDate,
-      };
-      localStorage.setItem(
-        'lastFlightMultipleSearch',
-        JSON.stringify(searchObject)
-      );
       this.$gtag.event('Search', {
         event_category: 'Flight Multi City',
         event_label: 'User submit new search',
       });
-      let url = location.href;
-      url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/flight/multicity;tripType=multicity;destination=${
-        this.destinationFirst.ac
-      };origin=${this.originFirst.ac};IsFlexiSearch=${this.IsFlexiSearch};ns=${
-        this.ns
-      };departDate=${this.departureFirst};returnDate=;adult=${
-        this.adult
-      };child=${this.child};infant=${this.infant};class=${
-        this.class
-      };multiOrigin=${this.originFirst.ac}-${this.originFirst.ct}-${
-        this.originFirst.an
-      },${this.originSecond ? this.originSecond.ac : ''}-${
-        this.originSecond ? this.originSecond.ct : ''
-      }-${this.originSecond ? this.originSecond.an : ''},${
-        this.originThird ? this.originThird.ac : ''
-      }-${this.originThird ? this.originThird.ct : ''}-${
-        this.originThird ? this.originThird.an : ''
-      },${this.originFourth ? this.originFourth.ac : ''}-${
-        this.originFourth ? this.originFourth.ct : ''
-      }-${this.originFourth ? this.originFourth.an : ''};multiDestination=${
-        this.destinationFirst.ac
-      }-${this.destinationFirst.ct}-${this.destinationFirst.an},${
-        this.destinationSecond ? this.destinationSecond.ac : ''
-      }-${this.destinationSecond ? this.destinationSecond.ct : ''}-${
-        this.destinationSecond ? this.destinationSecond.an : ''
-      },${this.destinationThird ? this.destinationThird.ac : ''}-${
-        this.destinationThird ? this.destinationThird.ct : ''
-      }-${this.destinationThird ? this.destinationThird.an : ''},${
-        this.destinationFourth ? this.destinationFourth.ac : ''
-      }-${this.destinationFourth ? this.destinationSearchFourth.ct : ''}-${
-        this.destinationFourth ? this.destinationSearchFourth.an : ''
-      };multidate=${this.departureFirst ? this.departureFirst : ''},${
-        this.departureSecond ? this.departureSecond : ''
-      },${this.departureThird ? this.departureThird : ''},${
-        this.departureFourth ? this.departureFourth : ''
-      }`;
-      window.open(href, '_self');
+      this.generateQuery();
+    },
+    save() {
+      this.validationFields();
+      this.setLocalStorage();
     },
   },
 };

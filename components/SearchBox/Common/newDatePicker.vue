@@ -6,10 +6,11 @@
   width: 100%;
   margin-top: 11px;
   background: #ffffff url(../../../assets/images/svg/calendar-icon.svg)
-    no-repeat 1em center / 1em;
+    no-repeat 10px center / 1em;
 }
 ::v-deep .vhd__datepicker__dummy-wrapper {
   border: unset;
+  overflow: hidden;
 }
 ::v-deep .vhd__datepicker {
   z-index: 1001;
@@ -56,7 +57,7 @@
   color: #ababc4;
 }
 ::v-deep .vhd__square .vhd__datepicker__month-day {
-  margin: 0 0 0 0;
+  margin: 0 0 0 0 !important;
 }
 ::v-deep .vhd__datepicker__month-day--allowed-checkout:hover,
 ::v-deep .vhd__datepicker__month-day--valid:hover {
@@ -91,6 +92,8 @@
       :startingDateValue="startingDateValue"
       :endingDateValue="endingDateValue"
       :positionRight="true"
+      :checkInTitle="placeHolder.origin"
+      :checkOutTitle="placeHolder.destination"
       :singleDaySelection="singleDatePicker"
       :showSingleMonth="singleDatePicker"
       :startDate="startDateCalendar"
@@ -102,8 +105,6 @@
   </div>
 </template>
 <script>
-import HotelDatePicker from 'vue-hotel-datepicker';
-import 'vue-hotel-datepicker/dist/vueHotelDatepicker.css';
 import Toast from './Toast.vue';
 import moment from 'moment';
 export default {
@@ -116,6 +117,13 @@ export default {
     title: {
       default: 'Departure/Return ',
     },
+    placeHolder: {
+      type: Object,
+      default: {
+        origin: 'check-in',
+        destination: 'check-out',
+      },
+    },
     numberOfStay: {
       default: 20,
     },
@@ -124,7 +132,6 @@ export default {
     },
   },
   components: {
-    HotelDatePicker,
     Toast,
   },
   data() {
@@ -171,18 +178,8 @@ export default {
     document
       .querySelector('.vhd__datepicker__clear-button svg path')
       .setAttribute('stroke', '#66678F');
-    // this.changeTitle();
   },
   methods: {
-    changeTitle() {
-      let datePickerPlaceHolder = document.getElementsByClassName(
-        'vhd__datepicker__input'
-      );
-      if (this.$parent.name == 'flight') {
-        datePickerPlaceHolder[0].innerText = 'Departure Date';
-        datePickerPlaceHolder[1].innerText = 'Return Date';
-      }
-    },
     checkIn(date) {
       if (this.singleDatePicker) {
         this.dateRange.startDate = date;

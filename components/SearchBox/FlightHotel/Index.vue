@@ -79,6 +79,7 @@ label {
 .ts-dropdown-item {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   cursor: pointer;
   padding: 0 8px;
   margin-bottom: 10px;
@@ -283,8 +284,11 @@ label {
                       {{ item.cityName }}
                     </div>
                     <div class="ts-dropdown-ariport-name">
-                      {{ item.countryCode }},{{ item.name }}
+                      {{ item.name }}
                     </div>
+                  </div>
+                  <div class="ts-dropdown-airport">
+                    {{ item.countryCode }}
                   </div>
                 </div>
               </div>
@@ -394,6 +398,10 @@ label {
           :lastDate="lastDate"
           @dateValidation="dateValidation = $event"
           :haveValidation="true"
+          :placeHolder="{
+            origin: 'Departure Date',
+            destination: 'Return Date',
+          }"
         />
       </div>
     </div>
@@ -596,14 +604,14 @@ export default {
         this.showDestinationMenu = true;
       }
     },
-    getDataOriginSearch(origin, displayOrigin) {
-      this.origin = origin;
-      this.displayOrigin = displayOrigin;
+    getDataOriginSearch(items) {
+      this.origin = items.searchItem;
+      this.displayOrigin = items.display;
       this.originSearch();
     },
-    getDataDestinationSearch(destination, displayDestination) {
-      this.destination = destination;
-      this.displayDestination = displayDestination;
+    getDataDestinationSearch(items) {
+      this.destination = items.searchItem;
+      this.displayDestination = items.display;
       this.destinationSearch();
     },
     onClickOutside() {
@@ -625,41 +633,43 @@ export default {
             });
         }, 500);
       }
-      if (window.innerWidth <= 600) {
-        this.showOriginMenu = false;
-      } else {
-        this.showOriginMenu = true;
-      }
-      if (e.key == 'ArrowDown') {
-        if (this.arrowCounterOrigin < this.originItems.length) {
-          this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
-          this.activeOrigin = this.arrowCounterOrigin;
-          this.fixScrollingOrigin();
+      if (!this.isMobile) {
+        if (window.innerWidth <= 600) {
+          this.showOriginMenu = false;
+        } else {
+          this.showOriginMenu = true;
         }
-      } else if (e.key == 'ArrowUp') {
-        if (this.arrowCounterOrigin > 0) {
-          this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
-          this.activeOrigin = this.arrowCounterOrigin;
-          this.fixScrollingOrigin();
+        if (e.key == 'ArrowDown') {
+          if (this.arrowCounterOrigin < this.originItems.length) {
+            this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
+            this.activeOrigin = this.arrowCounterOrigin;
+            this.fixScrollingOrigin();
+          }
+        } else if (e.key == 'ArrowUp') {
+          if (this.arrowCounterOrigin > 0) {
+            this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
+            this.activeOrigin = this.arrowCounterOrigin;
+            this.fixScrollingOrigin();
+          }
+        } else if (e.key == 'Enter') {
+          if (this.arrowCounterOrigin == 0 && this.originItems[0]) {
+            this.origin = this.originItems[0];
+            this.displayOrigin =
+              this.originItems[0].cityCode +
+              '-' +
+              this.originItems[0].cityName +
+              '-' +
+              this.originItems[0].name;
+          } else if (this.arrowCounterOrigin > 0) {
+            let item = this.originItems[this.arrowCounterOrigin];
+            this.origin = item;
+            this.displayOrigin =
+              item.cityCode + '-' + item.cityName + '-' + item.name;
+            this.arrowCounterOrigin = -1;
+          }
+          this.$refs.destinationInput.focus();
+          this.showOriginMenu = false;
         }
-      } else if (e.key == 'Enter') {
-        if (this.arrowCounterOrigin == 0 && this.originItems[0]) {
-          this.origin = this.originItems[0];
-          this.displayOrigin =
-            this.originItems[0].cityCode +
-            '-' +
-            this.originItems[0].cityName +
-            '-' +
-            this.originItems[0].name;
-        } else if (this.arrowCounterOrigin > 0) {
-          let item = this.originItems[this.arrowCounterOrigin];
-          this.origin = item;
-          this.displayOrigin =
-            item.cityCode + '-' + item.cityName + '-' + item.name;
-          this.arrowCounterOrigin = -1;
-        }
-        this.$refs.destinationInput.focus();
-        this.showOriginMenu = false;
       }
     },
     destinationSearch(e) {
@@ -680,32 +690,34 @@ export default {
       } else {
         this.showDestinationMenu = true;
       }
-      if (e.key == 'ArrowDown') {
-        if (this.arrowCounterDestination < this.destinationItems.length) {
-          this.arrowCounterDestination = this.arrowCounterDestination + 1;
-          this.activeDestination = this.arrowCounterDestination;
-          this.fixScrollingDestination();
+      if (!this.isMobile) {
+        if (e.key == 'ArrowDown') {
+          if (this.arrowCounterDestination < this.destinationItems.length) {
+            this.arrowCounterDestination = this.arrowCounterDestination + 1;
+            this.activeDestination = this.arrowCounterDestination;
+            this.fixScrollingDestination();
+          }
+        } else if (e.key == 'ArrowUp') {
+          if (this.arrowCounterDestination > 0) {
+            this.arrowCounterDestination = this.arrowCounterDestination - 1;
+            this.activeDestination = this.arrowCounterDestination;
+            this.fixScrollingDestination();
+          }
+        } else if (e.key == 'Enter') {
+          if (this.arrowCounterDestination == 0 && this.destinationItems[0]) {
+            this.destination = this.destinationItems[0];
+            this.displayDestination =
+              this.destinationItems[0].name +
+              '-' +
+              this.destinationItems[0].secondaryName;
+          } else if (this.arrowCounterDestination > 0) {
+            let item = this.destinationItems[this.arrowCounterDestination];
+            this.destination = item;
+            this.displayDestination = item.name + '-' + item.secondaryName;
+            this.arrowCounterDestination = -1;
+          }
+          this.showDestinationMenu = false;
         }
-      } else if (e.key == 'ArrowUp') {
-        if (this.arrowCounterDestination > 0) {
-          this.arrowCounterDestination = this.arrowCounterDestination - 1;
-          this.activeDestination = this.arrowCounterDestination;
-          this.fixScrollingDestination();
-        }
-      } else if (e.key == 'Enter') {
-        if (this.arrowCounterDestination == 0 && this.destinationItems[0]) {
-          this.destination = this.destinationItems[0];
-          this.displayDestination =
-            this.destinationItems[0].name +
-            '-' +
-            this.destinationItems[0].secondaryName;
-        } else if (this.arrowCounterDestination > 0) {
-          let item = this.destinationItems[this.arrowCounterDestination];
-          this.destination = item;
-          this.displayDestination = item.name + '-' + item.secondaryName;
-          this.arrowCounterDestination = -1;
-        }
-        this.showDestinationMenu = false;
       }
     },
     numberOfTravellers(val) {
