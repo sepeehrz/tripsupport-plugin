@@ -253,7 +253,7 @@
             v-click-outside="onClickOutside"
             @click="openOrigin"
             @focus="$event.target.select()"
-            @change="fillInput"
+            @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -615,8 +615,11 @@ export default {
     },
   },
   methods: {
+    fillInputTab() {
+      this.fillInput();
+    },
     fillInput() {
-      if (this.originItems.length && this.origin.length) {
+      if (this.originItems.length && this.origin.length && !this.origin.ct) {
         this.origin = this.originItems[0];
         this.displayOrigin =
           this.originItems[0].ac +
@@ -626,7 +629,11 @@ export default {
           this.originItems[0].an;
         this.showOriginMenu = false;
       }
-      if (this.destinationItems.length && this.destination.length) {
+      if (
+        this.destinationItems.length &&
+        this.destination.length &&
+        !this.destination.ct
+      ) {
         this.destination = this.destinationItems[0];
         this.displayDestination =
           this.destinationItems[0].ac +
@@ -681,9 +688,11 @@ export default {
     },
     onClickOutside() {
       this.showOriginMenu = false;
+      this.fillInput();
     },
     outSideDestinationMenu() {
       this.showDestinationMenu = false;
+      this.fillInput();
     },
     getOrigin(item) {
       this.origin = item;

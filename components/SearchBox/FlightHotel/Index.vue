@@ -234,7 +234,7 @@ label {
             @click="openOrigin"
             class="ts-input"
             @focus="$event.target.select()"
-            @change="fillInput"
+            @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -320,7 +320,7 @@ label {
             v-click-outside="outSideDestinationMenu"
             @click="openDestination"
             @focus="$event.target.select()"
-            @change="fillInput"
+            @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -562,8 +562,11 @@ export default {
         inline: 'start',
       });
     },
+    fillInputTab() {
+      this.fillInput();
+    },
     fillInput() {
-      if (this.originItems.length && this.origin.length) {
+      if (this.originItems.length && this.origin && !this.origin.cityCode) {
         this.origin = this.originItems[0];
         this.displayOrigin =
           this.originItems[0].cityCode +
@@ -573,7 +576,11 @@ export default {
           this.originItems[0].name;
         this.showOriginMenu = false;
       }
-      if (this.destinationItems.length && this.destination.length) {
+      if (
+        this.destinationItems.length &&
+        this.destination &&
+        !this.destination.name
+      ) {
         this.destination = this.destinationItems[0];
         this.displayDestination =
           this.destinationItems[0].name +
@@ -616,9 +623,11 @@ export default {
     },
     onClickOutside() {
       this.showOriginMenu = false;
+      this.fillInput();
     },
     outSideDestinationMenu() {
       this.showDestinationMenu = false;
+      this.fillInput();
     },
     originSearch(e) {
       if (this.origin) {

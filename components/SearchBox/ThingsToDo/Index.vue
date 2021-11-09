@@ -167,7 +167,7 @@ input::placeholder {
           :placeholder="`${$t('HOTELS.Destination_To')}`"
           @click="openOrigin"
           @focus="$event.target.select()"
-          @change="fillInput"
+          @keydown.tab="fillInputTab"
         />
         <div class="ts-airplane-icon">
           <svg
@@ -374,6 +374,9 @@ export default {
     },
   },
   methods: {
+    fillInputTab() {
+      this.fillInput();
+    },
     fixScrolling() {
       let element = this.$refs.dropdownItem[this.arrowCounter];
       element.scrollIntoView({
@@ -383,9 +386,10 @@ export default {
       });
     },
     fillInput() {
-      if (!this.To.id) {
-        this.To = null;
-        this.displayTo = null;
+      if (this.items.length && this.To && !this.To.name) {
+        this.To = this.items[0];
+        this.displayTo = this.items[0].name;
+        this.showToMenu = false;
       }
     },
     clearDate() {
@@ -408,6 +412,7 @@ export default {
     },
     onClickOutside() {
       this.showToMenu = false;
+      this.fillInput();
     },
     search(e) {
       if (this.To) {
@@ -430,13 +435,13 @@ export default {
       if (e.key == 'ArrowDown') {
         if (this.arrowCounter < this.items.length) {
           this.arrowCounter = this.arrowCounter + 1;
-          this.activeTo = this.arrowCounter;
+          this.activeFrom = this.arrowCounter;
           this.fixScrolling();
         }
       } else if (e.key == 'ArrowUp') {
         if (this.arrowCounter > 0) {
           this.arrowCounter = this.arrowCounter - 1;
-          this.activeTo = this.arrowCounter;
+          this.activeFrom = this.arrowCounter;
           this.fixScrolling();
         }
       } else if (e.key == 'Enter') {

@@ -216,7 +216,7 @@ input::placeholder {
           :placeholder="`${$t('HOTELS.Destination_To')}`"
           @click="openOrigin"
           @focus="$event.target.select()"
-          @change="fillInput"
+          @keydown.tab="fillInputTab"
         />
         <div class="ts-airplane-icon">
           <svg
@@ -296,8 +296,8 @@ input::placeholder {
           @dateValidation="dateValidation = $event"
           :haveValidation="true"
           :placeHolder="{
-            origin: 'Departure Date',
-            destination: 'Return Date',
+            origin: 'Check-in',
+            destination: 'Check-out',
           }"
         />
       </div>
@@ -420,8 +420,11 @@ export default {
         inline: 'start',
       });
     },
+    fillInputTab() {
+      this.fillInput();
+    },
     fillInput() {
-      if (this.items.length && this.To.length) {
+      if (this.items.length && this.To && !this.To.name) {
         this.To = this.items[0];
         this.displayTo = this.items[0].name;
         this.showToMenu = false;
@@ -447,6 +450,7 @@ export default {
     },
     onClickOutside() {
       this.showToMenu = false;
+      this.fillInput();
     },
     search(e) {
       if (this.To) {

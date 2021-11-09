@@ -290,7 +290,6 @@
           "
           @click="openOrigin(trip)"
           @focus="$event.target.select()"
-          @change="fillInput(trip)"
         />
         <div class="ts-airplane-icon">
           <svg
@@ -377,7 +376,6 @@
           "
           @click="openDestination(trip)"
           @focus="$event.target.select()"
-          @change="fillInput(trip)"
         />
         <div class="ts-airplane-icon">
           <svg
@@ -607,7 +605,7 @@ export default {
   },
   methods: {
     fillInput(trip) {
-      if (trip.originItems.length && trip.origin.length) {
+      if (trip.originItems.length && trip.origin.length && !trip.origin.ct) {
         trip.origin = trip.originItems[0];
         trip.displayOrigin =
           trip.originItems[0].ac +
@@ -617,7 +615,11 @@ export default {
           trip.originItems[0].an;
         trip.openOriginDialog = false;
       }
-      if (trip.DestinationItems.length && trip.destination.length) {
+      if (
+        trip.DestinationItems.length &&
+        trip.destination.length &&
+        !trip.destination.ct
+      ) {
         trip.destination = trip.DestinationItems[0];
         trip.displayDestination =
           trip.DestinationItems[0].ac +

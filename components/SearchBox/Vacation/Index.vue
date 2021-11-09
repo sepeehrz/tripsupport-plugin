@@ -330,7 +330,7 @@ input::placeholder {
             v-click-outside="onClickOutsideFrom"
             @click="openOrigin"
             @focus="$event.target.select()"
-            @change="fillInput"
+            @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -434,7 +434,7 @@ input::placeholder {
             v-click-outside="onClickOutsideTo"
             @click="openDestination"
             @focus="$event.target.select()"
-            @change="fillInput"
+            @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
             <svg
@@ -760,6 +760,9 @@ export default {
     },
   },
   methods: {
+    fillInputTab() {
+      this.fillInput();
+    },
     fixScrollingOrigin() {
       let element = this.$refs.dropdownItemOrigin[this.arrowCounterFrom];
       element.scrollIntoView({
@@ -777,15 +780,13 @@ export default {
       });
     },
     fillInput() {
-      if (this.FromsItemsDisplay.length && this.From.length) {
+      if (this.FromsItemsDisplay.length && this.From && !this.From.name) {
         this.From = this.FromsItemsDisplay[0];
         this.displayFrom = this.FromsItemsDisplay[0].name;
-        this.showFormMenu = false;
       }
-      if (this.toItemsDisplay.length && this.To.length) {
+      if (this.toItemsDisplay.length && this.To && !this.To.name) {
         this.To = this.toItemsDisplay[0];
         this.displayTo = this.toItemsDisplay[0].name;
-        this.showToMenu = false;
       }
     },
     clearDate() {
@@ -935,9 +936,11 @@ export default {
     },
     onClickOutsideFrom() {
       this.showFormMenu = false;
+      this.fillInput();
     },
     onClickOutsideTo() {
       this.showToMenu = false;
+      this.fillInput();
     },
     getFrom(item) {
       this.From = item;
