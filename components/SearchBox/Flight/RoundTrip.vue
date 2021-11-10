@@ -244,7 +244,8 @@
     <div class="ts-field-wrapper">
       <div class="ts-search-field-wrapper">
         <div class="ts-origin">
-          <label class="ts-label">{{ $t('Departing_From') }}</label>
+          <Autocomplete v-model="getdata" :items="originItems" />
+          <!-- <label class="ts-label">{{ $t('Departing_From') }}</label>
           <input
             ref="originInput"
             @keyup="originSearch"
@@ -320,7 +321,7 @@
                 </div>
               </div>
             </template>
-          </MenuDialog>
+          </MenuDialog> -->
         </div>
         <SearchDialog
           :openDialog="openOriginDialog"
@@ -530,7 +531,19 @@ export default {
       activeDestination: 0,
       arrowCounterOrigin: 0,
       arrowCounterDestination: 0,
+      getdata: null,
     };
+  },
+  watch: {
+    getdata: {
+      handler: function(val) {
+        this.origin = val;
+        this.searchRequest(val).then((res) => {
+          this.originItems = res;
+        });
+      },
+      immediate: true,
+    },
   },
   computed: {
     disabledButton() {
@@ -679,6 +692,19 @@ export default {
       this.showDestinationMenu = false;
       this.fillInput();
     },
+    searchRequest(value) {
+      return new Promise((resolve) => {
+        if (value) {
+          this.axios
+            .get(
+              `https://search.tripsupport.ca/api/searchairports?searchvalue=${value.trim()}`
+            )
+            .then((response) => {
+              resolve(response.data);
+            });
+        }
+      });
+    },
     originSearch(e) {
       if (!this.origin.ct) {
         this.axios
@@ -694,36 +720,36 @@ export default {
       } else {
         this.showOriginMenu = true;
       }
-      if (!this.isMobile) {
-        if (e.key == 'ArrowDown') {
-          if (this.arrowCounterOrigin < this.originItems.length) {
-            this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
-            this.activeOrigin = this.arrowCounterOrigin;
-          }
-        } else if (e.key == 'ArrowUp') {
-          if (this.arrowCounterOrigin > 0) {
-            this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
-            this.activeOrigin = this.arrowCounterOrigin;
-          }
-        } else if (e.key == 'Enter') {
-          if (this.arrowCounterOrigin == 0 && this.originItems[0]) {
-            this.origin = this.originItems[0];
-            this.displayOrigin =
-              this.originItems[0].ac +
-              '-' +
-              this.originItems[0].ct +
-              '-' +
-              this.originItems[0].an;
-          } else if (this.arrowCounterOrigin > 0) {
-            let item = this.originItems[this.arrowCounterOrigin];
-            this.origin = item;
-            this.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
-            this.arrowCounterOrigin = -1;
-          }
-          this.$refs.destinationInput.focus();
-          this.showOriginMenu = false;
-        }
-      }
+      // if (!this.isMobile) {
+      //   if (e.key == 'ArrowDown') {
+      //     if (this.arrowCounterOrigin < this.originItems.length) {
+      //       this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
+      //       this.activeOrigin = this.arrowCounterOrigin;
+      //     }
+      //   } else if (e.key == 'ArrowUp') {
+      //     if (this.arrowCounterOrigin > 0) {
+      //       this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
+      //       this.activeOrigin = this.arrowCounterOrigin;
+      //     }
+      //   } else if (e.key == 'Enter') {
+      //     if (this.arrowCounterOrigin == 0 && this.originItems[0]) {
+      //       this.origin = this.originItems[0];
+      //       this.displayOrigin =
+      //         this.originItems[0].ac +
+      //         '-' +
+      //         this.originItems[0].ct +
+      //         '-' +
+      //         this.originItems[0].an;
+      //     } else if (this.arrowCounterOrigin > 0) {
+      //       let item = this.originItems[this.arrowCounterOrigin];
+      //       this.origin = item;
+      //       this.displayOrigin = item.ac + '-' + item.ct + '-' + item.an;
+      //       this.arrowCounterOrigin = -1;
+      //     }
+      //     this.$refs.destinationInput.focus();
+      //     this.showOriginMenu = false;
+      //   }
+      // }
     },
     destinationSearch(e) {
       if (!this.destination.ct) {
