@@ -560,6 +560,11 @@ input::placeholder {
         />
       </div>
     </div>
+    <!-- <Autocomplete
+      v-model="getdata"
+      :items="FromsItems"
+      :placeholder="$t('Departing_From')"
+    /> -->
     <Toast v-model="showDialog" :toast="toast" />
   </section>
 </template>
@@ -632,6 +637,7 @@ export default {
       activeTo: 0,
       arrowCounterFrom: 0,
       arrowCounterTo: 0,
+      getdata: null,
     };
   },
   async mounted() {
@@ -730,6 +736,27 @@ export default {
       this.Children = parsedGetLastVacationBooking.TravellersData.children;
       this.ChildrenAges = childAgesArray;
     }
+  },
+  watch: {
+    getdata: {
+      handler: function(val) {
+        this.From = val;
+        this.axios
+          .get(
+            `https://vacationapi.tripsupport.ca/api/Resource/GetDestinations?codes=${
+              val ? val : 'YYZ'
+            }`
+          )
+          .then((response) => {
+            this.toItems = response.data.data;
+            this.toItemsDisplay = response.data.data;
+          });
+        // this.searchRequest(val).then((res) => {
+        //   this.originItems = res;
+        // });
+      },
+      immediate: true,
+    },
   },
   computed: {
     isMobile() {

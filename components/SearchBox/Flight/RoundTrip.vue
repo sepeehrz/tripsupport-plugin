@@ -244,7 +244,13 @@
     <div class="ts-field-wrapper">
       <div class="ts-search-field-wrapper">
         <div class="ts-origin">
-          <Autocomplete v-model="getdata" :items="originItems" />
+          <Autocomplete
+            v-model="getdata"
+            :items="originItems"
+            :placeholder="$t('Departing_From')"
+            localStorage="lastFlightRoundTripSearch"
+            :displaySearchWord="displayOrigin"
+          />
           <!-- <label class="ts-label">{{ $t('Departing_From') }}</label>
           <input
             ref="originInput"
@@ -817,6 +823,7 @@ export default {
       this.returnDate = null;
     },
     displacement() {
+      console.log(this.displayOrigin);
       let origin = this.origin;
       let displayOrigin = this.displayOrigin;
       let destination = this.destination;

@@ -1,4 +1,8 @@
 <style scoped>
+.ts-menu {
+  width: 95%;
+  top: 84px;
+}
 .input-wrapper {
   position: relative;
 }
@@ -21,7 +25,7 @@
   color: #66678f;
   font-size: 14px;
   font-weight: 500;
-  width: 100%;
+  width: 95%;
 }
 .ts-autocomplete::placeholder {
   color: #66678f;
@@ -35,6 +39,7 @@
 }
 .ts-dropdown-wrapper {
   padding: 10px 0;
+  width: 100%;
 }
 .ts-dropdown-item {
   display: flex;
@@ -94,11 +99,12 @@
     <label class="ts-label">{{ $t('Departing_From') }}</label>
     <input
       class="ts-autocomplete"
-      :placeholder="`${title}`"
+      :placeholder="`${placeholder}`"
       @keyup="searchItems"
       @input="getInput($event.target.value)"
       v-bind:value="displaySearch"
       v-click-outside="onClickOutside"
+      @focus="$event.target.select()"
       @click="showMenu = true"
     />
     <div class="ts-svg-icon">
@@ -123,8 +129,11 @@
             v-for="(item, index) in items"
             :key="index"
             @click="selectItem(item, index)"
+            :class="{
+              active: search == item || index == arrowCounter,
+            }"
           >
-            <div>
+            <div ref="dropdown">
               <div class="ts-dropdown-city-name">
                 <span>
                   <svg
@@ -232,18 +241,19 @@
 export default {
   props: {
     value: {},
-    openDialog: {
-      default: false,
-    },
     items: {},
-    title: {
-      default: 'enter',
+    placeholder: {
+      type: String,
     },
-    from: {
-      default: false,
+    localStorage: {
+      type: String,
     },
     mode: {
+      type: String,
       default: 'flight',
+    },
+    displaySearchWord: {
+      type: String,
     },
   },
   data() {
@@ -251,23 +261,78 @@ export default {
       showMenu: false,
       search: null,
       displaySearch: null,
+      arrowCounter: 0,
     };
   },
+  watch: {
+    displaySearchWord: {
+      handler: function(val) {
+        this.displaySearch = val;
+      },
+      immediate: true,
+    },
+  },
+  computed: {
+    isMobile() {
+      return window.innerWidth < 600;
+    },
+  },
+  mounted() {
+    this.getLocalStorage();
+  },
   methods: {
+    getLocalStorage() {
+      let getLocal = localStorage.getItem(`${this.localStorage}`);
+      if (!getLocal) {
+        return;
+      }
+      let parsedGetLocal = JSON.parse(getLocal);
+      this.search = parsedGetLocal.origin;
+      this.displayItemSearch(parsedGetLocal.origin);
+    },
     onClickOutside() {
       this.showMenu = false;
+      this.fillInput();
     },
     getInput(keySearch) {
       this.displaySearch = keySearch;
       this.search = keySearch;
       this.$emit('input', keySearch);
     },
-    searchItems() {
-      this.showMenu = true;
-      //   this.$emit('getAutocompleteData', {
-      //     searchItem: this.search,
-      //     display: this.displaySearch,
-      //   });
+    fixScrolling() {
+      let element = this.$refs.dropdown[this.arrowCounter];
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'start',
+      });
+    },
+    searchItems(e) {
+      if (!this.isMobile) {
+        if (e.key == 'ArrowDown') {
+          if (this.arrowCounter < this.items.length) {
+            this.arrowCounter = this.arrowCounter + 1;
+            this.fixScrolling();
+          }
+        } else if (e.key == 'ArrowUp') {
+          if (this.arrowCounter > 0) {
+            this.arrowCounter = this.arrowCounter - 1;
+            this.fixScrolling();
+          }
+        } else if (e.key == 'Enter') {
+          if (this.arrowCounter == 0 && this.items[0]) {
+            this.search = this.items[0];
+            this.displayItemSearch(this.items[0]);
+          } else if (this.arrowCounter > 0) {
+            let item = this.items[this.arrowCounter];
+            this.search = item;
+            this.displayItemSearch(item);
+            this.showMenu = false;
+            this.arrowCounter = -1;
+          }
+          this.showMenu = false;
+        }
+      }
     },
     displayItemSearch(item) {
       if (this.mode == 'flight') {
@@ -288,10 +353,17 @@ export default {
     selectItem(item, index) {
       this.search = item;
       this.displayItemSearch(item);
-      //   this.$emit('getAutocompleteData', {
-      //     searchItem: this.search,
-      //     display: this.displaySearch,
-      //   });
+      // this.$emit('getAutocompleteData', {
+      //   searchItem: this.search,
+      //   display: this.displaySearch,
+      // });
+    },
+    fillInput() {
+      if (this.items.length && this.search.length) {
+        this.search = this.items[0];
+        this.displayItemSearch(this.items[0]);
+        this.showMenu = false;
+      }
     },
   },
 };
