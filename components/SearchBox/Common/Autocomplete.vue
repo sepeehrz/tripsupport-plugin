@@ -92,6 +92,17 @@
 .active .ts-dropdown-city-name span svg {
   fill: #007aff;
 }
+@media only screen and (max-width: 768px) {
+  .ts-menu {
+    width: 100%;
+  }
+  .ts-autocomplete {
+    width: 100%;
+  }
+  .ts-label {
+    display: none;
+  }
+}
 </style>
 
 <template>
@@ -105,7 +116,7 @@
       v-bind:value="displaySearch"
       v-click-outside="onClickOutside"
       @focus="$event.target.select()"
-      @click="showMenu = true"
+      @click="openResult"
     />
     <div class="ts-svg-icon">
       <svg
@@ -128,7 +139,7 @@
             class="ts-dropdown-item"
             v-for="(item, index) in items"
             :key="index"
-            @click="selectItem(item, index)"
+            @click="selectItem(item)"
             :class="{
               active: search == item || index == arrowCounter,
             }"
@@ -234,6 +245,13 @@
         </div>
       </template>
     </DropdownDialog>
+    <SearchDialog
+      :openDialog="openMobileDialog"
+      :items="items"
+      :title="placeholder"
+      @getDataSearch="getDataSearchFromMobile"
+      @close="openMobileDialog = $event"
+    />
   </div>
 </template>
 
@@ -246,7 +264,7 @@ export default {
       type: String,
     },
     localStorage: {
-      type: String,
+      type: Object,
     },
     mode: {
       type: String,
@@ -255,6 +273,11 @@ export default {
     displaySearchWord: {
       type: String,
     },
+    userLocation: {},
+    from: {
+      tyoe: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -262,6 +285,7 @@ export default {
       search: null,
       displaySearch: null,
       arrowCounter: 0,
+      openMobileDialog: false,
     };
   },
   watch: {
@@ -271,24 +295,57 @@ export default {
       },
       immediate: true,
     },
+    items: {
+      handler: function(val) {
+        this.items = val;
+      },
+      immediate: true,
+    },
+    localStorage: {
+      handler: function(val) {
+        this.getLocalStorage(val);
+      },
+    },
+    userLocation: {
+      handler: function(val) {
+        if (Object.keys(val).length && this.from) {
+          this.search = val;
+          this.displayItemSearch(val);
+          this.$emit('input', this.search);
+        }
+        if (Object.keys(val).length == 0 && this.from) {
+          this.userLocationObject();
+          this.$emit('input', this.search);
+        }
+      },
+    },
   },
   computed: {
     isMobile() {
       return window.innerWidth < 600;
     },
   },
-  mounted() {
-    this.getLocalStorage();
-  },
   methods: {
-    getLocalStorage() {
-      let getLocal = localStorage.getItem(`${this.localStorage}`);
-      if (!getLocal) {
+    getLocalStorage(value) {
+      if (!value) {
         return;
       }
-      let parsedGetLocal = JSON.parse(getLocal);
-      this.search = parsedGetLocal.origin;
-      this.displayItemSearch(parsedGetLocal.origin);
+      this.search = value;
+      this.displayItemSearch(value);
+      this.$emit('input', this.search);
+    },
+    openResult() {
+      if (this.isMobile) {
+        this.openMobileDialog = !this.openMobileDialog;
+        this.showMenu = false;
+      } else {
+        this.showMenu = true;
+      }
+    },
+    getDataSearchFromMobile(items) {
+      this.search = items.searchItem;
+      this.displaySearch = items.display;
+      this.$emit('input', this.search);
     },
     onClickOutside() {
       this.showMenu = false;
@@ -308,6 +365,11 @@ export default {
       });
     },
     searchItems(e) {
+      if (this.isMobile) {
+        this.showMenu = false;
+      } else {
+        this.showMenu = true;
+      }
       if (!this.isMobile) {
         if (e.key == 'ArrowDown') {
           if (this.arrowCounter < this.items.length) {
@@ -323,14 +385,36 @@ export default {
           if (this.arrowCounter == 0 && this.items[0]) {
             this.search = this.items[0];
             this.displayItemSearch(this.items[0]);
+            this.$emit('input', this.search);
           } else if (this.arrowCounter > 0) {
             let item = this.items[this.arrowCounter];
             this.search = item;
             this.displayItemSearch(item);
-            this.showMenu = false;
             this.arrowCounter = -1;
+            this.$emit('input', item);
           }
           this.showMenu = false;
+        }
+      }
+    },
+    userLocationObject() {
+      if (this.from) {
+        if (this.mode == 'flight') {
+          this.search = {
+            ac: 'YTO',
+            an: 'Toronto All airports',
+            cc: 'CA',
+            cn: 'CA',
+            ct: 'Toronto',
+          };
+          this.displayItemSearch(this.search);
+        } else if (
+          this.mode == 'vacation' ||
+          this.mode == 'hotel' ||
+          this.mode == 'thingsToDo'
+        ) {
+          this.search = { codes: 'YYZ', name: 'Toronto' };
+          this.displayItemSearch(this.search);
         }
       }
     },
@@ -350,13 +434,10 @@ export default {
         this.displaySearch = item.name + '-' + item.secondaryName;
       }
     },
-    selectItem(item, index) {
+    selectItem(item) {
       this.search = item;
       this.displayItemSearch(item);
-      // this.$emit('getAutocompleteData', {
-      //   searchItem: this.search,
-      //   display: this.displaySearch,
-      // });
+      this.$emit('input', item);
     },
     fillInput() {
       if (this.items.length && this.search.length) {
@@ -365,6 +446,10 @@ export default {
         this.showMenu = false;
       }
     },
+    // location base on user ip
+    // fix local storage
+    // fix display search
+    // check user ip in vacation
   },
 };
 </script>
