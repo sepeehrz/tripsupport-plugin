@@ -840,6 +840,12 @@ export default {
       let infant = this.$store.state.infant;
       let child = this.$store.state.child;
       let url = location.href;
+      let lang = 'lg=';
+      if (this.$i18n.locale == 'fr') {
+        lang = lang + 'fr-FR';
+      } else {
+        lang = lang + 'en-EN';
+      }
       url = url.substring(url.indexOf('.')).split('/')[0];
       let getOrigin = this.tripsSearchData.map((items) => {
         return items.origin;
@@ -858,7 +864,7 @@ export default {
       let multiDestination = `multiDestination=${this.getMultipleData(
         getDestination
       )};`;
-      let multidate = `multidate=${getDepartureDate}`;
+      let multidate = `multidate=${getDepartureDate};`;
       let QueryAdult = `adult=${adult};`;
       let QueryChild = `child=${child};`;
       let QueryInfant = `infant=${infant};`;
@@ -866,7 +872,7 @@ export default {
       let IsFlexiSearch = `IsFlexiSearch=${this.IsFlexiSearch};`;
       let ns = `ns=${this.ns};`;
 
-      let href = `${urlQuery}${FirstOrigin}${FirstDestination}${IsFlexiSearch}${ns}${FirstDepartDate}returnDate=;${QueryAdult}${QueryChild}${QueryInfant}${QueryAirfaireType}${multiOrigin}${multiDestination}${multidate}`;
+      let href = `${urlQuery}${FirstOrigin}${FirstDestination}${IsFlexiSearch}${ns}${FirstDepartDate}returnDate=;${QueryAdult}${QueryChild}${QueryInfant}${QueryAirfaireType}${multiOrigin}${multiDestination}${multidate}${lang}`;
       href = href.replace(/\(/g, '%28').replace(/\)/g, '%29');
       window.open(href, '_self');
     },
@@ -913,6 +919,7 @@ export default {
           openDestinationDialog: false,
           openOriginMobile: false,
           openDestinationMobile: false,
+          departureDate: item.departureDate,
           lastDate: item.lastDate,
           originItems: [],
           DestinationItems: [],

@@ -780,11 +780,15 @@ export default {
       });
     },
     fillInput() {
-      if (this.FromsItemsDisplay.length && this.From && !this.From.name) {
+      if (
+        this.FromsItemsDisplay.length &&
+        this.From.length &&
+        !this.From.name
+      ) {
         this.From = this.FromsItemsDisplay[0];
         this.displayFrom = this.FromsItemsDisplay[0].name;
       }
-      if (this.toItemsDisplay.length && this.To && !this.To.name) {
+      if (this.toItemsDisplay.length && this.To.length && !this.To.name) {
         this.To = this.toItemsDisplay[0];
         this.displayTo = this.toItemsDisplay[0].name;
       }
@@ -878,7 +882,7 @@ export default {
       } else if (e.key == 'Enter') {
         if (this.arrowCounterTo == 0 && this.toItemsDisplay[0]) {
           this.To = this.toItemsDisplay[0];
-          this.displayTo = toItemsDisplay[0].name;
+          this.displayTo = this.toItemsDisplay[0].name;
         } else if (this.arrowCounterTo > 0) {
           let item = this.toItemsDisplay[this.arrowCounterTo];
           this.To = item;
@@ -1105,8 +1109,14 @@ export default {
         event_label: 'User submit new search',
       });
       let url = location.href;
+      let lang = 'lg=';
+      if (this.$i18n.locale == 'fr') {
+        lang = lang + 'fr-FR';
+      } else {
+        lang = lang + 'en-EN';
+      }
       url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/vacation?From=${this.From.codes}&To=${destination}&DepartureDate=${this.DepartureDate}&Durations=${this.Durations}&AllInclusive=${this.AllInclusive}&NumberOfRooms=${this.NumberOfRooms}&NumberOfAdults=${this.Adults}&ChildrenAges=[${this.ChildrenAges}]`;
+      let href = `https://secure.tripsupport${url}/vacation?From=${this.From.codes}&To=${destination}&DepartureDate=${this.DepartureDate}&Durations=${this.Durations}&AllInclusive=${this.AllInclusive}&NumberOfRooms=${this.NumberOfRooms}&NumberOfAdults=${this.Adults}&ChildrenAges=[${this.ChildrenAges}]&${lang}`;
       window.open(href, '_self');
     },
     changeFormat(val) {

@@ -866,8 +866,14 @@ export default {
         event_label: 'User submit new search',
       });
       let url = location.href;
+      let lang = 'lg=';
+      if (this.$i18n.locale == 'fr') {
+        lang = lang + 'fr-FR';
+      } else {
+        lang = lang + 'en-EN';
+      }
       url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/flight/oneway;tripType=oneway;destination=${this.destination.ac};origin=${this.origin.ac};IsFlexiSearch=${this.IsFlexiSearch};ns=${this.ns};departDate=${this.departDate};returnDate=;adult=${this.adult};child=${this.child};infant=${this.infant};class=${this.class};multiOrigin=;multiDestination=;multidate=`;
+      let href = `https://secure.tripsupport${url}/flight/oneway;tripType=oneway;destination=${this.destination.ac};origin=${this.origin.ac};IsFlexiSearch=${this.IsFlexiSearch};ns=${this.ns};departDate=${this.departDate};returnDate=;adult=${this.adult};child=${this.child};infant=${this.infant};class=${this.class};multiOrigin=;multiDestination=;multidate=;${lang}`;
       window.open(href, '_self');
     },
     getRangeDate(e) {

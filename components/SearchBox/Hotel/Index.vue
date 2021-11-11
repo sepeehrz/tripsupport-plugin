@@ -424,7 +424,7 @@ export default {
       this.fillInput();
     },
     fillInput() {
-      if (this.items.length && this.To && !this.To.name) {
+      if (this.items.length && this.To.length && !this.To.name) {
         this.To = this.items[0];
         this.displayTo = this.items[0].name;
         this.showToMenu = false;
@@ -610,8 +610,14 @@ export default {
         event_label: 'User submit new search',
       });
       let url = location.href;
+      let lang = 'lg=';
+      if (this.$i18n.locale == 'fr') {
+        lang = lang + 'fr-FR';
+      } else {
+        lang = lang + 'en-EN';
+      }
       url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/hotel/search/${customUrlStringify}`;
+      let href = `https://secure.tripsupport${url}/hotel/search/${customUrlStringify},${lang}`;
       href = encodeURI(href);
       window.open(href, '_self');
     },

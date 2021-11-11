@@ -566,7 +566,11 @@ export default {
       this.fillInput();
     },
     fillInput() {
-      if (this.originItems.length && this.origin && !this.origin.cityCode) {
+      if (
+        this.originItems.length &&
+        this.origin.length &&
+        !this.origin.cityCode
+      ) {
         this.origin = this.originItems[0];
         this.displayOrigin =
           this.originItems[0].cityCode +
@@ -578,7 +582,7 @@ export default {
       }
       if (
         this.destinationItems.length &&
-        this.destination &&
+        this.destination.length &&
         !this.destination.name
       ) {
         this.destination = this.destinationItems[0];
@@ -881,8 +885,14 @@ export default {
         event_label: 'User submit new search',
       });
       let url = location.href;
+      let lang = 'lg=';
+      if (this.$i18n.locale == 'fr') {
+        lang = lang + 'fr-FR';
+      } else {
+        lang = lang + 'en-EN';
+      }
       url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/hotel/search/${customUrlStringify}`;
+      let href = `https://secure.tripsupport${url}/hotel/search/${customUrlStringify},${lang}`;
       href = encodeURI(href);
       window.open(href, '_self');
     },
