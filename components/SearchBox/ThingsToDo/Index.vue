@@ -166,7 +166,7 @@ input::placeholder {
           v-click-outside="onClickOutside"
           :placeholder="`${$t('HOTELS.Destination_To')}`"
           @click="openOrigin"
-          @focus="$event.target.select()"
+          @focus="focusInput"
           @keydown.tab="fillInputTab"
         />
         <div class="ts-airplane-icon">
@@ -374,6 +374,11 @@ export default {
     },
   },
   methods: {
+    focusInput(e) {
+      if (!this.isMobile) {
+        e.target.select();
+      }
+    },
     fillInputTab() {
       this.fillInput();
     },

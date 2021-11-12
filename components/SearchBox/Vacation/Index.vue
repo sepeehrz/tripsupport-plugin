@@ -329,7 +329,7 @@ input::placeholder {
             :placeholder="`${$t('VACATION.Departing_From')}`"
             v-click-outside="onClickOutsideFrom"
             @click="openOrigin"
-            @focus="$event.target.select()"
+            @focus="focusInput"
             @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
@@ -396,32 +396,6 @@ input::placeholder {
         />
         <div class="ts-destination">
           <label for="">{{ $t('VACATION.Going_To') }}</label>
-          <!-- <div class="ts-chips" v-if="selectedMultiple.length">
-            <div
-              class="ts-chips-item"
-              v-for="(chips, index) in selectedMultiple.slice(0, 3)"
-              :key="index"
-            >
-              <div class="ts-chips-name" @click="removeItem(index)">
-                <span>
-                  {{ chips.name }}
-                </span>
-                <svg
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9.74786 0.252135C9.41167 -0.0840537 8.86663 -0.0840365 8.53046 0.252135L4.99999 3.7826L1.46953 0.252146C1.13336 -0.0840259 0.588319 -0.0840432 0.252134 0.252146C-0.0840498 0.588335 -0.0840395 1.13338 0.252134 1.46955L3.78259 5L0.252146 8.53045C-0.0840256 8.86662 -0.0840376 9.41166 0.252146 9.74785C0.588332 10.084 1.13337 10.084 1.46955 9.74785L4.99999 6.21739L8.53045 9.74787C8.86662 10.084 9.41166 10.084 9.74784 9.74787C10.084 9.41168 10.084 8.86663 9.74785 8.53046L6.21739 5L9.74786 1.46954C10.084 1.13337 10.084 0.588324 9.74786 0.252135Z"
-                    fill="#66678F"
-                    fill-opacity="0.6"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div> -->
           <input
             ref="ToInput"
             @keyup="searchTo"
@@ -433,7 +407,7 @@ input::placeholder {
             :placeholder="`${$t('VACATION.Going_To')}`"
             v-click-outside="onClickOutsideTo"
             @click="openDestination"
-            @focus="$event.target.select()"
+            @focus="focusInput"
             @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
@@ -518,7 +492,6 @@ input::placeholder {
         <SearchDialog
           :openDialog="openDestinationDialog"
           :items="toItemsDisplay"
-          :from="false"
           :title="$t('VACATION.Going_To')"
           mode="vacation"
           @getDataSearch="getDataDestinationSearch"
@@ -610,7 +583,6 @@ export default {
       FromsItemsDisplay: [],
       toItems: [],
       toItemsDisplay: [],
-      data: null,
       NumberOfRooms: 1,
       NumberOfPassangers: 2,
       Adults: 2,
@@ -655,16 +627,7 @@ export default {
         )
         .then((response) => {
           this.toItems = response.data.data;
-          this.toItemsDisplay = response.data.data;
-        });
-      await this.axios
-        .get(
-          `https://vacationapi.tripsupport.ca/api/Resource/GetHierarchicalDestinations?code=${
-            this.From.codes ? this.From.codes : 'YYZ'
-          }`
-        )
-        .then((response) => {
-          this.data = response.data.data;
+          this.toItemsDisplay = this.toItems.slice(0, 50);
         });
 
       let userLocation = data.data.city.toLowerCase();
@@ -760,6 +723,11 @@ export default {
     },
   },
   methods: {
+    focusInput(e) {
+      if (!this.isMobile) {
+        e.target.select();
+      }
+    },
     fillInputTab() {
       this.fillInput();
     },
@@ -797,18 +765,16 @@ export default {
       this.DepartureDate = null;
     },
     openOrigin() {
-      if (window.innerWidth <= 600)
+      if (this.isMobile) {
         this.openOriginDialog = !this.openOriginDialog;
-      if (window.innerWidth <= 600) {
         this.showFormMenu = false;
       } else {
         this.showFormMenu = true;
       }
     },
     openDestination() {
-      if (window.innerWidth <= 600)
+      if (this.isMobile) {
         this.openDestinationDialog = !this.openDestinationDialog;
-      if (window.innerWidth <= 600) {
         this.showToMenu = false;
       } else {
         this.showToMenu = true;
@@ -826,43 +792,26 @@ export default {
       this.To = items.searchItem;
       this.displayTo = items.display;
       this.querySelections(this.To, this.toItems, (res) => {
-        this.toItemsDisplay = res;
+        this.toItemsDisplay = res.slice(0, 50);
       });
     },
     changeDestination() {
-      this.axios
-        .get(
-          `https://vacationapi.tripsupport.ca/api/Resource/GetDestinations?codes=${this.From.codes}`
-        )
-        .then((response) => {
-          this.toItems = response.data.data;
-          this.toItemsDisplay = response.data.data;
-        });
-      this.axios
-        .get(
-          `https://vacationapi.tripsupport.ca/api/Resource/GetHierarchicalDestinations?code=${this.From.codes}`
-        )
-        .then((response) => {
-          this.data = response.data.data;
-        });
-    },
-    searchTo(e) {
-      this.querySelections(this.To, this.toItems, (res) => {
-        this.toItemsDisplay = res;
-      });
-      if (!this.To) {
+      if (this.From.codes) {
         this.axios
           .get(
-            `https://vacationapi.tripsupport.ca/api/Resource/GetDestinations?codes=${
-              this.From.codes ? this.From.codes : 'YYZ'
-            }`
+            `https://vacationapi.tripsupport.ca/api/Resource/GetDestinations?codes=${this.From.codes}`
           )
           .then((response) => {
             this.toItems = response.data.data;
-            this.toItemsDisplay = response.data.data;
+            this.toItemsDisplay = response.data.data.slice(0, 50);
           });
       }
-      if (window.innerWidth <= 600) {
+    },
+    searchTo(e) {
+      this.querySelections(this.To, this.toItems, (res) => {
+        this.toItemsDisplay = res.slice(0, 50);
+      });
+      if (this.isMobile) {
         this.showToMenu = false;
       } else {
         this.showToMenu = true;
@@ -925,6 +874,7 @@ export default {
           this.showFormMenu = false;
           this.arrowCounterFrom = -1;
         }
+        this.changeDestination();
         this.$refs.ToInput.focus();
         this.showFormMenu = false;
       }

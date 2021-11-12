@@ -289,7 +289,7 @@
             }
           "
           @click="openOrigin(trip)"
-          @focus="$event.target.select()"
+          @focus="focusInput"
         />
         <div class="ts-airplane-icon">
           <svg
@@ -375,7 +375,7 @@
             }
           "
           @click="openDestination(trip)"
-          @focus="$event.target.select()"
+          @focus="focusInput"
         />
         <div class="ts-airplane-icon">
           <svg
@@ -604,6 +604,11 @@ export default {
     },
   },
   methods: {
+    focusInput(e) {
+      if (!this.isMobile) {
+        e.target.select();
+      }
+    },
     fillInput(trip) {
       if (trip.originItems.length && trip.origin.length && !trip.origin.ct) {
         trip.origin = trip.originItems[0];

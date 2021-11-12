@@ -233,7 +233,7 @@ label {
             v-click-outside="onClickOutside"
             @click="openOrigin"
             class="ts-input"
-            @focus="$event.target.select()"
+            @focus="focusInput"
             @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
@@ -319,7 +319,7 @@ label {
             :placeholder="`${$t('Going_To')}`"
             v-click-outside="outSideDestinationMenu"
             @click="openDestination"
-            @focus="$event.target.select()"
+            @focus="focusInput"
             @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
@@ -544,6 +544,11 @@ export default {
     },
   },
   methods: {
+    focusInput(e) {
+      if (!this.isMobile) {
+        e.target.select();
+      }
+    },
     fixScrollingOrigin() {
       let element = this.$refs.dropdownItemOrigin[this.arrowCounterOrigin];
       element.scrollIntoView({

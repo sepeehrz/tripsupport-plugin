@@ -252,7 +252,7 @@
             :placeholder="`${$t('Departing_From')}`"
             v-click-outside="onClickOutside"
             @click="openOrigin"
-            @focus="$event.target.select()"
+            @focus="focusInput"
             @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
@@ -355,7 +355,7 @@
             :placeholder="`${$t('Going_To')}`"
             v-click-outside="outSideDestinationMenu"
             @click="openDestination"
-            @focus="$event.target.select()"
+            @focus="focusInput"
             @change="fillInput"
           />
           <div class="ts-airplane-icon">
@@ -615,6 +615,11 @@ export default {
     },
   },
   methods: {
+    focusInput(e) {
+      if (!this.isMobile) {
+        e.target.select();
+      }
+    },
     fillInputTab() {
       this.fillInput();
     },

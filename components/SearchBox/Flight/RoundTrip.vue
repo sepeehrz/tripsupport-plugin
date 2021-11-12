@@ -258,7 +258,7 @@
             :placeholder="`${$t('Departing_From')}`"
             v-click-outside="onClickOutside"
             @click="openOrigin"
-            @focus="$event.target.select()"
+            @focus="focusInput"
             @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
@@ -361,7 +361,7 @@
             :placeholder="`${$t('Going_To')}`"
             v-click-outside="outSideDestinationMenu"
             @click="openDestination"
-            @focus="$event.target.select()"
+            @focus="focusInput"
             @keydown.tab="fillInputTab"
           />
           <div class="ts-airplane-icon">
@@ -441,6 +441,7 @@
       </div>
       <div class="ts-date-picker">
         <NewDatePicker
+          ref="flightDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
           :lastDate="lastDate"
@@ -624,6 +625,11 @@ export default {
     }
   },
   methods: {
+    focusInput(e) {
+      if (!this.isMobile) {
+        e.target.select();
+      }
+    },
     fillInputTab() {
       this.fillInput();
     },
@@ -804,6 +810,11 @@ export default {
     getDataOriginSearch(items) {
       this.origin = items.searchItem;
       this.displayOrigin = items.display;
+      // if (items.searchItem.ct) {
+      //   this.openDestinationDialog = true;
+      // } else {
+      //   this.openDestinationDialog = false;
+      // }
       this.originSearch();
     },
     getDataDestinationSearch(items) {

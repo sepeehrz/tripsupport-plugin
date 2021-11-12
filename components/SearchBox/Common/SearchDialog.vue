@@ -141,8 +141,8 @@
               type="text"
               class="ts-input"
               :placeholder="`${title}`"
+               @focus="$event.target.select()"
               v-click-outside="onClickOutside"
-              @click="showOriginMenu = true"
             />
             <div class="ts-airplane-icon">
               <svg
@@ -361,12 +361,12 @@ export default {
       });
     },
     close() {
-      this.fillInputOnClose();
       this.dialog = false;
+      this.fillInputOnClose();
       this.$emit('close', this.dialog);
     },
     fillInputOnClose() {
-      if (this.items.length && this.itemSearch.length) {
+      if (this.items.length && this.itemSearch) {
         this.itemSearch = this.items[0];
         this.displayItemSearch(this.itemSearch);
         this.$emit('getDataSearch', {
