@@ -132,6 +132,7 @@
       <div class="ts-search-field-wrapper">
         <div class="ts-origin">
           <Autocomplete
+            ref="originAutocomplete"
             v-model="getOriginSearch"
             :items="originItems"
             :placeholder="$t('Departing_From')"
@@ -159,6 +160,7 @@
         </div>
         <div class="ts-destination">
           <Autocomplete
+            ref="destinationAutocomplete"
             v-model="getDestinationSearch"
             :items="destinationItems"
             :placeholder="$t('Going_To')"
@@ -170,6 +172,7 @@
       </div>
       <div class="ts-date-picker">
         <NewDatePicker
+          ref="datePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
           :lastDate="lastDate"
@@ -259,6 +262,17 @@ export default {
     getOriginSearch: {
       handler: function(val) {
         this.origin = val;
+        // if (
+        //   this.isMobile &&
+        //   val.ct &&
+        //   this.$refs.originAutocomplete.openMobileDialog == true
+        // ) {
+        //   this.$refs.destinationAutocomplete.openMobileDialog = true;
+        // }
+        // //  else {
+        // //   this.$refs.destinationAutocomplete.openMobileDialog = false;
+        // // }
+        // console.log(this.origin);
         this.searchRequest(val).then((res) => {
           this.originItems = res;
         });
@@ -268,6 +282,13 @@ export default {
     getDestinationSearch: {
       handler: function(val) {
         this.destination = val;
+        // if (
+        //   this.isMobile &&
+        //   val.ct &&
+        //   this.$refs.destinationAutocomplete.openMobileDialog == true
+        // ) {
+        //   this.$refs.datePicker.$children[0].open = true;
+        // }
         this.searchRequest(val).then((res) => {
           this.destinationItems = res;
         });

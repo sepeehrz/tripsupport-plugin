@@ -141,8 +141,8 @@
               type="text"
               class="ts-input"
               :placeholder="`${title}`"
+              @focus="$event.target.select()"
               v-click-outside="onClickOutside"
-              @click="showOriginMenu = true"
             />
             <div class="ts-airplane-icon">
               <svg

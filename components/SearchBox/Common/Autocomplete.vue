@@ -115,7 +115,7 @@
       @input="getInput($event.target.value)"
       v-bind:value="displaySearch"
       v-click-outside="onClickOutside"
-      @focus="$event.target.select()"
+      @focus="focusInput"
       @click="openResult"
     />
     <div class="ts-svg-icon">
@@ -326,6 +326,11 @@ export default {
     },
   },
   methods: {
+    focusInput(e) {
+      if (!this.isMobile) {
+        e.target.select();
+      }
+    },
     getLocalStorage(value) {
       if (!value) {
         return;
@@ -450,6 +455,7 @@ export default {
     // fix local storage
     // fix display search
     // check user ip in vacation
+    // check replacement problem
   },
 };
 </script>
