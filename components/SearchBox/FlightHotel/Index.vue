@@ -393,6 +393,7 @@ label {
       </div>
       <div class="ts-date-picker">
         <NewDatePicker
+          ref="FlightHotelDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
           :lastDate="lastDate"
@@ -624,11 +625,21 @@ export default {
       this.origin = items.searchItem;
       this.displayOrigin = items.display;
       this.originSearch();
+      if (items.searchItem.name) {
+        this.openDestinationDialog = true;
+      } else {
+        this.openDestinationDialog = false;
+      }
     },
     getDataDestinationSearch(items) {
       this.destination = items.searchItem;
       this.displayDestination = items.display;
       this.destinationSearch();
+      if (items.searchItem.name) {
+        this.$refs.FlightHotelDatePicker.$children[0].open = true;
+      } else {
+        this.$refs.FlightHotelDatePicker.$children[0].open = false;
+      }
     },
     onClickOutside() {
       this.showOriginMenu = false;
@@ -684,6 +695,7 @@ export default {
             this.displayOrigin =
               item.cityCode + '-' + item.cityName + '-' + item.name;
             this.arrowCounterOrigin = -1;
+            this.$refs.FlightHotelDatePicker.$children[0].open = true;
           }
           this.$refs.destinationInput.focus();
           this.showOriginMenu = false;
@@ -890,14 +902,8 @@ export default {
         event_label: 'User submit new search',
       });
       let url = location.href;
-      let lang = 'lg=';
-      if (this.$i18n.locale == 'fr') {
-        lang = lang + 'fr-FR';
-      } else {
-        lang = lang + 'en-EN';
-      }
       url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/hotel/search/${customUrlStringify},${lang}`;
+      let href = `https://secure.tripsupport${url}/hotel/search/${customUrlStringify}`;
       href = encodeURI(href);
       window.open(href, '_self');
     },

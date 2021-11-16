@@ -253,6 +253,7 @@ input::placeholder {
       />
       <div class="ts-date-picker">
         <NewDatePicker
+          ref="thingsDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
           :lastDate="lastDate"
@@ -414,6 +415,11 @@ export default {
       this.To = items.searchItem;
       this.displayTo = items.display;
       this.search();
+      if (items.searchItem.name) {
+        this.$refs.hotelDatePicker.$children[0].open = true;
+      } else {
+        this.$refs.hotelDatePicker.$children[0].open = false;
+      }
     },
     onClickOutside() {
       this.showToMenu = false;
@@ -437,30 +443,33 @@ export default {
       } else {
         this.showToMenu = true;
       }
-      if (e.key == 'ArrowDown') {
-        if (this.arrowCounter < this.items.length) {
-          this.arrowCounter = this.arrowCounter + 1;
-          this.activeFrom = this.arrowCounter;
-          this.fixScrolling();
-        }
-      } else if (e.key == 'ArrowUp') {
-        if (this.arrowCounter > 0) {
-          this.arrowCounter = this.arrowCounter - 1;
-          this.activeFrom = this.arrowCounter;
-          this.fixScrolling();
-        }
-      } else if (e.key == 'Enter') {
-        if (this.arrowCounter == 0 && this.items[0]) {
-          this.To = this.items[0];
-          this.displayTo = this.items[0].name;
-        } else if (this.arrowCounter > 0) {
-          let item = this.items[this.arrowCounter];
-          this.To = item;
-          this.displayTo = item.name;
+      if (this.isMobile) {
+        if (e.key == 'ArrowDown') {
+          if (this.arrowCounter < this.items.length) {
+            this.arrowCounter = this.arrowCounter + 1;
+            this.activeFrom = this.arrowCounter;
+            this.fixScrolling();
+          }
+        } else if (e.key == 'ArrowUp') {
+          if (this.arrowCounter > 0) {
+            this.arrowCounter = this.arrowCounter - 1;
+            this.activeFrom = this.arrowCounter;
+            this.fixScrolling();
+          }
+        } else if (e.key == 'Enter') {
+          if (this.arrowCounter == 0 && this.items[0]) {
+            this.To = this.items[0];
+            this.displayTo = this.items[0].name;
+          } else if (this.arrowCounter > 0) {
+            let item = this.items[this.arrowCounter];
+            this.To = item;
+            this.displayTo = item.name;
+            this.showToMenu = false;
+            this.arrowCounter = -1;
+            this.$refs.thingsDatePicker.$children[0].open = true;
+          }
           this.showToMenu = false;
-          this.arrowCounter = -1;
         }
-        this.showToMenu = false;
       }
     },
     getTo(item) {
@@ -566,14 +575,8 @@ export default {
         event_label: 'User submit new search',
       });
       let url = location.href;
-      let lang = 'lg=';
-      if (this.$i18n.locale == 'fr') {
-        lang = lang + 'fr-FR';
-      } else {
-        lang = lang + 'en-EN';
-      }
       url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/thingtodo/search/${customUrlStringify},${lang}`;
+      let href = `https://secure.tripsupport${url}/thingtodo/search/${customUrlStringify}`;
       href = encodeURI(href);
       window.open(href, '_self');
     },

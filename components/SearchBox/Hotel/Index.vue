@@ -290,6 +290,7 @@ input::placeholder {
       />
       <div class="ts-date-picker">
         <NewDatePicker
+          ref="hotelDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
           :lastDate="lastDate"
@@ -452,6 +453,11 @@ export default {
       this.To = items.searchItem;
       this.displayTo = items.display;
       this.search();
+      if (items.searchItem.name) {
+        this.$refs.hotelDatePicker.$children[0].open = true;
+      } else {
+        this.$refs.hotelDatePicker.$children[0].open = false;
+      }
     },
     onClickOutside() {
       this.showToMenu = false;
@@ -499,6 +505,7 @@ export default {
             this.displayTo = item.name;
             this.showToMenu = false;
             this.arrowCounter = -1;
+            this.$refs.hotelDatePicker.$children[0].open = true;
           }
           this.showToMenu = false;
         }
@@ -615,14 +622,8 @@ export default {
         event_label: 'User submit new search',
       });
       let url = location.href;
-      let lang = 'lg=';
-      if (this.$i18n.locale == 'fr') {
-        lang = lang + 'fr-FR';
-      } else {
-        lang = lang + 'en-EN';
-      }
       url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/hotel/search/${customUrlStringify},${lang}`;
+      let href = `https://secure.tripsupport${url}/hotel/search/${customUrlStringify}`;
       href = encodeURI(href);
       window.open(href, '_self');
     },

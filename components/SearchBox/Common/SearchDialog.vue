@@ -141,7 +141,7 @@
               type="text"
               class="ts-input"
               :placeholder="`${title}`"
-               @focus="$event.target.select()"
+              @focus="$event.target.select()"
               v-click-outside="onClickOutside"
             />
             <div class="ts-airplane-icon">

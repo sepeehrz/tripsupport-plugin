@@ -501,6 +501,7 @@ input::placeholder {
       <div class="ts-duration-wrapper">
         <div class="ts-date-picker">
           <NewDatePicker
+            ref="vacationDatePicker"
             @RangeSelectedDate="getRangeDate"
             @clearDate="clearDate"
             :singleDatePicker="true"
@@ -787,6 +788,11 @@ export default {
         this.FromsItemsDisplay = cb;
       });
       this.changeDestination();
+      if (items.searchItem.name) {
+        this.openDestinationDialog = true;
+      } else {
+        this.openDestinationDialog = false;
+      }
     },
     getDataDestinationSearch(items) {
       this.To = items.searchItem;
@@ -794,6 +800,11 @@ export default {
       this.querySelections(this.To, this.toItems, (res) => {
         this.toItemsDisplay = res.slice(0, 50);
       });
+      if (items.searchItem.name) {
+        this.$refs.vacationDatePicker.$children[0].open = true;
+      } else {
+        this.$refs.vacationDatePicker.$children[0].open = false;
+      }
     },
     changeDestination() {
       if (this.From.codes) {
@@ -838,6 +849,7 @@ export default {
           this.displayTo = item.name;
           this.showToMenu = false;
           this.arrowCounterTo = -1;
+          this.$refs.vacationDatePicker.$children[0].open = true;
         }
         this.showToMenu = false;
       }
@@ -1059,14 +1071,8 @@ export default {
         event_label: 'User submit new search',
       });
       let url = location.href;
-      let lang = 'lg=';
-      if (this.$i18n.locale == 'fr') {
-        lang = lang + 'fr-FR';
-      } else {
-        lang = lang + 'en-EN';
-      }
       url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/vacation?From=${this.From.codes}&To=${destination}&DepartureDate=${this.DepartureDate}&Durations=${this.Durations}&AllInclusive=${this.AllInclusive}&NumberOfRooms=${this.NumberOfRooms}&NumberOfAdults=${this.Adults}&ChildrenAges=[${this.ChildrenAges}]&${lang}`;
+      let href = `https://secure.tripsupport${url}/vacation?From=${this.From.codes}&To=${destination}&DepartureDate=${this.DepartureDate}&Durations=${this.Durations}&AllInclusive=${this.AllInclusive}&NumberOfRooms=${this.NumberOfRooms}&NumberOfAdults=${this.Adults}&ChildrenAges=[${this.ChildrenAges}]`;
       window.open(href, '_self');
     },
     changeFormat(val) {

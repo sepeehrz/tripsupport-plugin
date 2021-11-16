@@ -771,6 +771,7 @@ export default {
             this.destination = item;
             this.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
             this.arrowCounterDestination = -1;
+            this.$refs.flightDatePicker.$children[0].open = true;
           }
           this.showDestinationMenu = false;
         }
@@ -810,11 +811,11 @@ export default {
     getDataOriginSearch(items) {
       this.origin = items.searchItem;
       this.displayOrigin = items.display;
-      // if (items.searchItem.ct) {
-      //   this.openDestinationDialog = true;
-      // } else {
-      //   this.openDestinationDialog = false;
-      // }
+      if (items.searchItem.ct) {
+        this.openDestinationDialog = true;
+      } else {
+        this.openDestinationDialog = false;
+      }
       this.originSearch();
     },
     getDataDestinationSearch(items) {
@@ -822,6 +823,11 @@ export default {
       this.displayDestination = items.display;
       if (!items.searchItem.ct) {
         this.destinationSearch();
+      }
+      if (items.searchItem.ct) {
+        this.$refs.flightDatePicker.$children[0].open = true;
+      } else {
+        this.$refs.flightDatePicker.$children[0].open = false;
       }
     },
     save() {

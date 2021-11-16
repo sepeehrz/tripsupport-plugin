@@ -435,6 +435,7 @@
       </div>
       <div class="ts-date-picker">
         <NewDatePicker
+          ref="oneWayDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
           :lastDate="lastDate"
@@ -684,12 +685,22 @@ export default {
     getDataOriginSearch(items) {
       this.origin = items.searchItem;
       this.displayOrigin = items.display;
+      if (items.searchItem.ct) {
+        this.openDestinationDialog = true;
+      } else {
+        this.openDestinationDialog = false;
+      }
       this.originSearch();
     },
     getDataDestinationSearch(items) {
       this.destination = items.searchItem;
       this.displayDestination = items.display;
       this.destinationSearch();
+      if (items.searchItem.ct) {
+        this.$refs.oneWayDatePicker.$children[0].open = true;
+      } else {
+        this.$refs.oneWayDatePicker.$children[0].open = false;
+      }
     },
     onClickOutside() {
       this.showOriginMenu = false;
@@ -793,6 +804,7 @@ export default {
             this.destination = item;
             this.displayDestination = item.ac + '-' + item.ct + '-' + item.an;
             this.arrowCounterDestination = -1;
+            this.$refs.oneWayDatePicker.$children[0].open = true;
           }
           this.showDestinationMenu = false;
         }
