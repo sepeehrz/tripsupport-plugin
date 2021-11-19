@@ -3,6 +3,18 @@
   width: 95%;
   top: 84px;
 }
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #cdcdda;
+}
+::-webkit-scrollbar-thumb {
+  background: #8f90ad;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8f90ad;
+}
 .input-wrapper {
   position: relative;
 }
@@ -184,6 +196,31 @@
                     ></path>
                   </svg>
                   <svg
+                    height="18"
+                    viewBox="0 0 640 512"
+                    width="18"
+                    xmlns="http://www.w3.org/2000/svg"
+                    v-else-if="mode == 'vacation' && item.type == 'Hotel'"
+                  >
+                    <g _ngcontent-uhw-c21="">
+                      <g
+                        _ngcontent-uhw-c21=""
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          _ngcontent-uhw-c21=""
+                          d="m347.829 38.679h-76.829v-38.679h-30v38.679h-76.829v42.815h183.658z"
+                          data-original="#000000"
+                        ></path>
+                        <path
+                          _ngcontent-uhw-c21=""
+                          d="m392.647 482v-370.506h-273.294v370.506h-68.065v30h409.424v-30zm-153.458-332.885h33.622v30h-33.622zm0 67.62h33.622v30h-33.622zm0 67.621h33.622v30h-33.622zm-84.403-135.241h33.622v30h-33.622zm0 67.62h33.622v30h-33.622zm0 67.621h33.622v30h-33.622zm200.618 197.644h-30v-96.485h-54.404v96.485h-30v-96.485h-54.404v96.485h-30v-126.485h198.808zm1.811-167.644h-33.622v-30h33.622zm0-67.621h-33.622v-30h33.622zm0-67.62h-33.622v-30h33.622z"
+                          data-original="#000000"
+                        ></path>
+                      </g>
+                    </g>
+                  </svg>
+                  <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
                     height="18"
@@ -251,6 +288,7 @@
       :title="placeholder"
       @getDataSearch="getDataSearchFromMobile"
       @close="openMobileDialog = $event"
+      :mode="mode"
     />
   </div>
 </template>
@@ -309,13 +347,17 @@ export default {
     userLocation: {
       handler: function(val) {
         if (Object.keys(val).length && this.from) {
-          this.search = val;
-          this.displayItemSearch(val);
-          this.$emit('input', this.search);
+          if (!this.localStorage) {
+            this.search = val;
+            this.displayItemSearch(val);
+            this.$emit('input', this.search);
+          }
         }
         if (Object.keys(val).length == 0 && this.from) {
-          this.userLocationObject();
-          this.$emit('input', this.search);
+          if (!this.localStorage) {
+            this.userLocationObject();
+            this.$emit('input', this.search);
+          }
         }
       },
     },
@@ -413,11 +455,7 @@ export default {
             ct: 'Toronto',
           };
           this.displayItemSearch(this.search);
-        } else if (
-          this.mode == 'vacation' ||
-          this.mode == 'hotel' ||
-          this.mode == 'thingsToDo'
-        ) {
+        } else if (this.mode == 'vacation') {
           this.search = { codes: 'YYZ', name: 'Toronto' };
           this.displayItemSearch(this.search);
         }
@@ -449,13 +487,9 @@ export default {
         this.search = this.items[0];
         this.displayItemSearch(this.items[0]);
         this.showMenu = false;
+        this.$emit('input', this.search);
       }
     },
-    // location base on user ip
-    // fix local storage
-    // fix display search
-    // check user ip in vacation
-    // check replacement problem
   },
 };
 </script>

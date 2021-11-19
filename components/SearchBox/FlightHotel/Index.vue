@@ -220,176 +220,25 @@ label {
     <div class="ts-field-wrapper">
       <div class="ts-search-field-wrapper">
         <div class="ts-origin">
-          <label for="">{{ $t('Departing_From') }}</label>
-          <input
-            @keyup="originSearch"
-            v-bind:value="displayOrigin"
-            v-on:input="
-              (displayOrigin = $event.target.value),
-                (origin = $event.target.value)
-            "
-            type="text"
-            :placeholder="`${$t('Departing_From')}`"
-            v-click-outside="onClickOutside"
-            @click="openOrigin"
-            class="ts-input"
-            @focus="$event.target.select()"
-            @keydown.tab="fillInputTab"
+          <Autocomplete
+            ref="flightSearchAutocomplete"
+            v-model="getOriginSearch"
+            :items="originItems"
+            :placeholder="$t('Departing_From')"
+            :localStorage="localData.From"
+            mode="hotelFlightOrigin"
           />
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-          <MenuDialog :showMenu="showOriginMenu" v-if="originItems.length">
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in originItems"
-                  :key="index"
-                  @click="getOrigin(item)"
-                  :class="{
-                    active:
-                      origin == item ||
-                      index == activeFrom ||
-                      index == arrowCounterOrigin,
-                  }"
-                  @mouseenter="index ? (activeFrom = index) : (activeFrom = 0)"
-                >
-                  <div ref="dropdownItemOrigin">
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.cityName }}
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.name }}
-                    </div>
-                  </div>
-                  <div class="ts-dropdown-airport">
-                    {{ item.countryCode }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </MenuDialog>
         </div>
-        <SearchDialog
-          :openDialog="openOriginDialog"
-          :items="originItems"
-          :from="false"
-          mode="hotelFlightOrigin"
-          :title="$t('Departing_From')"
-          @getDataSearch="getDataOriginSearch"
-          @close="openOriginDialog = $event"
-        />
         <div class="ts-destination">
-          <label for="">{{ $t('Going_To') }}</label>
-          <input
-            ref="destinationInput"
-            @keyup="destinationSearch"
-            v-bind:value="displayDestination"
-            v-on:input="
-              (displayDestination = $event.target.value),
-                (destination = $event.target.value)
-            "
-            type="text"
-            class="ts-input"
-            :placeholder="`${$t('Going_To')}`"
-            v-click-outside="outSideDestinationMenu"
-            @click="openDestination"
-            @focus="$event.target.select()"
-            @keydown.tab="fillInputTab"
+          <Autocomplete
+            ref="flightDestinationAutocomplete"
+            v-model="getDestinationSearch"
+            :items="destinationItems"
+            :placeholder="$t('Going_To')"
+            :localStorage="localData.To"
+            mode="hotelFlightDestination"
           />
-          <div class="ts-airplane-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-            >
-              <path
-                d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                fill="#66678F"
-              />
-            </svg>
-          </div>
-          <MenuDialog
-            :showMenu="showDestinationMenu"
-            v-if="destinationItems.length"
-          >
-            <template #data>
-              <div class="ts-dropdown-wrapper">
-                <div
-                  class="ts-dropdown-item"
-                  v-for="(item, index) in destinationItems"
-                  :key="index"
-                  @click="getDestination(item)"
-                  :class="{
-                    active:
-                      destination == item ||
-                      index == activeTo ||
-                      index == arrowCounterDestination,
-                  }"
-                  @mouseenter="index ? (activeTo = index) : (activeTo = 0)"
-                >
-                  <div ref="dropdownItemDestination">
-                    <div class="ts-dropdown-city-name">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M16.808 3.19729C16.5399 3.46359 15.2015 4.93888 13.9124 6.21937C13.9124 17.0109 14.2682 16.2008 12.4569 18L11.0211 11.9598L9.55414 10.5026C5.66686 14.3632 6.25266 11.3737 6.25266 15.0695C6.25636 15.8766 5.91536 16.4075 5.42637 16.8932L4.06597 13.8389L0.990894 12.4876C2.00029 11.4859 2.55178 11.6669 4.93967 11.6669C5.75236 10.0003 6.75696 9.28595 7.54295 8.50496L6.07896 7.05087L0 5.62688C1.71529 3.92299 0.663795 4.23739 11.8395 4.23739C13.1355 2.95009 14.5277 1.4671 14.7969 1.1997C15.5714 0.430509 17.5986 -0.235987 17.9174 0.0806108C18.2361 0.397209 17.5825 2.428 16.808 3.19729ZM15.4406 7.44417L14.6307 8.24686V10.6048C16.3815 8.84986 16.827 8.82816 15.4406 7.44417ZM10.6281 2.6519C9.26034 1.2867 9.36394 1.5691 7.41295 3.50889H9.77544L10.6281 2.6519Z"
-                          />
-                        </svg>
-                      </span>
-                      {{ item.name }}
-                    </div>
-                    <div class="ts-dropdown-ariport-name">
-                      {{ item.secondaryName }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </MenuDialog>
         </div>
-        <SearchDialog
-          :openDialog="openDestinationDialog"
-          :items="destinationItems"
-          :from="false"
-          mode="hotelFlightDestination"
-          :title="$t('Going_To')"
-          @getDataSearch="getDataDestinationSearch"
-          @close="openDestinationDialog = $event"
-        />
       </div>
       <div class="ts-date-picker">
         <NewDatePicker
@@ -420,27 +269,15 @@ label {
 
 <script>
 import moment from 'moment';
-import SearchButton from './../Common/SearchButton.vue';
-import Toast from './../Common/Toast.vue';
-import MenuDialog from '../Common/MenuDialog.vue';
-import DatePicker from './../Common/DatePicker.vue';
 import AirfareType from './../Common/AirfareType.vue';
 import Passengers from './../Common/HotelPassengers.vue';
 import Rooms from './../Common/Rooms.vue';
-import SearchDialog from '../Common/SearchDialog.vue';
-import DatePickerMobile from '../Common/DatePickerMobile.vue';
 
 export default {
   components: {
-    SearchButton,
     Passengers,
-    MenuDialog,
-    DatePicker,
-    Toast,
     Rooms,
     AirfareType,
-    SearchDialog,
-    DatePickerMobile,
   },
   data() {
     return {
@@ -450,19 +287,13 @@ export default {
       },
       showDialog: false,
       origin: null,
-      displayOrigin: null,
       destination: null,
-      displayDestination: null,
       departDate: null,
       returnDate: null,
       lastDate: null,
       originalDepartDate: null,
       originalReturnDate: null,
-      showOriginMenu: false,
-      showDestinationMenu: false,
       DirectFlights: false,
-      openOriginDialog: false,
-      openDestinationDialog: false,
       dateValidation: true,
       originTimeout: null,
       destinationTimeout: null,
@@ -472,10 +303,9 @@ export default {
       Rooms: 1,
       name: 'FlightHotel',
       class: this.$store.commit('getAirType', `${this.$t('Economy')}`),
-      activeFrom: 0,
-      activeTo: 0,
-      arrowCounterOrigin: 0,
-      arrowCounterDestination: 0,
+      getOriginSearch: null,
+      getDestinationSearch: null,
+      localData: {},
     };
   },
   mounted() {
@@ -485,34 +315,34 @@ export default {
     if (!getlastFlightHotelSearch) {
       return;
     }
-    let parsedGetlastFlightHotelSearch = JSON.parse(getlastFlightHotelSearch);
-    this.origin = parsedGetlastFlightHotelSearch.From;
-    this.displayOrigin =
-      parsedGetlastFlightHotelSearch.From.cityCode +
-      '-' +
-      parsedGetlastFlightHotelSearch.From.cityName +
-      '-' +
-      parsedGetlastFlightHotelSearch.From.name;
-    this.destination = parsedGetlastFlightHotelSearch.To;
-    this.displayDestination =
-      parsedGetlastFlightHotelSearch.To.name +
-      '-' +
-      parsedGetlastFlightHotelSearch.To.secondaryName;
-    if (parsedGetlastFlightHotelSearch.date) {
-      this.lastDate = parsedGetlastFlightHotelSearch.date;
-      this.departDate = this.changeFormat(
-        parsedGetlastFlightHotelSearch.date.startDate
-      );
-      this.returnDate = this.changeFormat(
-        parsedGetlastFlightHotelSearch.date.endDate
-      );
-      this.originalDepartDate = moment(
-        parsedGetlastFlightHotelSearch.date.startDate
-      )._d;
-      this.originalReturnDate = moment(
-        parsedGetlastFlightHotelSearch.date.endDate
-      )._d;
+    this.localData = JSON.parse(getlastFlightHotelSearch);
+    this.origin = this.localData.From;
+    this.destination = this.localData.To;
+    if (this.localData.date) {
+      this.lastDate = this.localData.date;
+      this.departDate = this.changeFormat(this.localData.date.startDate);
+      this.returnDate = this.changeFormat(this.localData.date.endDate);
+      this.originalDepartDate = moment(this.localData.date.startDate)._d;
+      this.originalReturnDate = moment(this.localData.date.endDate)._d;
     }
+  },
+  watch: {
+    getOriginSearch: {
+      handler: function(val) {
+        this.origin = val;
+        this.searchFlight(val).then((res) => {
+          this.originItems = res;
+        });
+      },
+    },
+    getDestinationSearch: {
+      handler: function(val) {
+        this.destination = val;
+        this.searchDestination(val).then((res) => {
+          this.destinationItems = res;
+        });
+      },
+    },
   },
   computed: {
     checkZero() {
@@ -524,9 +354,6 @@ export default {
         return item > 0;
       });
       return checkZero;
-    },
-    isMobile() {
-      return window.innerWidth < 600;
     },
     disabledButton() {
       if (
@@ -544,205 +371,47 @@ export default {
     },
   },
   methods: {
-    fixScrollingOrigin() {
-      let element = this.$refs.dropdownItemOrigin[this.arrowCounterOrigin];
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'start',
-      });
-    },
-    fixScrollingDestination() {
-      let element = this.$refs.dropdownItemDestination[
-        this.arrowCounterDestination
-      ];
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'start',
-      });
-    },
-    fillInputTab() {
-      this.fillInput();
-    },
-    fillInput() {
-      if (this.originItems.length && this.origin && !this.origin.cityCode) {
-        this.origin = this.originItems[0];
-        this.displayOrigin =
-          this.originItems[0].cityCode +
-          '-' +
-          this.originItems[0].cityName +
-          '-' +
-          this.originItems[0].name;
-        this.showOriginMenu = false;
-      }
-      if (
-        this.destinationItems.length &&
-        this.destination &&
-        !this.destination.name
-      ) {
-        this.destination = this.destinationItems[0];
-        this.displayDestination =
-          this.destinationItems[0].name +
-          '-' +
-          this.destinationItems[0].secondaryName;
-        this.showDestinationMenu = false;
-      }
-    },
     clearDate() {
       this.departDate = null;
       this.returnDate = null;
     },
-    openOrigin() {
-      if (window.innerWidth <= 600)
-        this.openOriginDialog = !this.openOriginDialog;
-      if (window.innerWidth <= 600) {
-        this.showOriginMenu = false;
-      } else {
-        this.showOriginMenu = true;
-      }
-    },
-    openDestination() {
-      if (window.innerWidth <= 600)
-        this.openDestinationDialog = !this.openDestinationDialog;
-      if (window.innerWidth <= 600) {
-        this.showDestinationMenu = false;
-      } else {
-        this.showDestinationMenu = true;
-      }
-    },
-    getDataOriginSearch(items) {
-      this.origin = items.searchItem;
-      this.displayOrigin = items.display;
-      this.originSearch();
-    },
-    getDataDestinationSearch(items) {
-      this.destination = items.searchItem;
-      this.displayDestination = items.display;
-      this.destinationSearch();
-    },
-    onClickOutside() {
-      this.showOriginMenu = false;
-      this.fillInput();
-    },
-    outSideDestinationMenu() {
-      this.showDestinationMenu = false;
-      this.fillInput();
-    },
-    originSearch(e) {
-      if (this.origin) {
-        clearTimeout(this.originTimeout);
-        this.originTimeout = setTimeout(() => {
-          this.axios
-            .get(
-              `https://flighthotelapi.tripsupport.com/api/Resource/FindAirports?term=${this.origin.trim()}`
-            )
-            .then((response) => {
-              this.originItems = response.data.data;
-            });
+    searchFlight(value) {
+      return new Promise((resolve) => {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          if (value && !value.name) {
+            this.axios
+              .get(
+                `https://flighthotelapi.tripsupport.com/api/Resource/FindAirports?term=${value.trim()}`
+              )
+              .then((response) => {
+                resolve(response.data.data);
+              });
+          }
         }, 500);
-      }
-      if (!this.isMobile) {
-        if (window.innerWidth <= 600) {
-          this.showOriginMenu = false;
-        } else {
-          this.showOriginMenu = true;
-        }
-        if (e.key == 'ArrowDown') {
-          if (this.arrowCounterOrigin < this.originItems.length) {
-            this.arrowCounterOrigin = this.arrowCounterOrigin + 1;
-            this.activeOrigin = this.arrowCounterOrigin;
-            this.fixScrollingOrigin();
-          }
-        } else if (e.key == 'ArrowUp') {
-          if (this.arrowCounterOrigin > 0) {
-            this.arrowCounterOrigin = this.arrowCounterOrigin - 1;
-            this.activeOrigin = this.arrowCounterOrigin;
-            this.fixScrollingOrigin();
-          }
-        } else if (e.key == 'Enter') {
-          if (this.arrowCounterOrigin == 0 && this.originItems[0]) {
-            this.origin = this.originItems[0];
-            this.displayOrigin =
-              this.originItems[0].cityCode +
-              '-' +
-              this.originItems[0].cityName +
-              '-' +
-              this.originItems[0].name;
-          } else if (this.arrowCounterOrigin > 0) {
-            let item = this.originItems[this.arrowCounterOrigin];
-            this.origin = item;
-            this.displayOrigin =
-              item.cityCode + '-' + item.cityName + '-' + item.name;
-            this.arrowCounterOrigin = -1;
-          }
-          this.$refs.destinationInput.focus();
-          this.showOriginMenu = false;
-        }
-      }
+      });
     },
-    destinationSearch(e) {
-      if (this.destination) {
+    searchDestination(value) {
+      return new Promise((resolve) => {
         clearTimeout(this.destinationTimeout);
         this.destinationTimeout = setTimeout(() => {
-          this.axios
-            .get(
-              `https://flighthotelapi.tripsupport.com/api/Resource/SearchDestinations?name=${this.destination.trim()}&page=1`
-            )
-            .then((response) => {
-              this.destinationItems = response.data.data;
-            });
-        }, 600);
-      }
-      if (window.innerWidth <= 500) {
-        this.showDestinationMenu = false;
-      } else {
-        this.showDestinationMenu = true;
-      }
-      if (!this.isMobile) {
-        if (e.key == 'ArrowDown') {
-          if (this.arrowCounterDestination < this.destinationItems.length) {
-            this.arrowCounterDestination = this.arrowCounterDestination + 1;
-            this.activeDestination = this.arrowCounterDestination;
-            this.fixScrollingDestination();
+          if (value && !value.name) {
+            this.axios
+              .get(
+                `https://flighthotelapi.tripsupport.com/api/Resource/SearchDestinations?name=${value.trim()}&page=1`
+              )
+              .then((response) => {
+                resolve(response.data.data);
+              });
           }
-        } else if (e.key == 'ArrowUp') {
-          if (this.arrowCounterDestination > 0) {
-            this.arrowCounterDestination = this.arrowCounterDestination - 1;
-            this.activeDestination = this.arrowCounterDestination;
-            this.fixScrollingDestination();
-          }
-        } else if (e.key == 'Enter') {
-          if (this.arrowCounterDestination == 0 && this.destinationItems[0]) {
-            this.destination = this.destinationItems[0];
-            this.displayDestination =
-              this.destinationItems[0].name +
-              '-' +
-              this.destinationItems[0].secondaryName;
-          } else if (this.arrowCounterDestination > 0) {
-            let item = this.destinationItems[this.arrowCounterDestination];
-            this.destination = item;
-            this.displayDestination = item.name + '-' + item.secondaryName;
-            this.arrowCounterDestination = -1;
-          }
-          this.showDestinationMenu = false;
-        }
-      }
+        }, 500);
+      });
     },
     numberOfTravellers(val) {
       this.Travellers = val;
     },
-    getOrigin(item) {
-      this.origin = item;
-      this.displayOrigin =
-        item.cityCode + '-' + item.cityName + '-' + item.name;
-    },
     getClass(val) {
       this.class = val;
-    },
-    getDestination(item) {
-      this.destination = item;
-      this.displayDestination = item.name + '-' + item.secondaryName;
     },
     getRangeDate(e) {
       this.lastDate = e;

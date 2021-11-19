@@ -212,23 +212,7 @@
 
 <script>
 import moment from 'moment';
-import SearchButton from './../Common/SearchButton.vue';
-import Travellers from './../Common/Passengers.vue';
-import Toast from './../Common/Toast.vue';
-import MenuDialog from '../Common/MenuDialog.vue';
-import DatePicker from './../Common/DatePicker.vue';
-import DatePickerMobile from '../Common/DatePickerMobile.vue';
-import SearchDialog from '../Common/SearchDialog.vue';
 export default {
-  components: {
-    SearchButton,
-    Travellers,
-    MenuDialog,
-    DatePicker,
-    Toast,
-    DatePickerMobile,
-    SearchDialog,
-  },
   data() {
     return {
       name: 'flight',
@@ -262,38 +246,36 @@ export default {
     getOriginSearch: {
       handler: function(val) {
         this.origin = val;
-        // if (
-        //   this.isMobile &&
-        //   val.ct &&
-        //   this.$refs.originAutocomplete.openMobileDialog == true
-        // ) {
-        //   this.$refs.destinationAutocomplete.openMobileDialog = true;
-        // }
-        // //  else {
-        // //   this.$refs.destinationAutocomplete.openMobileDialog = false;
-        // // }
-        // console.log(this.origin);
+        if (
+          this.isMobile &&
+          val.ct &&
+          this.$refs.originAutocomplete.openMobileDialog == true
+        ) {
+          this.$refs.destinationAutocomplete.openMobileDialog = true;
+        } else {
+          this.$refs.destinationAutocomplete.openMobileDialog = false;
+        }
         this.searchRequest(val).then((res) => {
           this.originItems = res;
         });
       },
-      immediate: true,
+      // immediate: true,
     },
     getDestinationSearch: {
       handler: function(val) {
         this.destination = val;
-        // if (
-        //   this.isMobile &&
-        //   val.ct &&
-        //   this.$refs.destinationAutocomplete.openMobileDialog == true
-        // ) {
-        //   this.$refs.datePicker.$children[0].open = true;
-        // }
+        if (
+          this.isMobile &&
+          val.ct &&
+          this.$refs.destinationAutocomplete.openMobileDialog == true
+        ) {
+          this.$refs.datePicker.$children[0].open = true;
+        }
         this.searchRequest(val).then((res) => {
           this.destinationItems = res;
         });
       },
-      immediate: true,
+      // immediate: true,
     },
   },
   computed: {
@@ -323,7 +305,6 @@ export default {
       let { data: res } = await this.axios.get(
         `https://search.tripsupport.ca/api/searchairports?searchvalue=${data.data.city.toLowerCase()}`
       );
-      this.userLocation = res[0];
       if (res.length) {
         this.userLocation = res[0];
         this.$cookie.set(
@@ -401,6 +382,14 @@ export default {
       this.returnDate = null;
     },
     displacement() {
+      this.displayOrigin =
+        this.origin.ac + '-' + this.origin.ct + '-' + this.origin.an;
+      this.displayDestination =
+        this.destination.ac +
+        '-' +
+        this.destination.ct +
+        '-' +
+        this.destination.an;
       let origin = this.origin;
       let displayOrigin = this.displayOrigin;
       let destination = this.destination;
