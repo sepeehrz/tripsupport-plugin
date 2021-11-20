@@ -212,6 +212,7 @@
       <div class="ts-duration-wrapper">
         <div class="ts-date-picker">
           <NewDatePicker
+            ref="vacationDatePicker"
             @RangeSelectedDate="getRangeDate"
             @clearDate="clearDate"
             :singleDatePicker="true"
@@ -383,6 +384,15 @@ export default {
             this.toItemsDisplay = res;
           });
         }
+        if (
+          this.isMobile &&
+          val.name &&
+          this.$refs.FromAutocomplete.openMobileDialog == true
+        ) {
+          this.$refs.ToAutocomplete.openMobileDialog = true;
+        } else {
+          this.$refs.ToAutocomplete.openMobileDialog = false;
+        }
       },
     },
     getToSearch: {
@@ -391,10 +401,20 @@ export default {
         this.querySearch(val, this.toItems).then((res) => {
           this.toItemsDisplay = res;
         });
+        if (
+          this.isMobile &&
+          val.name &&
+          this.$refs.ToAutocomplete.openMobileDialog == true
+        ) {
+          this.$refs.vacationDatePicker.$children[0].open = true;
+        }
       },
     },
   },
   computed: {
+    isMobile() {
+      return window.innerWidth < 600;
+    },
     disabledButton() {
       let checkAvailableRoom = this.Adults / this.NumberOfRooms;
       let getError = false;

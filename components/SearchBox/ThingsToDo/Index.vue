@@ -70,6 +70,7 @@
       </div>
       <div class="ts-date-picker">
         <NewDatePicker
+          ref="thingsToDoDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
           :lastDate="lastDate"
@@ -128,6 +129,13 @@ export default {
         this.searchRequest(val).then((res) => {
           this.items = res;
         });
+        if (
+          this.isMobile &&
+          val.name &&
+          this.$refs.thingsToDoAutocomplete.openMobileDialog == true
+        ) {
+          this.$refs.thingsToDoDatePicker.$children[0].open = true;
+        }
       },
     },
   },
@@ -147,6 +155,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return window.innerWidth < 600;
+    },
     checkZero() {
       let adultsArray = [];
       this.Travellers.forEach((item) => {

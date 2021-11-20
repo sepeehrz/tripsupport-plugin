@@ -242,6 +242,7 @@ label {
       </div>
       <div class="ts-date-picker">
         <NewDatePicker
+          ref="flightHotelDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
           :lastDate="lastDate"
@@ -333,6 +334,15 @@ export default {
         this.searchFlight(val).then((res) => {
           this.originItems = res;
         });
+        if (
+          this.isMobile &&
+          val.name &&
+          this.$refs.flightSearchAutocomplete.openMobileDialog == true
+        ) {
+          this.$refs.flightDestinationAutocomplete.openMobileDialog = true;
+        } else {
+          this.$refs.flightDestinationAutocomplete.openMobileDialog = false;
+        }
       },
     },
     getDestinationSearch: {
@@ -341,10 +351,20 @@ export default {
         this.searchDestination(val).then((res) => {
           this.destinationItems = res;
         });
+        if (
+          this.isMobile &&
+          val.name &&
+          this.$refs.flightDestinationAutocomplete.openMobileDialog == true
+        ) {
+          this.$refs.flightHotelDatePicker.$children[0].open = true;
+        }
       },
     },
   },
   computed: {
+    isMobile() {
+      return window.innerWidth < 600;
+    },
     checkZero() {
       let adultsArray = [];
       this.Travellers.forEach((item) => {

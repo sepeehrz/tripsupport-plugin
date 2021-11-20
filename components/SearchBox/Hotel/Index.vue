@@ -98,6 +98,7 @@
       </div>
       <div class="ts-date-picker">
         <NewDatePicker
+          ref="HotelDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
           :lastDate="lastDate"
@@ -163,6 +164,13 @@ export default {
         this.searchRequest(val).then((res) => {
           this.items = res;
         });
+        if (
+          this.isMobile &&
+          val.name &&
+          this.$refs.hotelAutocomplete.openMobileDialog == true
+        ) {
+          this.$refs.HotelDatePicker.$children[0].open = true;
+        }
       },
     },
   },
@@ -182,6 +190,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return window.innerWidth < 600;
+    },
     checkZero() {
       let adultsArray = [];
       this.Travellers.forEach((item) => {
