@@ -118,7 +118,13 @@
 </style>
 
 <template>
-  <v-dialog v-model="dialog" fullscreen hide-overlay scrollable>
+  <v-dialog
+    v-model="dialog"
+    fullscreen
+    hide-overlay
+    transition="dialog-bottom-transition"
+    scrollable
+  >
     <div class="ts-dialog-search-wrappper">
       <div class="ts-dialog-title-wrapper">
         <div class="ts-dialog-close">
@@ -325,9 +331,6 @@ export default {
     },
     items: {},
     title: {},
-    from: {
-      default: false,
-    },
     mode: {
       default: 'flight',
     },
