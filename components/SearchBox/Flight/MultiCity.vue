@@ -16,13 +16,12 @@
 .ts-remove-icon {
   cursor: pointer;
   position: absolute;
-  right: -5px;
+  right: -20px;
   bottom: 10px;
 }
 .ts-input-wrapper {
   position: relative;
   flex: 0 0 35%;
-  padding-right: 16px;
 }
 .ts-date-picker {
   flex: 0 0 25%;
@@ -142,64 +141,6 @@
   font-weight: 400;
   cursor: pointer;
 }
-.ts-checkbox-wrapper {
-  display: flex;
-  align-items: center;
-}
-.ts-checkbox-wrapper > div {
-  display: flex;
-  align-items: center;
-  margin-right: 19px;
-}
-.ts-checkbox-wrapper > div label {
-  font-weight: 400;
-  color: #66678f;
-  font-size: 14px;
-}
-.ts-checkbox-item {
-  display: flex;
-  cursor: pointer;
-  position: relative;
-  align-items: center;
-  margin-bottom: 0 !important;
-}
-
-.ts-checkbox-item > span {
-  font-weight: 400;
-  color: #66678f;
-  font-size: 14px;
-  margin-left: 8px;
-}
-
-.ts-checkbox-item > input {
-  height: 18px;
-  width: 18px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -o-appearance: none;
-  appearance: none;
-  border: 1px solid rgba(171, 171, 196, 0.6);
-  border-radius: 4px;
-  outline: none;
-  transition-duration: 0.3s;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.ts-checkbox-item > input:checked {
-  border: 1px solid #ed1b2e;
-  background-color: #ed1b2e;
-}
-
-.ts-checkbox-item > input:checked + span::before {
-  content: '\2713';
-  display: block;
-  text-align: center;
-  color: #fff;
-  position: absolute;
-  left: 5px;
-  top: 1px;
-}
 @media only screen and (max-width: 600px) {
   .ts-block-wrapper {
     display: flex;
@@ -223,12 +164,6 @@
     display: block;
     padding-top: 18px;
     padding-bottom: 22px;
-  }
-  .ts-checkbox-wrapper {
-    display: block;
-  }
-  .ts-checkbox-wrapper > div {
-    margin-bottom: 20px;
   }
   .ts-button {
     display: block;

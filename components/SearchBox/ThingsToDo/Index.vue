@@ -64,7 +64,6 @@
           v-model="getHotelSearch"
           :items="items"
           :placeholder="$t('HOTELS.Destination_To')"
-          :localStorage="localData.To"
           mode="thingsToDo"
         />
       </div>
@@ -73,13 +72,8 @@
           ref="thingsToDoDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
-          :lastDate="lastDate"
           @dateValidation="dateValidation = $event"
           :haveValidation="true"
-          :placeHolder="{
-            origin: 'From',
-            destination: 'To',
-          }"
         />
       </div>
     </div>
@@ -105,21 +99,15 @@ export default {
         color: 'red',
       },
       showDialog: false,
-      EntryMenu: false,
-      ExitMenu: false,
       To: null,
       EntryDate: null,
       ExitDate: null,
-      lastDate: null,
-      originalEntryDate: null,
-      originalExitDate: null,
       items: [],
       Rooms: 1,
       dateValidation: true,
       timeout: null,
       Travellers: [{ adults: 2, children: 0, childrenAges: [] }],
       getHotelSearch: null,
-      localData: {},
     };
   },
   watch: {
@@ -129,30 +117,8 @@ export default {
         this.searchRequest(val).then((res) => {
           this.items = res;
         });
-        if (
-          this.isMobile &&
-          val.name &&
-          this.$refs.thingsToDoAutocomplete.openMobileDialog == true
-        ) {
-          this.$refs.thingsToDoDatePicker.$children[0].open = true;
-        }
       },
     },
-  },
-  mounted() {
-    let getlastThingsToDoSearch = localStorage.getItem('lastThingsToDoSearch');
-    if (!getlastThingsToDoSearch) {
-      return;
-    }
-    this.localData = JSON.parse(getlastThingsToDoSearch);
-    this.To = this.localData.To;
-    if (this.localData.date) {
-      this.lastDate = this.localData.date;
-      this.EntryDate = this.changeFormat(this.localData.date.startDate);
-      this.ExitDate = this.changeFormat(this.localData.date.endDate);
-      this.originalEntryDate = moment(this.localData.date.startDate)._d;
-      this.originalExitDate = moment(this.localData.date.endDate)._d;
-    }
   },
   computed: {
     isMobile() {
@@ -206,9 +172,6 @@ export default {
       return moment(val).format('YYYY-MM-DD');
     },
     getRangeDate(e) {
-      this.lastDate = e;
-      this.originalEntryDate = e.startDate;
-      this.originalExitDate = e.endDate;
       this.EntryDate = this.changeFormat(e.startDate);
       this.ExitDate = this.changeFormat(e.endDate);
     },
@@ -219,10 +182,6 @@ export default {
           color: '#cb3839',
           toastText: 'Please Enter Destination',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'ThingToDo',
-          event_label: 'User entered an invalid Destination',
-        });
         return;
       }
       if (!this.EntryDate || !this.ExitDate) {
@@ -231,18 +190,6 @@ export default {
           color: '#cb3839',
           toastText: 'Please Enter departure date',
         };
-        if (!this.EntryDate) {
-          this.$gtag.event('Validation', {
-            event_category: 'ThingToDo',
-            event_label: 'User entered an invalid Departure',
-          });
-        }
-        if (!this.ExitDate) {
-          this.$gtag.event('Validation', {
-            event_category: 'ThingToDo',
-            event_label: 'User entered an invalid Return',
-          });
-        }
         return;
       }
       if (!this.checkZero) {
@@ -251,10 +198,6 @@ export default {
           color: '#cb3839',
           toastText: 'AdultCount should not be zero',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'ThingToDo',
-          event_label: 'User entered an invalid AdultCount',
-        });
         return;
       }
       if (!this.dateValidation) {
@@ -263,10 +206,6 @@ export default {
           color: '#cb3839',
           toastText: 'Maximum Length of stay allowed is 20 days',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'ThingToDo',
-          event_label: 'User entered an invalid Maximum Length of stay allowed',
-        });
         return;
       }
       let customUrl = {
@@ -277,24 +216,8 @@ export default {
           travellers: [],
         },
       };
-      let customLocal = {
-        To: this.To,
-        EntryDate: this.EntryDate,
-        ExitDate: this.ExitDate,
-        travellersForm: {
-          travellers: [],
-        },
-        date: this.lastDate,
-      };
       let customUrlStringify = JSON.stringify(customUrl);
-      localStorage.setItem('lastThingsToDoSearch', JSON.stringify(customLocal));
-      this.$gtag.event('Search', {
-        event_category: 'ThingToDo',
-        event_label: 'User submit new search',
-      });
-      let url = location.href;
-      url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/thingtodo/search/${customUrlStringify}`;
+      let href = `https://secure.tripsupport.ca/thingtodo/search/${customUrlStringify}`;
       href = encodeURI(href);
       window.open(href, '_self');
     },

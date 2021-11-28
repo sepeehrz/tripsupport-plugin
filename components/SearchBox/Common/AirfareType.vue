@@ -165,33 +165,6 @@ export default {
       airfareType: `${this.$t('Economy')}`,
     };
   },
-  mounted() {
-    if (this.$parent.name == 'flight') {
-      let lastFlightRoundTripSearch = localStorage.getItem(
-        'lastFlightRoundTripSearch'
-      );
-      if (!lastFlightRoundTripSearch) {
-        return;
-      }
-      let parsedlastFlightRoundTripSearch = JSON.parse(
-        lastFlightRoundTripSearch
-      );
-      this.airfareType = `${this.$t(
-        `${parsedlastFlightRoundTripSearch.class}`
-      )}`;
-    }
-    if (this.$parent.name == 'FlightHotel') {
-      let getFlightLastSearch = localStorage.getItem('lastFlightHotelSearch');
-      if (!getFlightLastSearch) {
-        return;
-      }
-      let parsedGetFlightLastSearch = JSON.parse(getFlightLastSearch);
-      this.airfareType = `${this.$t(
-        `${parsedGetFlightLastSearch.FlightType}`
-      )}`;
-    }
-    this.$store.commit('getAirType', this.airfareType);
-  },
   methods: {
     onClickOutside() {
       this.airfareTypeMenu = false;

@@ -191,21 +191,6 @@ export default {
       roomsMenu: false,
     };
   },
-  mounted() {
-    let localStorageName;
-    if (this.$parent.name == 'hotel') {
-      localStorageName = 'lastHotelSearch';
-    } else {
-      localStorageName = 'lastFlightHotelSearch';
-    }
-    let getLocalStorage = localStorage.getItem(`${localStorageName}`);
-    if (!getLocalStorage) {
-      return;
-    }
-    let parsetGetLocalStorage = JSON.parse(getLocalStorage);
-    this.TsRoomsSelected = parsetGetLocalStorage.Rooms;
-    this.$emit('Rooms', this.TsRoomsSelected);
-  },
   methods: {
     outSideRoomsMenu() {
       this.roomsMenu = false;

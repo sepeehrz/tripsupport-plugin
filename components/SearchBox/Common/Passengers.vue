@@ -255,32 +255,6 @@ export default {
       return this.child + this.adult + this.infant;
     },
   },
-  mounted() {
-    if (isNaN(this.getPassenger)) {
-      localStorage.clear();
-    }
-    let getFlightLastSearch = localStorage.getItem('lastFlightRoundTripSearch');
-    if (!getFlightLastSearch) {
-      return;
-    }
-    let parsedGetFlightLastSearch = JSON.parse(getFlightLastSearch);
-    if (
-      isNaN(parsedGetFlightLastSearch.adult) ||
-      isNaN(parsedGetFlightLastSearch.infant) ||
-      isNaN(parsedGetFlightLastSearch.child)
-    ) {
-      localStorage.clear();
-    }
-    this.adult = parsedGetFlightLastSearch.adult;
-    this.infant = parsedGetFlightLastSearch.infant;
-    this.child = parsedGetFlightLastSearch.child;
-
-    this.$store.commit('getPassengers', {
-      adult: this.adult,
-      infant: this.infant,
-      child: this.child,
-    });
-  },
   methods: {
     onClickOutside() {
       this.travellerMenu = false;
@@ -290,11 +264,7 @@ export default {
         this.adult = this.adult + 1;
         this.passenger = this.adult + this.child + this.infant;
       }
-      this.$store.commit('getPassengers', {
-        adult: this.adult,
-        infant: this.infant,
-        child: this.child,
-      });
+      this.emitPassengers();
     },
     adultMinus() {
       if (this.adult > 0) {
@@ -304,44 +274,35 @@ export default {
           this.passenger = this.adult + this.child + this.infant;
         }
       }
-      this.$store.commit('getPassengers', {
-        adult: this.adult,
-        infant: this.infant,
-        child: this.child,
-      });
+      this.emitPassengers();
     },
     childrenMinus() {
       if (this.child > 0) {
         this.child = this.child - 1;
         this.passenger = this.adult + this.child + this.infant;
-        this.$store.commit('getPassengers', {
-          adult: this.adult,
-          infant: this.infant,
-          child: this.child,
-        });
+        this.emitPassengers();
       }
+    },
+    emitPassengers() {
+      this.$store.commit('getPassengers', {
+        adult: this.adult,
+        infant: this.infant,
+        child: this.child,
+      });
     },
     childrenPlus() {
       if (this.child >= 0 && this.adult + this.child < 8) {
         this.child = this.child + 1;
         this.passenger = this.adult + this.child + this.infant;
       }
-      this.$store.commit('getPassengers', {
-        adult: this.adult,
-        infant: this.infant,
-        child: this.child,
-      });
+      this.emitPassengers();
     },
     infantMinus() {
       if (this.infant > 0) {
         this.infant = this.infant - 1;
         this.passenger = this.adult + this.child + this.infant;
       }
-      this.$store.commit('getPassengers', {
-        adult: this.adult,
-        infant: this.infant,
-        child: this.child,
-      });
+      this.emitPassengers();
     },
     infantPlus() {
       if (this.infant >= 0) {
@@ -350,19 +311,11 @@ export default {
           this.passenger = this.adult + this.child + this.infant;
         }
       }
-      this.$store.commit('getPassengers', {
-        adult: this.adult,
-        infant: this.infant,
-        child: this.child,
-      });
+      this.emitPassengers();
     },
     done() {
       this.travellerMenu = false;
-      this.$store.commit('getPassengers', {
-        adult: this.adult,
-        infant: this.infant,
-        child: this.child,
-      });
+      this.emitPassengers();
     },
   },
 };
