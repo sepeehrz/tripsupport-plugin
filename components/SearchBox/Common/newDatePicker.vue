@@ -92,8 +92,6 @@
       :startingDateValue="startingDateValue"
       :endingDateValue="endingDateValue"
       :positionRight="true"
-      :checkInTitle="placeHolder.origin"
-      :checkOutTitle="placeHolder.destination"
       :singleDaySelection="singleDatePicker"
       :showSingleMonth="singleDatePicker"
       :startDate="startDateCalendar"
@@ -107,6 +105,8 @@
 <script>
 import Toast from './Toast.vue';
 import moment from 'moment';
+import HotelDatePicker from 'vue-hotel-datepicker';
+import 'vue-hotel-datepicker/dist/vueHotelDatepicker.css';
 export default {
   props: {
     lastDate: {},
@@ -117,13 +117,6 @@ export default {
     title: {
       default: 'Departure/Return ',
     },
-    placeHolder: {
-      type: Object,
-      default: {
-        origin: 'check-in',
-        destination: 'check-out',
-      },
-    },
     numberOfStay: {
       default: 20,
     },
@@ -133,6 +126,7 @@ export default {
   },
   components: {
     Toast,
+    HotelDatePicker,
   },
   data() {
     return {

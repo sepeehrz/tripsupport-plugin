@@ -74,30 +74,7 @@ export default {
   methods: {
     activeNav(menuItem) {
       this.activeItem = menuItem;
-      this.setServiceAnalytics();
       this.$emit('activeItem', menuItem);
-    },
-    setServiceAnalytics() {
-      switch (this.activeItem) {
-        case 'RoundTrip':
-          this.$gtag.event('Services', {
-            event_category: 'Flight Runway',
-            event_label: 'User Click Flight Runway',
-          });
-          break;
-        case 'OneWay':
-          this.$gtag.event('Services', {
-            event_category: 'Flight One Way',
-            event_label: 'User Click Flight One Way',
-          });
-          break;
-        case 'MultiCity':
-          this.$gtag.event('Services', {
-            event_category: 'Flight Multi City',
-            event_label: 'User Click Flight Multi City',
-          });
-          break;
-      }
     },
   },
 };

@@ -1,4 +1,16 @@
 <style scoped>
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #cdcdda;
+}
+::-webkit-scrollbar-thumb {
+  background: #8f90ad;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8f90ad;
+}
 section {
   position: relative;
 }
@@ -83,12 +95,6 @@ input[type='text'] {
   .ts-dropdown-wrapper {
     width: 184px;
   }
-  /* .ts-menu {
-    right: 67px;
-  } */
-  /* input[type='text'] {
-    width: 185px;
-  } */
 }
 @media (min-width: 1920px) {
   .ts-dropdown-wrapper {

@@ -9,7 +9,7 @@
 }
 @media only screen and (max-width: 600px) {
   .search-box {
-    padding: 0 0;
+    padding: 0 10px;
     box-shadow: unset;
     border-bottom: 2px solid rgba(171, 171, 196, 0.2);
   }

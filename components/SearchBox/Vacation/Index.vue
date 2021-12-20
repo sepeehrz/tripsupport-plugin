@@ -192,10 +192,8 @@
             v-model="getFromSearch"
             :items="FromsItemsDisplay"
             :placeholder="$t('VACATION.Departing_From')"
-            :localStorage="localData.From"
             :from="true"
             mode="vacation"
-            :userLocation="userLocation"
           />
         </div>
         <div class="ts-destination">
@@ -204,7 +202,6 @@
             v-model="getToSearch"
             :items="toItemsDisplay"
             :placeholder="$t('VACATION.Going_To')"
-            :localStorage="localData.To"
             mode="vacation"
           />
         </div>
@@ -216,11 +213,7 @@
             @RangeSelectedDate="getRangeDate"
             @clearDate="clearDate"
             :singleDatePicker="true"
-            :lastDate="lastDate"
             title="Departure"
-            :placeHolder="{
-              origin: 'Departure Date',
-            }"
           />
         </div>
         <div class="ts-duration">
@@ -292,78 +285,22 @@ export default {
       previousSelectionTravellers: {},
       getFromSearch: null,
       getToSearch: null,
-      localData: {},
-      userLocation: {},
     };
   },
   async mounted() {
     try {
-      let { data } = await this.axios.get(
-        `https://tripsupport.ca/wp-json/trip-support-endpoints/v1/user/geolocation`
-      );
-
       await this.axios
         .get(`https://vacationapi.tripsupport.ca/api/Resource/GetDepartures`)
         .then((response) => {
           this.FromsItems = response.data.data;
           this.FromsItemsDisplay = response.data.data;
         });
-      let userLocation = data.data.city.toLowerCase();
-      this.querySearch(userLocation, this.FromsItems).then((res) => {
-        if (res.length) {
-          this.userLocation = res[0];
-          this.$cookie.set(
-            'userLocation',
-            JSON.stringify({
-              ct: res[0].name,
-              ac: res[0].codes,
-            })
-          );
-          this.From = res[0];
-        } else {
-          this.userLocation = res;
-          this.$cookie.set(
-            'userLocation',
-            JSON.stringify({
-              ct: 'Toronto',
-              ac: 'YYZ',
-            })
-          );
-          this.From = { codes: 'YYZ', name: 'Toronto' };
-        }
+      this.changeDestination('YYZ').then((res) => {
+        this.toItems = res;
+        this.toItemsDisplay = res;
       });
     } catch (e) {
       console.log(e);
-    }
-
-    let getLastVacationBooking = localStorage.getItem('lastVacationBooking');
-    if (!getLastVacationBooking) {
-      this.previousSelectionTravellers = {
-        adults: 2,
-        children: 0,
-        childrenAges: [],
-      };
-      return;
-    }
-    this.localData = JSON.parse(getLastVacationBooking);
-    this.From = this.localData.From;
-    this.To = this.localData.To;
-    this.NumberOfRooms = this.localData.NumberOfRooms;
-    if (this.localData.date) {
-      this.lastDate = this.localData.date;
-      this.DepartureDate = this.changeFormat(this.localData.date.startDate);
-    }
-    if (this.localData.multiple.length) {
-      this.selectedMultiple = this.localData.multiple;
-    }
-    if (this.localData.TravellersData) {
-      let childAgesArray = [];
-      this.localData.TravellersData.childrenAges.forEach((element) => {
-        childAgesArray.push(element.child);
-      });
-      this.Adults = this.localData.TravellersData.adults;
-      this.Children = this.localData.TravellersData.children;
-      this.ChildrenAges = childAgesArray;
     }
   },
   watch: {
@@ -379,15 +316,6 @@ export default {
             this.toItemsDisplay = res.slice(0, 50);
           });
         }
-        if (
-          this.isMobile &&
-          val.name &&
-          this.$refs.FromAutocomplete.openMobileDialog == true
-        ) {
-          this.$refs.ToAutocomplete.openMobileDialog = true;
-        } else {
-          this.$refs.ToAutocomplete.openMobileDialog = false;
-        }
       },
     },
     getToSearch: {
@@ -396,13 +324,6 @@ export default {
         this.querySearch(val, this.toItems).then((res) => {
           this.toItemsDisplay = res;
         });
-        if (
-          this.isMobile &&
-          val.name &&
-          this.$refs.ToAutocomplete.openMobileDialog == true
-        ) {
-          this.$refs.vacationDatePicker.$children[0].open = true;
-        }
       },
     },
   },
@@ -463,7 +384,6 @@ export default {
       });
     },
     getRangeDate(e) {
-      this.lastDate = e;
       this.DepartureDate = this.changeFormat(e.startDate);
     },
     save() {
@@ -481,18 +401,6 @@ export default {
           color: '#cb3839',
           toastText: 'Please Enter Departing From and Going To',
         };
-        if (!this.From || !this.From.codes) {
-          this.$gtag.event('Validation', {
-            event_category: 'Vacation',
-            event_label: 'User entered an invalid Departing From',
-          });
-        }
-        if (!destination[0]) {
-          this.$gtag.event('Validation', {
-            event_category: 'Vacation',
-            event_label: 'User entered an invalid Going To',
-          });
-        }
         return;
       }
       if (!this.DepartureDate) {
@@ -501,10 +409,6 @@ export default {
           color: '#cb3839',
           toastText: 'Please Enter departure date',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Vacation',
-          event_label: 'User entered an invalid Departure',
-        });
         return;
       }
       if (this.Children > 0 && this.NumberOfRooms > 1) {
@@ -514,11 +418,6 @@ export default {
           toastText:
             'Sorry, the adult occupancy must be consistent for all rooms in an online booking.',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Vacation',
-          event_label:
-            'User entered Rooms do not match the number of passengers',
-        });
         return;
       }
       let checkAvailableRoom = this.Adults / this.NumberOfRooms;
@@ -529,11 +428,6 @@ export default {
           toastText:
             'Sorry, the adult occupancy must be consistent for all rooms in an online booking.',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Vacation',
-          event_label:
-            'User entered Rooms do not match the number of passengers',
-        });
         return;
       }
       if (this.NumberOfPassangers > 6) {
@@ -543,10 +437,6 @@ export default {
           toastText:
             'Sorry, you can only book a maximum of 6 passengers in an online booking.',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Vacation',
-          event_label: 'User entered more than 6 passengers',
-        });
         return;
       }
       if (this.Adults == 0) {
@@ -555,10 +445,6 @@ export default {
           color: '#cb3839',
           toastText: 'AdultCount should not be zero',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Vacation',
-          event_label: 'User entered an invalid Traveller',
-        });
         return;
       }
       let getError = false;
@@ -574,50 +460,9 @@ export default {
           toastText:
             'Age should not be zero or empty or The maximum age must be 17 years old',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Vacation',
-          event_label:
-            'User entered zero or empty or more than 17 years for children ages',
-        });
         return;
       }
-      let setVacationFilter = {
-        From: this.From.codes,
-        To: this.To.ids,
-        DepartureDate: this.DepartureDate,
-        Durations: this.Durations,
-        AllInclusive: this.AllInclusive,
-        NumberOfRooms: this.NumberOfRooms,
-        NumberOfAdults: this.Adults,
-        ChildrenAges: JSON.stringify(this.ChildrenAges),
-      };
-      let newLocalStorage = {
-        From: this.From,
-        To: this.To,
-        NumberOfPassangers: this.NumberOfPassangers,
-        NumberOfRooms: this.NumberOfRooms,
-        DepartureDate: this.DepartureDate,
-        AllInclusive: this.AllInclusive,
-        ChildrenAges: this.ChildrenAges,
-        Durations: this.Durations,
-        multiple: this.selectedMultiple,
-        date: this.lastDate,
-        TravellersData: this.previousSelectionTravellers,
-      };
-      localStorage.setItem('vacationFilter', JSON.stringify(setVacationFilter));
-      localStorage.setItem('adultsFilter', JSON.stringify(this.Adults));
-      localStorage.setItem('childrenFilter', JSON.stringify(this.ChildrenAges));
-      localStorage.setItem(
-        'lastVacationBooking',
-        JSON.stringify(newLocalStorage)
-      );
-      this.$gtag.event('Search', {
-        event_category: 'Vacation',
-        event_label: 'User submit new search',
-      });
-      let url = location.href;
-      url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/vacation?From=${this.From.codes}&To=${destination}&DepartureDate=${this.DepartureDate}&Durations=${this.Durations}&AllInclusive=${this.AllInclusive}&NumberOfRooms=${this.NumberOfRooms}&NumberOfAdults=${this.Adults}&ChildrenAges=[${this.ChildrenAges}]`;
+      let href = `https://secure.tripsupport.ca/vacation?From=${this.From.codes}&To=${destination}&DepartureDate=${this.DepartureDate}&Durations=${this.Durations}&AllInclusive=${this.AllInclusive}&NumberOfRooms=${this.NumberOfRooms}&NumberOfAdults=${this.Adults}&ChildrenAges=[${this.ChildrenAges}]`;
       window.open(href, '_self');
     },
     changeFormat(val) {

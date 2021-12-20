@@ -46,6 +46,7 @@ li svg {
 @media only screen and (max-width: 600px) {
   ul {
     overflow: auto;
+    padding-left: 14px !important;
   }
   li {
     display: flex;
@@ -225,59 +226,30 @@ export default {
       location: location.href,
     };
   },
-  watch: {
-    location: {
-      handler: function(val) {
-        let targetLocation = [
-          'flight',
-          'vacation',
-          'hotel',
-          'flight-hotel',
-          'things-to-do',
-        ];
-        targetLocation.forEach((element) => {
-          if (val.includes(`${element}`)) {
-            this.activeItem = element;
-            this.$emit('activeItem', this.activeItem);
-          }
-        });
-      },
-      immediate: true,
-    },
-  },
+  // watch: {
+  //   location: {
+  //     handler: function(val) {
+  //       let targetLocation = [
+  //         'flight',
+  //         'vacation',
+  //         'hotel',
+  //         'flight-hotel',
+  //         'things-to-do',
+  //       ];
+  //       targetLocation.forEach((element) => {
+  //         if (val.includes(`${element}`)) {
+  //           this.activeItem = element;
+  //           this.$emit('activeItem', this.activeItem);
+  //         }
+  //       });
+  //     },
+  //     immediate: true,
+  //   },
+  // },
   methods: {
     activeNav(menuItem) {
       this.activeItem = menuItem;
-      this.setServiceAnalytics();
-      this.$emit('activeItem', menuItem);
-    },
-    setServiceAnalytics() {
-      switch (this.activeItem) {
-        case 'flight':
-          this.$gtag.event('Services', {
-            event_category: 'Flight',
-            event_label: 'User Click Flight Flight',
-          });
-          break;
-        case 'vacation':
-          this.$gtag.event('Services', {
-            event_category: 'Vacation',
-            event_label: 'User Click Flight Vacation',
-          });
-          break;
-        case 'hotel':
-          this.$gtag.event('Services', {
-            event_category: 'Hotels',
-            event_label: 'User Click Flight Hotels',
-          });
-          break;
-        case 'flight-hotel':
-          this.$gtag.event('Services', {
-            event_category: 'Flight-Hotel',
-            event_label: 'User Click Flight Flight-Hotel',
-          });
-          break;
-      }
+      this.$emit('activeItem', this.activeItem);
     },
   },
 };

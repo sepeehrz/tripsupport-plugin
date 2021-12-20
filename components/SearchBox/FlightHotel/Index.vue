@@ -3,18 +3,6 @@
   width: 98%;
   top: 84px;
 }
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px #cdcdda;
-}
-::-webkit-scrollbar-thumb {
-  background: #8f90ad;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #8f90ad;
-}
 .ts-field-wrapper {
   display: flex;
   align-items: center;
@@ -72,58 +60,6 @@ label {
   align-items: center;
   padding-top: 37px;
   padding-bottom: 32px;
-}
-.ts-dropdown-wrapper {
-  padding: 10px 0;
-}
-.ts-dropdown-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  padding: 0 8px;
-  margin-bottom: 10px;
-}
-.ts-dropdown-item:hover {
-  background: rgba(0, 122, 255, 0.02);
-}
-.ts-dropdown-item:hover .ts-dropdown-city-name {
-  color: #0c0d25;
-}
-.ts-dropdown-item:hover .ts-dropdown-city-name span svg {
-  fill: #007aff;
-}
-
-.ts-dropdown-city-name {
-  font-size: 16px;
-  font-weight: 500;
-  color: #ababc4;
-  display: flex;
-  align-items: center;
-}
-.ts-dropdown-city-name span svg {
-  fill: #ababc4;
-  margin-right: 5px;
-  margin-bottom: -5px;
-}
-.ts-dropdown-ariport-name {
-  font-size: 12px;
-  color: #ababc4;
-  margin-left: 30px;
-  margin-top: 5px;
-}
-.ts-dropdown-airport {
-  font-size: 12px;
-  color: #666;
-}
-.active {
-  background: rgba(0, 122, 255, 0.02);
-}
-.active .ts-dropdown-city-name {
-  color: #0c0d25;
-}
-.active .ts-dropdown-city-name span svg {
-  fill: #007aff;
 }
 .ts-header-component {
   padding: 32px 0 24px;
@@ -184,13 +120,6 @@ label {
     padding-top: 16px;
     padding-bottom: 24px;
   }
-
-  label {
-    display: none;
-  }
-  .ts-dropdown-wrapper {
-    width: 100%;
-  }
   .ts-search-field-wrapper {
     flex: unset;
     display: block;
@@ -225,7 +154,6 @@ label {
             v-model="getOriginSearch"
             :items="originItems"
             :placeholder="$t('Departing_From')"
-            :localStorage="localData.From"
             mode="hotelFlightOrigin"
           />
         </div>
@@ -235,7 +163,6 @@ label {
             v-model="getDestinationSearch"
             :items="destinationItems"
             :placeholder="$t('Going_To')"
-            :localStorage="localData.To"
             mode="hotelFlightDestination"
           />
         </div>
@@ -245,13 +172,8 @@ label {
           ref="flightHotelDatePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
-          :lastDate="lastDate"
           @dateValidation="dateValidation = $event"
           :haveValidation="true"
-          :placeHolder="{
-            origin: 'Departure Date',
-            destination: 'Return Date',
-          }"
         />
       </div>
     </div>
@@ -291,9 +213,6 @@ export default {
       destination: null,
       departDate: null,
       returnDate: null,
-      lastDate: null,
-      originalDepartDate: null,
-      originalReturnDate: null,
       DirectFlights: false,
       dateValidation: true,
       originTimeout: null,
@@ -302,30 +221,10 @@ export default {
       destinationItems: [],
       Travellers: [{ adults: 2, children: 0, childrenAges: [] }],
       Rooms: 1,
-      name: 'FlightHotel',
       class: this.$store.commit('getAirType', `${this.$t('Economy')}`),
       getOriginSearch: null,
       getDestinationSearch: null,
-      localData: {},
     };
-  },
-  mounted() {
-    let getlastFlightHotelSearch = localStorage.getItem(
-      'lastFlightHotelSearch'
-    );
-    if (!getlastFlightHotelSearch) {
-      return;
-    }
-    this.localData = JSON.parse(getlastFlightHotelSearch);
-    this.origin = this.localData.From;
-    this.destination = this.localData.To;
-    if (this.localData.date) {
-      this.lastDate = this.localData.date;
-      this.departDate = this.changeFormat(this.localData.date.startDate);
-      this.returnDate = this.changeFormat(this.localData.date.endDate);
-      this.originalDepartDate = moment(this.localData.date.startDate)._d;
-      this.originalReturnDate = moment(this.localData.date.endDate)._d;
-    }
   },
   watch: {
     getOriginSearch: {
@@ -334,15 +233,6 @@ export default {
         this.searchFlight(val).then((res) => {
           this.originItems = res;
         });
-        if (
-          this.isMobile &&
-          val.name &&
-          this.$refs.flightSearchAutocomplete.openMobileDialog == true
-        ) {
-          this.$refs.flightDestinationAutocomplete.openMobileDialog = true;
-        } else {
-          this.$refs.flightDestinationAutocomplete.openMobileDialog = false;
-        }
       },
     },
     getDestinationSearch: {
@@ -351,13 +241,6 @@ export default {
         this.searchDestination(val).then((res) => {
           this.destinationItems = res;
         });
-        if (
-          this.isMobile &&
-          val.name &&
-          this.$refs.flightDestinationAutocomplete.openMobileDialog == true
-        ) {
-          this.$refs.flightHotelDatePicker.$children[0].open = true;
-        }
       },
     },
   },
@@ -434,9 +317,6 @@ export default {
       this.class = val;
     },
     getRangeDate(e) {
-      this.lastDate = e;
-      this.originalDepartDate = e.startDate;
-      this.originalReturnDate = e.endDate;
       this.departDate = this.changeFormat(e.startDate);
       this.returnDate = this.changeFormat(e.endDate);
     },
@@ -458,18 +338,6 @@ export default {
           color: '#cb3839',
           toastText: 'Please Enter Departing From and Going To',
         };
-        if (!this.origin || !this.origin.code) {
-          this.$gtag.event('Validation', {
-            event_category: 'Flight-Hotel',
-            event_label: 'User entered an invalid Departing From',
-          });
-        }
-        if (!this.destination || !this.destination.id) {
-          this.$gtag.event('Validation', {
-            event_category: 'Flight-Hotel',
-            event_label: 'User entered an invalid Going To',
-          });
-        }
         return;
       }
       if (!this.departDate || !this.returnDate) {
@@ -478,18 +346,6 @@ export default {
           color: '#cb3839',
           toastText: 'Please Enter departure date',
         };
-        if (!this.departDate) {
-          this.$gtag.event('Validation', {
-            event_category: 'Flight-Hotel',
-            event_label: 'User entered an invalid Departure',
-          });
-        }
-        if (!this.returnDate) {
-          this.$gtag.event('Validation', {
-            event_category: 'Flight-Hotel',
-            event_label: 'User entered an invalid Return',
-          });
-        }
         return;
       }
       if (!this.checkZero) {
@@ -498,10 +354,6 @@ export default {
           color: '#cb3839',
           toastText: 'AdultCount should not be zero',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Flight-Hotel',
-          event_label: 'User entered an invalid AdultCount',
-        });
         return;
       }
       if (!this.dateValidation) {
@@ -510,10 +362,6 @@ export default {
           color: '#cb3839',
           toastText: 'Maximum Length of stay allowed is 20 days',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Flight-Hotel',
-          event_label: 'User entered an invalid Maximum Length of stay allowed',
-        });
         return;
       }
       let customUrl = {
@@ -530,48 +378,8 @@ export default {
           travellers: this.Travellers,
         },
       };
-      let customLocal = {
-        From: this.origin,
-        To: this.destination,
-        EntryDate: this.departDate,
-        ExitDate: this.returnDate,
-        PartEntryDate: this.departDate,
-        PartExitDate: this.returnDate,
-        Rooms: this.Rooms,
-        DirectFlights: this.DirectFlights,
-        FlightType: this.$store.state.airfaireType,
-        date: this.lastDate,
-        travellersForm: {
-          travellers: this.Travellers,
-        },
-      };
       let customUrlStringify = JSON.stringify(customUrl);
-      localStorage.setItem('hotelFlightEntryDate', this.originalDepartDate);
-      localStorage.setItem('hotelFlightExitDate', this.originalReturnDate);
-      localStorage.setItem('hotelFlightPartEntryDate', this.originalDepartDate);
-      localStorage.setItem('hotelFlightPartExitDate', this.originalReturnDate);
-      localStorage.setItem('hotelFlightFrom', JSON.stringify(this.origin));
-      localStorage.setItem('hotelFlightRooms', this.Rooms);
-      localStorage.setItem(
-        'hotelFlightTravellers',
-        JSON.stringify(customLocal.travellersForm)
-      );
-      localStorage.setItem(
-        'hotelFlightDestination',
-        JSON.stringify(this.destination)
-      );
-      localStorage.setItem(
-        'lastFlightHotelSearch',
-        JSON.stringify(customLocal)
-      );
-
-      this.$gtag.event('Search', {
-        event_category: 'Flight-Hotel',
-        event_label: 'User submit new search',
-      });
-      let url = location.href;
-      url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/hotel/search/${customUrlStringify}`;
+      let href = `https://secure.tripsupport.ca/hotel/search/${customUrlStringify}`;
       href = encodeURI(href);
       window.open(href, '_self');
     },

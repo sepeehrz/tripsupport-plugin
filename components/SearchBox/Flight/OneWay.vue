@@ -1,139 +1,10 @@
 <style scoped>
-.ts-field-wrapper {
-  display: flex;
-  align-items: center;
-}
 .ts-search-field-wrapper {
   display: flex;
   flex: 0 0 80%;
 }
 .ts-date-picker {
   flex: 0 0 20%;
-}
-.ts-origin .ts-input,
-.ts-destination .ts-input {
-  width: 95%;
-}
-.ts-origin,
-.ts-destination {
-  position: relative;
-  width: 100%;
-}
-.ts-svg {
-  margin-right: 16px;
-  margin-top: 45px;
-  cursor: pointer;
-}
-.ts-airplane-icon {
-  position: absolute;
-  left: 9px;
-  bottom: 13px;
-}
-.ts-action-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 37px;
-  padding-bottom: 32px;
-}
-.ts-checkbox-wrapper {
-  display: flex;
-  align-items: center;
-}
-.ts-checkbox-wrapper > div {
-  display: flex;
-  align-items: center;
-  margin-right: 19px;
-}
-.ts-checkbox-wrapper > div label {
-  font-weight: 400;
-  color: #66678f;
-  font-size: 14px;
-}
-.ts-checkbox-item {
-  display: flex;
-  cursor: pointer;
-  position: relative;
-  align-items: center;
-  margin-bottom: 0 !important;
-}
-
-.ts-checkbox-item > span {
-  font-weight: 400;
-  color: #66678f;
-  font-size: 14px;
-  margin-left: 8px;
-}
-
-.ts-checkbox-item > input {
-  height: 18px;
-  width: 18px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -o-appearance: none;
-  appearance: none;
-  border: 1px solid rgba(171, 171, 196, 0.6);
-  border-radius: 4px;
-  outline: none;
-  transition-duration: 0.3s;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.ts-checkbox-item > input:checked {
-  border: 1px solid #ed1b2e;
-  background-color: #ed1b2e;
-}
-
-.ts-checkbox-item > input:checked + span::before {
-  content: '\2713';
-  display: block;
-  text-align: center;
-  color: #fff;
-  position: absolute;
-  left: 5px;
-  top: 1px;
-}
-.ts-svg svg {
-  fill: #ababc4;
-}
-@media only screen and (max-width: 768px) {
-  .ts-svg svg {
-    fill: #66678f;
-  }
-  .ts-field-wrapper {
-    display: block;
-    position: relative;
-  }
-  .ts-action-wrapper {
-    display: block;
-    padding-top: 18px;
-    padding-bottom: 22px;
-  }
-  .ts-checkbox-wrapper {
-    display: block;
-  }
-  .ts-checkbox-wrapper > div {
-    margin-bottom: 20px;
-  }
-  .ts-svg {
-    position: absolute;
-    right: -6px;
-    top: -10px;
-    padding: 10px;
-    z-index: 2;
-    background: #ffffff;
-    border: 1px solid rgba(171, 171, 196, 0.6);
-    border-radius: 8px;
-    transform: rotate(-90deg);
-  }
-  .ts-button {
-    margin-top: 26px;
-  }
-  .ts-search-field-wrapper {
-    display: block;
-    flex: unset;
-  }
 }
 </style>
 
@@ -147,10 +18,8 @@
             v-model="getOriginSearch"
             :items="originItems"
             :placeholder="$t('Departing_From')"
-            :localStorage="localData.origin"
             :displaySearchWord="displayOrigin"
             :from="true"
-            :userLocation="userLocation"
           />
         </div>
         <div class="ts-svg" @click="displacement">
@@ -175,9 +44,7 @@
             v-model="getDestinationSearch"
             :items="destinationItems"
             :placeholder="$t('Going_To')"
-            :localStorage="localData.destination"
             :displaySearchWord="displayDestination"
-            :userLocation="userLocation"
           />
         </div>
       </div>
@@ -186,13 +53,8 @@
           ref="datePicker"
           @RangeSelectedDate="getRangeDate"
           @clearDate="clearDate"
-          :lastDate="lastDate"
           :singleDatePicker="true"
           title="Departure"
-          :placeHolder="{
-            origin: 'Departure Date',
-            destination: 'and Return Date',
-          }"
         />
       </div>
     </div>
@@ -240,7 +102,6 @@ export default {
       displayDestination: null,
       IsFlexiSearch: false,
       departDate: null,
-      lastDate: null,
       originItems: [],
       destinationItems: [],
       adult: 1,
@@ -250,23 +111,12 @@ export default {
       ns: false,
       getOriginSearch: null,
       getDestinationSearch: null,
-      localData: {},
-      userLocation: {},
     };
   },
   watch: {
     getOriginSearch: {
       handler: function(val) {
         this.origin = val;
-        if (
-          this.isMobile &&
-          val.ct &&
-          this.$refs.originAutocomplete.openMobileDialog == true
-        ) {
-          this.$refs.destinationAutocomplete.openMobileDialog = true;
-        } else {
-          this.$refs.destinationAutocomplete.openMobileDialog = false;
-        }
         this.searchRequest(val).then((res) => {
           this.originItems = res;
         });
@@ -275,86 +125,11 @@ export default {
     getDestinationSearch: {
       handler: function(val) {
         this.destination = val;
-        if (
-          this.isMobile &&
-          val.ct &&
-          this.$refs.destinationAutocomplete.openMobileDialog == true
-        ) {
-          this.$refs.datePicker.$children[0].open = true;
-        }
         this.searchRequest(val).then((res) => {
           this.destinationItems = res;
         });
       },
     },
-  },
-  async mounted() {
-    try {
-      let { data } = await this.axios.get(
-        `https://tripsupport.ca/wp-json/trip-support-endpoints/v1/user/geolocation`
-      );
-      let { data: res } = await this.axios.get(
-        `https://search.tripsupport.ca/api/searchairports?searchvalue=${data.data.city.toLowerCase()}`
-      );
-      this.userLocation = res[0];
-      if (res.length) {
-        this.userLocation = res[0];
-        let locationSearch = res[0];
-        this.$cookie.set(
-          'userLocation',
-          JSON.stringify({
-            ct: locationSearch.ct,
-            ac: locationSearch.ac,
-            cc: locationSearch.cc,
-          })
-        );
-      } else {
-        this.userLocation = res;
-        this.$cookie.set(
-          'userLocation',
-          JSON.stringify({
-            ct: 'Toronto',
-            ac: 'YTO',
-            cc: 'CA',
-          })
-        );
-        this.origin = {
-          ac: 'YTO',
-          an: 'Toronto All airports',
-          cc: 'CA',
-          cn: 'CA',
-          ct: 'Toronto',
-        };
-        this.displayOrigin =
-          'YTO' + '-' + 'Toronto' + '-' + 'Toronto All airports';
-      }
-    } catch (e) {
-      console.log(e);
-    }
-
-    let getLastSearch = localStorage.getItem('lastFlightOneWaySearch');
-    if (!getLastSearch) {
-      return;
-    }
-    this.localData = JSON.parse(getLastSearch);
-    this.displayOrigin =
-      this.localData.origin.ac +
-      '-' +
-      this.localData.origin.ct +
-      '-' +
-      this.localData.origin.an;
-    this.origin = this.localData.origin;
-    this.displayDestination =
-      this.localData.destination.ac +
-      '-' +
-      this.localData.destination.ct +
-      '-' +
-      this.localData.destination.an;
-    this.destination = this.localData.destination;
-    if (this.localData.date) {
-      this.lastDate = this.localData.date;
-      this.departDate = this.changeFormat(this.localData.date.startDate);
-    }
   },
   computed: {
     isMobile() {
@@ -426,18 +201,6 @@ export default {
           color: '#cb3839',
           toastText: 'Please Enter Departing From and Going To',
         };
-        if (!this.origin || !this.origin.ct) {
-          this.$gtag.event('Validation', {
-            event_category: 'Flight One Way',
-            event_label: 'User entered an invalid Departing From',
-          });
-        }
-        if (!this.destination || !this.destination.ct) {
-          this.$gtag.event('Validation', {
-            event_category: 'Flight One Way',
-            event_label: 'User entered an invalid Going To',
-          });
-        }
         return;
       }
       if (!this.departDate) {
@@ -446,11 +209,6 @@ export default {
           color: '#cb3839',
           toastText: 'Please Enter departure date',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Flight One Way',
-          event_label: 'User entered an invalid Departure',
-        });
-
         return;
       }
       if (this.adult == 0) {
@@ -459,42 +217,12 @@ export default {
           color: '#cb3839',
           toastText: 'AdultCount should not be zero',
         };
-        this.$gtag.event('Validation', {
-          event_category: 'Flight One Way',
-          event_label: 'User entered an invalid Traveller',
-        });
         return;
       }
-      let searchObject = {
-        origin: this.origin,
-        destination: this.destination,
-        date: this.lastDate,
-        class: this.$store.state.airfaireType,
-        adult: this.$store.state.adult,
-        infant: this.$store.state.infant,
-        child: this.$store.state.child,
-      };
-      localStorage.setItem(
-        'lastFlightOneWaySearch',
-        JSON.stringify(searchObject)
-      );
-      this.$gtag.event('Search', {
-        event_category: 'Flight One Way',
-        event_label: 'User submit new search',
-      });
-      let url = location.href;
-      let lang = 'lg=';
-      if (this.$i18n.locale == 'fr') {
-        lang = lang + 'fr-FR';
-      } else {
-        lang = lang + 'en-EN';
-      }
-      url = url.substring(url.indexOf('.')).split('/')[0];
-      let href = `https://secure.tripsupport${url}/flight/oneway;tripType=oneway;destination=${this.destination.ac};origin=${this.origin.ac};IsFlexiSearch=${this.IsFlexiSearch};ns=${this.ns};departDate=${this.departDate};returnDate=;adult=${this.adult};child=${this.child};infant=${this.infant};class=${this.class};multiOrigin=;multiDestination=;multidate=;${lang}`;
+      let href = `https://secure.tripsupport.ca/flight/oneway;tripType=oneway;destination=${this.destination.ac};origin=${this.origin.ac};IsFlexiSearch=${this.IsFlexiSearch};ns=${this.ns};departDate=${this.departDate};returnDate=;adult=${this.adult};child=${this.child};infant=${this.infant};class=${this.class};multiOrigin=;multiDestination=;multidate=;`;
       window.open(href, '_self');
     },
     getRangeDate(e) {
-      this.lastDate = e;
       this.departDate = this.changeFormat(e.startDate);
     },
     changeFormat(val) {
