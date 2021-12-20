@@ -308,11 +308,6 @@ export default {
           this.FromsItems = response.data.data;
           this.FromsItemsDisplay = response.data.data;
         });
-      this.changeDestination('YYZ').then((res) => {
-        this.toItems = res;
-        this.toItemsDisplay = res;
-      });
-
       let userLocation = data.data.city.toLowerCase();
       this.querySearch(userLocation, this.FromsItems).then((res) => {
         if (res.length) {
@@ -381,7 +376,7 @@ export default {
         if (val.codes) {
           this.changeDestination(val.codes).then((res) => {
             this.toItems = res;
-            this.toItemsDisplay = res;
+            this.toItemsDisplay = res.slice(0, 50);
           });
         }
         if (
@@ -451,7 +446,7 @@ export default {
               `https://vacationapi.tripsupport.ca/api/Resource/GetDestinations?codes=${value}`
             )
             .then((response) => {
-              resolve(response.data.data.slice(0, 50));
+              resolve(response.data.data);
             });
         }
       });
